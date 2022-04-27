@@ -1,0 +1,34 @@
+<nz-table #basicTable [nzData]="pedidos">
+    <thead>
+      <tr>
+        <th>Título</th>
+        <th>Subtítulo</th>
+        <th>Cantidad</th>
+        <th>Propietario</th>
+        <th>Colores</th>
+        <th>Alto</th>
+        <th>Ancho</th>
+        <th>Tipografía</th>
+        <th>Tipo</th>
+        <th>Estado</th>
+        <th>Descripción</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>{{data.nombre}}</td>
+        <td>{{data.nombreExtendido}}</td>
+        <td>{{data.cantidad}}</td>
+        <td>{{data.propietario.nombre + '-' + data.propietario.contacto}}</td>
+        <td>{{data.colores}}</td>
+        <td>{{data.alto ? data.alto : "-"}}</td>
+        <td>{{data.ancho ? data.ancho : "-"}}</td>
+        <td>{{data.tipografia}}</td>
+        <td>{{data.tipo.nombre}}</td>
+        <td><nz-tag [nzColor]="colorear(data.estado.descripcion)">{{data.estado.descripcion}}</nz-tag></td>
+        <td>{{data.descripcion}}</td>
+        <td><button nz-button nzType="default" (click)="reservar(data.key)" [nzLoading]="loading" nzBlock>Reservar</button></td>
+      </tr>
+    </tbody>
+  </nz-table>
