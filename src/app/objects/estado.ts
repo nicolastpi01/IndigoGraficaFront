@@ -10,3 +10,10 @@ export class PendienteAtencion implements Estado {
       this.descripcion = "Pendiente Atencion" 
     }
 }
+
+export class Reservado implements Estado {
+  descripcion: "Reservado";
+  constructor() {
+    this.descripcion = "Reservado" 
+  }
+}

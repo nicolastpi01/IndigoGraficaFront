@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Pedido } from 'src/app/objects/pedido';
+import { Usuario } from 'src/app/objects/usuario';
+import { PENDIENTEATENCION } from 'src/app/utils/const/constantes';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { PedidoService } from '../pedido.service';
 
@@ -14,7 +16,7 @@ export class PedidosComponent implements OnInit {
   colorear :(descripcion: string) => string | undefined = colorearEstado
   loading: boolean = false
   pedidos: Pedido[] = []
-  estadoBusqueda = "Pendiente Atencion"
+  
 
   constructor(private service: PedidoService) { }
 
@@ -24,12 +26,19 @@ export class PedidosComponent implements OnInit {
 
 
   getPedidos(): void {
-    this.service.getPedidos(this.estadoBusqueda)
+    this.service.getPedidos(PENDIENTEATENCION)
     .subscribe(pedidos => this.pedidos = pedidos);
   }
 
-  reservar (key: string): void {
+  reservar (pedido: Pedido): void {
     this.loading = true
+    //console.log("Pedido: ", pedido)
+    this.service.reservar(pedido)
+    .subscribe((response) => {
+       console.log("Response: ", response)
+       this.getPedidos()
+       this.loading = false 
+    })
     //this.loading = false
   }
 

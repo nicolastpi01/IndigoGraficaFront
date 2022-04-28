@@ -6,6 +6,7 @@ import { Logo } from "../objects/tipo";
 
 export const pedidos: Pedido[] = [
     {
+      id: 1,
       key: '1',
       cantidad: 2,
       propietario: {
@@ -22,6 +23,7 @@ export const pedidos: Pedido[] = [
       estado: new PendienteAtencion()
     },
     {
+      id:2,
       key: '2',
       cantidad: 2,
       propietario: {
@@ -38,6 +40,7 @@ export const pedidos: Pedido[] = [
       estado: new PendienteAtencion()
     },
     {
+      id:3,
       key: '3',
       cantidad: 2,
       propietario: {

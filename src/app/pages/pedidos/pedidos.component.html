@@ -28,7 +28,7 @@
         <td>{{data.tipo.nombre}}</td>
         <td><nz-tag [nzColor]="colorear(data.estado.descripcion)">{{data.estado.descripcion}}</nz-tag></td>
         <td>{{data.descripcion}}</td>
-        <td><button nz-button nzType="default" (click)="reservar(data.key)" [nzLoading]="loading" nzBlock>Reservar</button></td>
+        <td><button nz-button nzType="default" (click)="reservar(data)" [nzLoading]="loading" nzBlock>Reservar</button></td>
       </tr>
     </tbody>
   </nz-table>

@@ -4,6 +4,7 @@ import { Usuario } from "./usuario";
 
 
 export interface Pedido {
+    id: number;
     key: string;
     cantidad: number;
     propietario: Usuario;
@@ -16,5 +17,6 @@ export interface Pedido {
     //boceto?: Blob;
     tipo: Tipo;
     descripcion: string; // descripcion mas extensa
-    estado: Estado
+    estado: Estado;
+    editor?: Usuario
 }
