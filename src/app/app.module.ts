@@ -16,12 +16,14 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { HttpClientInMemoryWebApiModule, InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './in-memory-data.service';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NuevoComponent } from './pages/nuevo/nuevo.component';
 
 registerLocaleData(es);
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    //NuevoComponent
   ],
   imports: [
     BrowserModule,
