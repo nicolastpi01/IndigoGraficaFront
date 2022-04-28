@@ -16,7 +16,8 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { HttpClientInMemoryWebApiModule, InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './in-memory-data.service';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
-import { NuevoComponent } from './pages/nuevo/nuevo.component';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { ReactiveFormsModule } from "@angular/forms";
 
 registerLocaleData(es);
 
@@ -27,13 +28,15 @@ registerLocaleData(es);
   ],
   imports: [
     BrowserModule,
-    FormsModule,
+    //FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
     IconsProviderModule,
     NzLayoutModule,
     NzMenuModule,
     NzBadgeModule,
+    //NzFormModule,
+    //ReactiveFormsModule,
 
 // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
 // and returns simulated server responses.

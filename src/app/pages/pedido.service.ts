@@ -56,4 +56,12 @@ export class PedidoService {
       //catchError(console.log(`updated pedido failed with id=${pedido.key}`))
     )
   }
+
+  agregarPedido(pedido: Pedido) : Observable<HttpEvent<Pedido>> {
+    const req = new HttpRequest('POST', `${this.baseUrl}/pedidos`, pedido, {
+      reportProgress: true,
+      responseType: 'json'
+    });
+    return this.http.request(req)
+  }
 }
