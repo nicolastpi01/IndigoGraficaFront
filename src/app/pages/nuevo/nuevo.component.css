@@ -1,0 +1,33 @@
+
+
+nz-divider {
+    color: #333;
+    font-weight: normal;
+  }
+.inner-box {
+    background: #0092ff;
+    padding: 8px 0;
+  }
+
+  .login-form {
+    max-width: 500px;
+  }
+
+  .login-form-margin {
+    margin-bottom: 16px;
+  }
+
+  .login-form-forgot {
+    float: right;
+  }
+
+  .login-form-button {
+    width: 50%;
+  }
+  .button-clear {
+      width: 50%;
+  }
+  
+  .nz-select {
+    min-width: 300px;
+  }

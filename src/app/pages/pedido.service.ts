@@ -35,6 +35,7 @@ export class PedidoService {
     return this.http.request(req);
   }
 
+  // "http://foobar/somepage?arg1={0}&arg2={1}",
   getPedidos(estado: string) : Observable<Pedido[]> {
     //const pedidos = of(mockPedidos)
     //return pedidos;

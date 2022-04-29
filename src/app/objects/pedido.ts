@@ -6,17 +6,17 @@ import { Usuario } from "./usuario";
 export interface Pedido {
     id: number;
     key: string;
-    cantidad: number;
     propietario: Usuario;
-    nombre: string;
-    nombreExtendido: string;
+    cantidad: number; //
+    nombre: string; //
+    nombreExtendido: string; //
+    tipografia?: string; //
+    tipo: Tipo; //
+    alto?: number; //
+    ancho?: number; //
+    descripcion: string; //
     colores: string[];
-    alto?: number;
-    ancho?: number;
-    tipografia?: string;
     //boceto?: Blob;
-    tipo: Tipo;
-    descripcion: string; // descripcion mas extensa
     estado: Estado;
     editor?: Usuario
 }
