@@ -7,6 +7,8 @@ nz-divider {
 .inner-box {
     background: #0092ff;
     padding: 8px 0;
+    min-height: 100%;
+    width: 70%;
   }
 
   .login-form {
@@ -31,3 +33,9 @@ nz-divider {
   .nz-select {
     min-width: 300px;
   }
+
+  .button-upload {
+    width: 500px;
+  }
+
+  
