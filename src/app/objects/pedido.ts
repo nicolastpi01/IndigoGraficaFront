@@ -15,7 +15,7 @@ export interface Pedido {
     alto?: number; //
     ancho?: number; //
     descripcion: string; //
-    colores: string[];
+    colores: string[]; //
     //boceto?: Blob;
     estado: Estado;
     editor?: Usuario

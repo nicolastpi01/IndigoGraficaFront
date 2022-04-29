@@ -1,3 +1,4 @@
+import { Color } from "src/app/objects/color";
 import { Folleto, Fotografia, Logo, Pancarta, Tipo } from "src/app/objects/tipo";
 
 
@@ -20,4 +21,28 @@ export const todosLosTiposDePedidos : Array<Tipo> =
 [
     new Logo(), new Folleto(), new Fotografia(), new Pancarta()
     
+]
+
+
+export const todosLosColores: Array<Color> = [
+    {nombre: "Rojo", value: "#FF3333"},
+    {nombre: "Azul", value: "#3361FF"},
+    {nombre: "Amarillo", value: "#FFFF33"},
+    {nombre: "Verde", value: "#58FF33"},
+    {nombre: "Negro", value: "#17202A"},
+    {nombre: "Blanco", value: "#FDFEFE"},
+    /*
+    {nombre: "", value: ""},
+    {nombre: "", value: ""},
+    {nombre: "", value: ""},
+    {nombre: "", value: ""},
+    {nombre: "", value: ""},
+    {nombre: "", value: ""},
+    {nombre: "", value: ""},
+    {nombre: "", value: ""},
+    {nombre: "", value: ""},
+    {nombre: "", value: ""},
+    {nombre: "", value: ""},
+    {nombre: "", value: ""},
+    */
 ]

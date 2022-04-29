@@ -12,6 +12,8 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzImageModule } from 'ng-zorro-antd/image';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
 
 
 @NgModule({
@@ -27,7 +29,9 @@ import { NzInputModule } from 'ng-zorro-antd/input';
       NzUploadModule, 
       NzSpaceModule,
       NzImageModule,
-      NzInputModule  
+      NzInputModule,
+      NzIconModule,
+      NzBadgeModule  
     ],
     declarations: [NuevoComponent],
     exports: [NuevoComponent]

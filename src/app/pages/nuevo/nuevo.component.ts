@@ -5,7 +5,9 @@ import { PedidoService } from '../pedido.service';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { tipografias as arrayLetras } from 'src/app/utils/const/constantes';
 import { todosLosTiposDePedidos } from 'src/app/utils/const/constantes';
+import { todosLosColores } from 'src/app/utils/const/constantes';
 import { Tipo } from 'src/app/objects/tipo';
+import { Color } from 'src/app/objects/color';
 
 @Component({
   selector: 'app-nuevo',
@@ -22,6 +24,8 @@ export class NuevoComponent implements OnInit {
 
 
   tiposDePedidos : Array<{ value: string; label: string }> = [] 
+
+  colores : Array<{ value: string; label: string }> = [] 
   
 
   constructor(private fb: FormBuilder, private service :PedidoService) {}
@@ -36,12 +40,20 @@ export class NuevoComponent implements OnInit {
       ancho: [null, [ Validators.min(10)]],
       tipografia: [null, []],
       tipo:  [null, [Validators.required]],
+      comentario: [null, []],
       remember: [true]
     });
     todosLosTiposDePedidos.forEach((tipo: Tipo) => {
       this.tiposDePedidos.push({
         value: tipo.nombre,
         label: tipo.nombre
+      })
+    })
+
+    todosLosColores.forEach((color: Color) => {
+      this.colores.push({
+        label: color.nombre,
+        value: color.value
       })
     })
   }
@@ -82,7 +94,7 @@ export class NuevoComponent implements OnInit {
     return false;
   };
 
-  resetForm = () :void => {
+  resetForm = () :void => { // Funciona bien !!
     this.validateForm.reset();
   }
 
