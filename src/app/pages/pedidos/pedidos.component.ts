@@ -12,18 +12,15 @@ import { PedidoService } from '../pedido.service';
 })
 export class PedidosComponent implements OnInit {
 
-
   colorear :(descripcion: string) => string | undefined = colorearEstado
   loading: boolean = false
   pedidos: Pedido[] = []
   
-
   constructor(private service: PedidoService) { }
 
   ngOnInit() {
     this.getPedidos()
   }
-
 
   getPedidos(): void {
     this.service.getPedidos(PENDIENTEATENCION)
@@ -32,14 +29,12 @@ export class PedidosComponent implements OnInit {
 
   reservar (pedido: Pedido): void {
     this.loading = true
-    //console.log("Pedido: ", pedido)
     this.service.reservar(pedido)
     .subscribe((response) => {
-       console.log("Response: ", response)
+       //console.log("Response: ", response)
        this.getPedidos()
        this.loading = false 
     })
-    //this.loading = false
   }
 
 

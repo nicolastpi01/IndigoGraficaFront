@@ -7,7 +7,6 @@ import { Logo } from "../objects/tipo";
 export const pedidos: Pedido[] = [
     {
       id: 1,
-      key: '1',
       cantidad: 2,
       propietario: {
         direccion: "av. Milazzo y 368",
@@ -24,7 +23,6 @@ export const pedidos: Pedido[] = [
     },
     {
       id:2,
-      key: '2',
       cantidad: 2,
       propietario: {
         direccion: "av. Milazzo y 368",
@@ -41,7 +39,6 @@ export const pedidos: Pedido[] = [
     },
     {
       id:3,
-      key: '3',
       cantidad: 2,
       propietario: {
         direccion: "av. Milazzo y 368",

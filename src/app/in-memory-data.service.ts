@@ -3,7 +3,6 @@ import { InMemoryDbService } from 'angular-in-memory-web-api';
 import { PendienteAtencion } from './objects/estado';
 import { Pedido } from './objects/pedido';
 import { Logo } from './objects/tipo';
-import { pedidos as mockData } from './utils/mock-data';
 
 @Injectable({
   providedIn: 'root'
@@ -75,6 +74,6 @@ export class InMemoryDataService implements InMemoryDbService {
   // if the heroes array is not empty, the method below returns the highest
   // hero id + 1.
   genId(pedidos: Pedido[]): number {
-    return pedidos.length > 0 ? Math.max(...pedidos.map(pedido => parseInt(pedido.key) )) + 1 : 11;
+    return pedidos.length > 0 ? Math.max(...pedidos.map(pedido => pedido.id ? pedido.id : 0 )) + 1 : 11;
   }
 }

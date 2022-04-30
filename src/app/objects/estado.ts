@@ -3,7 +3,6 @@ export interface Estado {
     // mas cosas....
 }
   
-
 export class PendienteAtencion implements Estado {
     descripcion: "Pendiente Atencion";
     constructor() {

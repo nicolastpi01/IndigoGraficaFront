@@ -35,26 +35,14 @@ export class PedidoService {
     return this.http.request(req);
   }
 
-  // "http://foobar/somepage?arg1={0}&arg2={1}",
   getPedidos(estado: string) : Observable<Pedido[]> {
-    //const pedidos = of(mockPedidos)
-    //return pedidos;
     return this.http.get<Pedido[]>(`${this.baseUrl}/pedidos`) // Ojo, el servicio debe ser igual al objeto que devuelve el fack-api, o sea /pedidos, caso contrario no anda
   }
 
   reservar(pedido: Pedido) : Observable<any> {
-    //const formData: FormData = new FormData();
-    //formData.append('pedido', pedido);
-    //const req = new HttpRequest('PUT', `${this.baseUrl}/api/put`, pedido, {
-    //  reportProgress: true,
-    //  responseType: 'json'
-    //});
-    //return this.http.request(req);
-
-    //eturn this.http.put(`${this.baseUrl}/pedidos/` + pedido.key, pedido
-    return this.http.put(`${this.baseUrl}/pedidos/` + pedido.key, {...pedido, estado: new Reservado(), editor: this.usuarioLogueado }, this.httpOptions).pipe(
-    tap(_ => console.log(`updated hero id=${pedido.key}`)),
-      //catchError(console.log(`updated pedido failed with id=${pedido.key}`))
+    
+    return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, {...pedido, estado: new Reservado(), editor: this.usuarioLogueado }, this.httpOptions).pipe(
+    tap(_ => console.log(`updated hero id=${pedido.id}`)),
     )
   }
 

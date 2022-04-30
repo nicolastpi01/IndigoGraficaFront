@@ -25,7 +25,7 @@
         <td>{{data.alto ? data.alto : "-"}}</td>
         <td>{{data.ancho ? data.ancho : "-"}}</td>
         <td>{{data.tipografia}}</td>
-        <td>{{data.tipo.nombre}}</td>
+        <td>{{data.tipo && data.tipo.nombre ? data.tipo.nombre : "-"}}</td>
         <td><nz-tag [nzColor]="colorear(data.estado.descripcion)">{{data.estado.descripcion}}</nz-tag></td>
         <td>{{data.descripcion}}</td>
         <td><button nz-button nzType="default" (click)="reservar(data)" [nzLoading]="loading" nzBlock>Reservar</button></td>

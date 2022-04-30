@@ -24,19 +24,15 @@ registerLocaleData(es);
 @NgModule({
   declarations: [
     AppComponent,
-    //NuevoComponent
   ],
   imports: [
     BrowserModule,
-    //FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
     IconsProviderModule,
     NzLayoutModule,
     NzMenuModule,
     NzBadgeModule,
-    //NzFormModule,
-    //ReactiveFormsModule,
 
 // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
 // and returns simulated server responses.

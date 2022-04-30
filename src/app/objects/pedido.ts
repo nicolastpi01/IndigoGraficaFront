@@ -4,19 +4,18 @@ import { Usuario } from "./usuario";
 
 
 export interface Pedido {
-    id: number;
-    key: string;
+    id?: number;
     propietario: Usuario;
-    cantidad: number; //
-    nombre: string; //
-    nombreExtendido: string; //
-    tipografia?: string; //
-    tipo: Tipo; //
-    alto?: number; //
-    ancho?: number; //
-    descripcion: string; //
-    colores: string[]; //
-    boceto?: Blob;
+    cantidad: number; 
+    nombre: string; 
+    nombreExtendido: string; 
+    tipografia?: string; 
+    tipo?: Tipo; 
+    alto?: number; 
+    ancho?: number; 
+    descripcion: string; 
+    colores: string[]; 
+    boceto?: File;
     estado: Estado;
     editor?: Usuario
 }

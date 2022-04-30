@@ -1,5 +1,6 @@
 import { Color } from "src/app/objects/color";
 import { Folleto, Fotografia, Logo, Pancarta, Tipo } from "src/app/objects/tipo";
+import { Usuario } from "src/app/objects/usuario";
 
 
 export const PENDIENTEATENCION = "Pendiente atencion"
@@ -23,7 +24,6 @@ export const todosLosTiposDePedidos : Array<Tipo> =
     
 ]
 
-
 export const todosLosColores: Array<Color> = [
     {nombre: "Rojo", value: "#FF3333"},
     {nombre: "Azul", value: "#3361FF"},
@@ -31,18 +31,10 @@ export const todosLosColores: Array<Color> = [
     {nombre: "Verde", value: "#58FF33"},
     {nombre: "Negro", value: "#17202A"},
     {nombre: "Blanco", value: "#FDFEFE"},
-    /*
-    {nombre: "", value: ""},
-    {nombre: "", value: ""},
-    {nombre: "", value: ""},
-    {nombre: "", value: ""},
-    {nombre: "", value: ""},
-    {nombre: "", value: ""},
-    {nombre: "", value: ""},
-    {nombre: "", value: ""},
-    {nombre: "", value: ""},
-    {nombre: "", value: ""},
-    {nombre: "", value: ""},
-    {nombre: "", value: ""},
-    */
 ]
+
+export const mockPropietario: Usuario = {
+    direccion: "Una avenida",
+    nombre: "Diego Caminos",
+    contacto: "1463532828" 
+}
