@@ -11,11 +11,13 @@ export class AppComponent {
   isCollapsed = false;
   cantidad? : number
   title = 'indigo'
-
+  
   constructor(private service: PedidoService) {}
 
   ngOnInit() {
     this.cantidadPedidos()
+    this.title = 'indigo';
+    
   }
 
   cantidadPedidos () {
