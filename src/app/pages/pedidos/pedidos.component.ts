@@ -23,7 +23,7 @@ export class PedidosComponent implements OnInit {
   }
 
   getPedidos(): void {
-    this.servicefdsfsdfsd f.getPedidos(PENDIENTEATENCION)
+    this.service.getPedidos(PENDIENTEATENCION)
     .subscribe(pedidos => this.pedidos = pedidos);
   }
 
