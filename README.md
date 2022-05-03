@@ -21,7 +21,7 @@ Utiliza el comando `ng test` para ejecutar unit test, by [Karma](https://karma-r
 
 Cuenta con Integración continua sobre la rama main para revisar el estado del build y los test en cada subida.
 
-####Como lo agrego a mi proyecto ? `No es necesario replicar este paso en este proyecto`
+#### Como lo agrego a mi proyecto ? `No es necesario replicar este paso en este proyecto`
 
 * instala puppeteer  `npm install puppeteer --save-dev`
 * Modifica el archivo `karma.config.js`, justo debajo de la linea: `restartOnFileChange: true` agrega:
