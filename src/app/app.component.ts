@@ -10,6 +10,7 @@ import { PENDIENTEATENCION } from './utils/const/constantes';
 export class AppComponent {
   isCollapsed = false;
   cantidad? : number
+  title = 'indigo'
 
   constructor(private service: PedidoService) {}
 
