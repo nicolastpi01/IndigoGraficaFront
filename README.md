@@ -7,7 +7,7 @@ npm versión: 8.1.2
 
 ## Levantar el server en modo development:
 
-Utiliza el comando `ng serve`. Navegar a `http://localhost:4200/`.
+Utiliza `npm install` instala las librerias --genera la carpeta node_modules. Luego Utiliza el comando `ng serve`. Navegar a `http://localhost:4200/`.
 
 ## Build
 
