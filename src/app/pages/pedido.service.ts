@@ -11,7 +11,8 @@ import { pedidos as mockPedidos } from '../utils/mock-data';
 })
 export class PedidoService {
 
-  private baseUrl = 'http://localhost:4200/api';
+  //private baseUrl = 'http://localhost:4200/api';
+  private baseUrl = 'http://localhost:8080'
 
   private usuarioLogueado = {
     direccion: "Calle False 1234",
@@ -36,7 +37,7 @@ export class PedidoService {
   }
 
   getPedidos(estado: string) : Observable<Pedido[]> {
-    return this.http.get<Pedido[]>(`${this.baseUrl}/pedidos`) // Ojo, el servicio debe ser igual al objeto que devuelve el fack-api, o sea /pedidos, caso contrario no anda
+    return this.http.get<Pedido[]>(`${this.baseUrl}/pedidos?state=`+`${'algo'}`) // Ojo, el servicio debe ser igual al objeto que devuelve el fack-api, o sea /pedidos, caso contrario no anda
   }
 
   reservar(pedido: Pedido) : Observable<any> {

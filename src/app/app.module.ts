@@ -33,15 +33,18 @@ registerLocaleData(es);
     NzLayoutModule,
     NzMenuModule,
     NzBadgeModule,
+    AppRoutingModule,
 
 // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
 // and returns simulated server responses.
 // Remove it when a real server is ready to receive requests.
+/*
   InMemoryWebApiModule.forRoot(InMemoryDataService),
   HttpClientInMemoryWebApiModule.forRoot(
   InMemoryDataService, { dataEncapsulation: false }
   ), 
   AppRoutingModule
+*/
   ],
   providers: [{ provide: NZ_I18N, useValue: es_ES }, ],
   bootstrap: [AppComponent]
