@@ -142,11 +142,19 @@ export class NuevoComponent implements OnInit {
   
   beforeUpload = (file: NzUploadFile): boolean => {
     this.fileList = this.fileList.concat(file)
-    //this.handlePreview(file)
     return false
   };
 
-  
+  getBase64 = (file: File): Promise<string | ArrayBuffer | null> => {
+    return (
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    }));
+  }
+
   handlePreview = async (file: NzUploadFile): Promise<void> => {
     if (!file.url && !file['preview']) {
       file['preview'] = await this.getBase64(file.originFileObj!);
@@ -154,16 +162,7 @@ export class NuevoComponent implements OnInit {
     this.previewImage = file.url || file['preview'];
     this.previewVisible = true;
   };
-
-  getBase64 = (file: File): Promise<string | ArrayBuffer | null> => {
-    return (
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  }));
-}
+  
 /*
 onChange(e: NzUploadChangeParam): void {
   this.handlePreview(e.file)
@@ -203,7 +202,7 @@ handleUpload(): void {
       this.msg.error('upload failed.');
   }
 }
-
+/*
 handleChange(info: NzUploadChangeParam): void {
   if (info.file.status !== 'uploading') {
     console.log(info.file, info.fileList);
@@ -214,11 +213,34 @@ handleChange(info: NzUploadChangeParam): void {
     this.msg.error(`${info.file.name} file upload failed.`);
   }
 }
+*/
 
-onAction = (file : NzUploadFile) :  string | Observable<string> => {
-  console.log("Me ejecuto")
+onAction = (file : NzUploadFile) : string | Observable<string> => {
+  //console.log("Me ejecuto")
   return 'http://localhost:8080/upload'
 }
+
+/*
+handleChange(info: NzUploadChangeParam): void {
+  let fileList = [...info.fileList];
+
+  // 1. Limit the number of uploaded files
+  // Only to show two recent uploaded files, and old ones will be replaced by the new
+  fileList = fileList.slice(-2);
+
+  // 2. Read from response and show file link
+  fileList = fileList.map(file => {
+    if (file.response) {
+      // Component will show file.url as link
+      file.url = file.response.url;
+    }
+    return file;
+  });
+
+  this.fileList = fileList;
+}
+*/
+
 /*
 
 

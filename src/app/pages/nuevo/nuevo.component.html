@@ -81,15 +81,17 @@
   <div nz-col nzSpan="8">
     <div class="inner-box">
       <nz-upload
-      [nzAction]="onAction"
+        [nzAction]="onAction"
         [nzFileList]="fileList"
         [nzHeaders]="{ authorization: 'authorization-text' }"
-        (nzChange)="handleChange($event)"
+        nzListType="picture-card"
+        [nzPreview]="handlePreview"
+        [nzBeforeUpload]
       >
-        <button nz-button>
-          <i nz-icon nzType="upload"></i>
-          Click to Upload
-        </button>
+        <div>
+          <i nz-icon nzType="plus"></i>
+          <div style="margin-top: 8px">Upload</div>
+        </div>
       </nz-upload>
       
       <nz-modal
