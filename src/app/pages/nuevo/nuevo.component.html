@@ -81,7 +81,8 @@
   <div nz-col nzSpan="8">
     <div class="inner-box">
       <nz-upload
-        nzAction="http://localhost:8080/upload"
+      [nzAction]="onAction"
+        [nzFileList]="fileList"
         [nzHeaders]="{ authorization: 'authorization-text' }"
         (nzChange)="handleChange($event)"
       >

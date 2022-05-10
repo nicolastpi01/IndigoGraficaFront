@@ -214,6 +214,11 @@ handleChange(info: NzUploadChangeParam): void {
     this.msg.error(`${info.file.name} file upload failed.`);
   }
 }
+
+onAction = (file : NzUploadFile) :  string | Observable<string> => {
+  console.log("Me ejecuto")
+  return 'http://localhost:8080/upload'
+}
 /*
 
 
