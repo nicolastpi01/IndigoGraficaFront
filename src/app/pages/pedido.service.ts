@@ -26,9 +26,9 @@ export class PedidoService {
   
   constructor(private http: HttpClient) { }
 
-  upload(file: File): Observable<HttpEvent<any>> {
-    const formData: FormData = new FormData();
-    formData.append('file', file);
+  upload(formData: FormData): Observable<HttpEvent<FormData>> {
+    //const formData: FormData = new FormData();
+    //formData.append('file', file);
     const req = new HttpRequest('POST', `${this.baseUrl}/upload`, formData, {
       reportProgress: true,
       responseType: 'json'
@@ -43,7 +43,7 @@ export class PedidoService {
   reservar(pedido: Pedido) : Observable<any> {
     
     return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, {...pedido, estado: new Reservado(), editor: this.usuarioLogueado }, this.httpOptions).pipe(
-    tap(_ => console.log(`updated hero id=${pedido.id}`)),
+    //tap(_ => ),
     )
   }
 

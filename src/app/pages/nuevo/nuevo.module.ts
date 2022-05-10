@@ -10,11 +10,12 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
-import { NzImageModule } from 'ng-zorro-antd/image';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzMessageModule } from 'ng-zorro-antd/message';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzImageModule } from 'ng-zorro-antd/image';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
       NzInputModule,
       NzIconModule,
       NzBadgeModule,
-      NzMessageModule  
+      NzMessageModule,
+      NzModalModule  
     ],
     declarations: [NuevoComponent],
     exports: [NuevoComponent]

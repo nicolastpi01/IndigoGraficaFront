@@ -1,7 +1,7 @@
 
 <nz-divider nzOrientation="left" nzText="Ingresa tu Pedido!"></nz-divider>
 <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
-  <div nz-col nzSpan="12">
+  <div nz-col nzSpan="8">
     <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
       <nz-form-item>
         <nz-form-control nzHasFeedback nzErrorTip="Por favor ingresa un título!">
@@ -73,21 +73,48 @@
         </nz-textarea-count>
       </nz-input-group>
     </nz-form-item>
-   
-    <nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload">
-      <button class="button-upload" nz-button>
-        <i nz-icon nzType="upload"></i>
-        Subir archivo
-      </button>
-    </nz-upload>
     <br>  
     <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">Alta</button>
     <button nz-button class="button-clear" (click)="resetForm()">Limpiar</button>
   </form>
   </div>
-  <div nz-col nzSpan="12">
+  <div nz-col nzSpan="8">
     <div class="inner-box">
+      <nz-upload
+        [(nzFileList)]="fileList"
+        [nzBeforeUpload]="beforeUpload"
+        nzMultiple
+      >
+        <button nz-button>
+          <i nz-icon nzType="upload"></i>
+          Select File
+        </button>
+      </nz-upload>
+      <button
+        nz-button
+        [nzType]="'primary'"
+        [nzLoading]="uploading"
+        (click)="handleUpload()"
+        [disabled]="fileList.length === 0"
+        style="margin-top: 16px"
+      >
+        {{ uploading ? 'Uploading' : 'Start Upload' }}
+      </button>
       
+      <nz-modal
+        [nzVisible]="previewVisible"
+        [nzContent]="modalContent"
+        [nzFooter]="null"
+        (nzOnCancel)="previewVisible = false"
+      >
+        <ng-template #modalContent>
+          <img [src]="previewImage" ngStyle="{ width: '100%' }" />
+        </ng-template>
+      </nz-modal>
+    </div>
+  </div>
+  <div nz-col nzSpan="8">
+    <div class="requirements-box">
         <nz-card nzHoverable style="width:240px" [nzCover]="coverTemplate">
           <nz-card-meta nzTitle="Europe Street beat" nzDescription="www.instagram.com"></nz-card-meta>
         </nz-card>
