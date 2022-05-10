@@ -81,25 +81,15 @@
   <div nz-col nzSpan="8">
     <div class="inner-box">
       <nz-upload
-        [(nzFileList)]="fileList"
-        [nzBeforeUpload]="beforeUpload"
-        nzMultiple
+        nzAction="http://localhost:8080/upload"
+        [nzHeaders]="{ authorization: 'authorization-text' }"
+        (nzChange)="handleChange($event)"
       >
         <button nz-button>
           <i nz-icon nzType="upload"></i>
-          Select File
+          Click to Upload
         </button>
       </nz-upload>
-      <button
-        nz-button
-        [nzType]="'primary'"
-        [nzLoading]="uploading"
-        (click)="handleUpload()"
-        [disabled]="fileList.length === 0"
-        style="margin-top: 16px"
-      >
-        {{ uploading ? 'Uploading' : 'Start Upload' }}
-      </button>
       
       <nz-modal
         [nzVisible]="previewVisible"
