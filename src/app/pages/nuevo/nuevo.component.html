@@ -81,29 +81,27 @@
   <div nz-col nzSpan="8">
     <div class="inner-box">
       <nz-upload
-        [nzAction]="onAction"
         [nzFileList]="fileList"
-        [nzHeaders]="{ authorization: 'authorization-text' }"
-        nzListType="picture-card"
-        [nzPreview]="handlePreview"
-        [nzBeforeUpload]
+        [nzBeforeUpload]="beforeUpload"
+        nzMultiple
       >
-        <div>
-          <i nz-icon nzType="plus"></i>
-          <div style="margin-top: 8px">Upload</div>
-        </div>
+        <button nz-button>
+          <i nz-icon nzType="upload"></i>
+          Select File
+        </button>
       </nz-upload>
-      
-      <nz-modal
-        [nzVisible]="previewVisible"
-        [nzContent]="modalContent"
-        [nzFooter]="null"
-        (nzOnCancel)="previewVisible = false"
+
+      <button
+        nz-button
+        [nzType]="'primary'"
+        [nzLoading]="uploading"
+        (click)="handleUpload()"
+        [disabled]="fileList.length === 0"
+        style="margin-top: 16px"
       >
-        <ng-template #modalContent>
-          <img [src]="previewImage" ngStyle="{ width: '100%' }" />
-        </ng-template>
-      </nz-modal>
+      {{ uploading ? 'Uploading' : 'Start Upload' }}
+      </button>
+      
     </div>
   </div>
   <div nz-col nzSpan="8">

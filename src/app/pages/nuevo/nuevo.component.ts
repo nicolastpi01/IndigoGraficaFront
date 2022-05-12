@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ApplicationInitStatus, ApplicationRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Pedido } from 'src/app/objects/pedido';
 import { PedidoService } from '../pedido.service';
@@ -29,8 +29,8 @@ export class NuevoComponent implements OnInit {
   uploading = false;
 
   // NUEVOS //
-  previewImage: string | undefined = '';
-  previewVisible = false;
+  //previewImage: string | undefined = '';
+  //previewVisible = false;
   // NUEVOS //
 
   tiposDePedidos : Array<{ value: string; label: string }> = [] 
@@ -58,10 +58,6 @@ export class NuevoComponent implements OnInit {
         label: tipo.nombre
       })
     })
-
-    
-
-    
 
     todosLosColores.forEach((color: Color) => {
       this.colores.push({
@@ -98,6 +94,7 @@ export class NuevoComponent implements OnInit {
       state: "Pend. Atencion",
       propietario: "Nicolas del Front",
       encargado: null,
+      /*
       files: [
         {
           name: "File1",
@@ -133,6 +130,7 @@ export class NuevoComponent implements OnInit {
           "nombre": color.nombre, "hexCode": color.value 
         }
       }),
+      */
     }
     this.service.agregarPedido(nuevoNuevoPedido).subscribe(response => {
       this.msg.success('Agregado pedido exitosamente!');
@@ -145,6 +143,7 @@ export class NuevoComponent implements OnInit {
     return false
   };
 
+  /*
   getBase64 = (file: File): Promise<string | ArrayBuffer | null> => {
     return (
     new Promise((resolve, reject) => {
@@ -155,6 +154,7 @@ export class NuevoComponent implements OnInit {
     }));
   }
 
+  
   handlePreview = async (file: NzUploadFile): Promise<void> => {
     if (!file.url && !file['preview']) {
       file['preview'] = await this.getBase64(file.originFileObj!);
@@ -163,12 +163,12 @@ export class NuevoComponent implements OnInit {
     this.previewVisible = true;
   };
   
-/*
+
 onChange(e: NzUploadChangeParam): void {
   this.handlePreview(e.file)
   console.log('Aliyun OSS:', e.fileList);
 }
-*/
+
 
 previewFile = (file: NzUploadFile): Observable<string> => {
   console.log('Your upload file:', file);
@@ -179,6 +179,7 @@ previewFile = (file: NzUploadFile): Observable<string> => {
     })
     .pipe(map(res => res.thumbnail));
 };
+*/
 
 handleUpload(): void {
   //console.log("Me ejecute!!")
@@ -186,6 +187,72 @@ handleUpload(): void {
   this.fileList.forEach((file: any) => {
     formData.append('files[]', file);
   })
+
+  let form = this.validateForm;
+  let nuevoNuevoPedido : any = {
+    cantidad: form.value.cantidad,
+    nombre: form.value.titulo,
+    nombreExtendido: form.value.subtitulo,
+    tipografia: form.value.tipografia,
+    alto: form.value.alto,
+    ancho: form.value.ancho,
+    descripcion: form.value.comentario,
+    state: "Pend. Atencion",
+    propietario: "Nicolas del Front",
+    encargado: null,
+    tipo: {
+      id:1,
+      nombre: "Logo",
+      alto: 60,
+      ancho: 60,
+      tipografia: "sans serif"
+    },
+    colores: [
+      {
+          id:10,
+          nombre: "Rojo",
+          hexCode: "#FF0000"
+      },
+      {
+          id:9,
+          nombre: "Azul",
+          hexCode: "#0000FF"
+      }
+    ]
+  }
+
+  /*
+  formData.append("jsonPayload", new Blob([JSON.stringify(json)], {
+    type: "application/json"
+  }));
+  */
+
+  formData.append('pedido', new Blob([JSON.stringify(nuevoNuevoPedido)], {
+     type: "application/json"
+  }));
+
+  formData.append('requerimientos', new Blob([JSON.stringify([[
+    {
+        "descripcion": "Descripcion desde el front File1",
+        "chequeado": 0
+    },
+    {
+        "descripcion": "Otra descripcion desde el front de File1",
+        "chequeado": 0
+    }
+    ], [
+      {
+          "descripcion": "Descripcion desde el front File2",
+          "chequeado": 0
+      },
+      {
+          "descripcion": "Otra descripcion desde el front File2",
+          "chequeado": 0
+      }
+
+    ]])], {
+    type: "application/json"
+ }));
   
   this.uploading = true;
   
@@ -202,6 +269,12 @@ handleUpload(): void {
       this.msg.error('upload failed.');
   }
 }
+
+resetForm = () :void => { 
+  this.fileList = []
+  this.validateForm.reset();
+}
+
 /*
 handleChange(info: NzUploadChangeParam): void {
   if (info.file.status !== 'uploading') {
@@ -213,14 +286,12 @@ handleChange(info: NzUploadChangeParam): void {
     this.msg.error(`${info.file.name} file upload failed.`);
   }
 }
-*/
 
 onAction = (file : NzUploadFile) : string | Observable<string> => {
   //console.log("Me ejecuto")
   return 'http://localhost:8080/upload'
 }
 
-/*
 handleChange(info: NzUploadChangeParam): void {
   let fileList = [...info.fileList];
 
@@ -328,10 +399,7 @@ handleChange(info: NzUploadChangeParam): void {
       );
   }
 */
-  resetForm = () :void => { 
-    this.fileList = []
-    this.validateForm.reset();
-  }
+  
 
 
 }

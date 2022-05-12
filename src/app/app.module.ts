@@ -14,7 +14,7 @@ import { IconsProviderModule } from './icons-provider.module';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { HttpClientInMemoryWebApiModule, InMemoryWebApiModule } from 'angular-in-memory-web-api';
-import { InMemoryDataService } from './in-memory-data.service';
+//import { InMemoryDataService } from './in-memory-data.service';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { ReactiveFormsModule } from "@angular/forms";
@@ -42,9 +42,10 @@ registerLocaleData(es);
   InMemoryWebApiModule.forRoot(InMemoryDataService),
   HttpClientInMemoryWebApiModule.forRoot(
   InMemoryDataService, { dataEncapsulation: false }
-  ), 
+  ),
+  */ 
   AppRoutingModule
-*/
+
   ],
   providers: [{ provide: NZ_I18N, useValue: es_ES }, ],
   bootstrap: [AppComponent]

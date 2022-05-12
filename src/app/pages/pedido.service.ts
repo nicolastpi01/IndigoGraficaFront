@@ -23,13 +23,19 @@ export class PedidoService {
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
+
+  //Content type 'application/octet-stream'
+
+  httpOptions2 = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
   
   constructor(private http: HttpClient) { }
 
   upload(formData: FormData): Observable<HttpEvent<FormData>> {
     //const formData: FormData = new FormData();
     //formData.append('file', file);
-    const req = new HttpRequest('POST', `${this.baseUrl}/upload`, formData, {
+    const req = new HttpRequest('POST', `${this.baseUrl}/pedidos`, formData, {
       reportProgress: true,
       responseType: 'json'
     });

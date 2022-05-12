@@ -4,9 +4,11 @@ import { PendienteAtencion } from './objects/estado';
 import { Pedido } from './objects/pedido';
 import { Logo } from './objects/tipo';
 
+/*
 @Injectable({
   providedIn: 'root'
 })
+
 export class InMemoryDataService implements InMemoryDbService {
 
   createDb() {
@@ -76,4 +78,7 @@ export class InMemoryDataService implements InMemoryDbService {
   genId(pedidos: Pedido[]): number {
     return pedidos.length > 0 ? Math.max(...pedidos.map(pedido => pedido.id ? pedido.id : 0 )) + 1 : 11;
   }
+  }
+  
 }
+*/
