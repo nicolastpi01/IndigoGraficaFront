@@ -2,7 +2,8 @@
 <nz-divider nzOrientation="left" nzText="Ingresa tu Pedido!"></nz-divider>
 <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
   <div nz-col nzSpan="8">
-    <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
+    <!--form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()"-->
+    <form nz-form [formGroup]="validateForm" class="login-form">
       <nz-form-item>
         <nz-form-control nzHasFeedback nzErrorTip="Por favor ingresa un título!">
           <nz-input-group>

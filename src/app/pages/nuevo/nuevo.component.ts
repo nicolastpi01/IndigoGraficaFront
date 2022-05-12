@@ -53,7 +53,6 @@ export class NuevoComponent implements OnInit {
   currentRequerimientos!: RequerimientoUbicacion;
   disabledAgregarRequerimiento: boolean = true;
   
-
   constructor(private fb: FormBuilder, private service :PedidoService, private _router: Router, private msg: NzMessageService) {}
 
   ngOnInit(): void {
@@ -75,7 +74,6 @@ export class NuevoComponent implements OnInit {
         label: tipo.nombre
       })
     })
-
     todosLosColores.forEach((color: Color) => {
       this.colores.push({
         label: color.nombre,
@@ -84,6 +82,8 @@ export class NuevoComponent implements OnInit {
     })
   }
 
+
+  /*
   submitForm(): void {
     if (this.validateForm.valid) {
       this.agregarPedido(this.validateForm)
@@ -117,13 +117,14 @@ export class NuevoComponent implements OnInit {
       this._router.navigateByUrl('/todos')
     });
   }
+  */
   
   beforeUpload = (file: NzUploadFile): boolean => {
-    //console.log("File :", file);
-    //if(this.currentRequerimientos !== undefined) {
+    console.log("Before Upload");
+    if(this.currentRequerimientos !== undefined) {
       //console.log("Tengo un current requerimiento, deberia guardarlo antes de seguir")
-    //  this.requerimientos.push(this.currentRequerimientos.requerimientos)
-    //}
+      this.requerimientos.push(this.currentRequerimientos.requerimientos)
+    }
     this.currentRequerimientos = {
       position: this.fileList.length,
       requerimientos: [],
@@ -133,7 +134,7 @@ export class NuevoComponent implements OnInit {
     this.disabledAgregarRequerimiento = false;
     //console.log("FileList Size: ", this.fileList.length)
     //console.log("Current req: ", this.currentRequerimientos)
-    console.log("Requerimientos", this.requerimientos)
+    //console.log("Requerimientos", this.requerimientos)
     return false
   };
 
@@ -153,14 +154,14 @@ export class NuevoComponent implements OnInit {
     }
   }
 
-  onChangeReq = (value: string, item: Requerimiento): void => {
+onChangeReq = (value: string, item: Requerimiento): void => {
     item.descripcion = value;
-  }
+}
 
-  agregar = (item: Requerimiento): void => {} // No se usa
+agregar = (item: Requerimiento): void => {} // No se usa
 
 handleUpload(): void {
-  //console.log("Me ejecute!!")
+
   const formData = new FormData()
   this.fileList.forEach((file: any) => {
     formData.append('files[]', file);
