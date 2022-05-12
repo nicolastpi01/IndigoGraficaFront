@@ -16,6 +16,10 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzImageModule } from 'ng-zorro-antd/image';
+import { NzListModule } from 'ng-zorro-antd/list';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';  
 
 
 @NgModule({
@@ -35,7 +39,11 @@ import { NzImageModule } from 'ng-zorro-antd/image';
       NzIconModule,
       NzBadgeModule,
       NzMessageModule,
-      NzModalModule  
+      NzModalModule,
+      NzListModule,
+      NzCheckboxModule,
+      FormsModule,
+      CommonModule   
     ],
     declarations: [NuevoComponent],
     exports: [NuevoComponent]

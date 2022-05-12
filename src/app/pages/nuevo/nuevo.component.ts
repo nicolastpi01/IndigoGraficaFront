@@ -1,8 +1,7 @@
-import { ApplicationInitStatus, ApplicationRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Pedido } from 'src/app/objects/pedido';
 import { PedidoService } from '../pedido.service';
-import { mockPropietario, tipografias as arrayLetras } from 'src/app/utils/const/constantes';
+import { tipografias as arrayLetras } from 'src/app/utils/const/constantes';
 import { todosLosTiposDePedidos } from 'src/app/utils/const/constantes';
 import { todosLosColores } from 'src/app/utils/const/constantes';
 import { Tipo } from 'src/app/objects/tipo';
@@ -10,16 +9,31 @@ import { Color } from 'src/app/objects/color';
 import { PendienteAtencion } from 'src/app/objects/estado';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { filter, map, Observable } from 'rxjs';
-import { HttpClient, HttpRequest, HttpResponse } from '@angular/common/http';
-import { formatDate } from '@angular/common';
-import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
+import { filter } from 'rxjs';
+import {  HttpResponse } from '@angular/common/http';
+import {  NzUploadFile } from 'ng-zorro-antd/upload';
+
+// Luego sacar de acá
+export interface Requerimiento {
+  id?: string, // sacar!!
+  descripcion: string,
+  chequeado: boolean,
+  desabilitado?: true,
+  key?: number // Usar esto en todo caso
+}
+// Luego sacar de acá
+export interface RequerimientoUbicacion {
+  requerimientos: Array<Requerimiento>,
+  position: number,
+  uidFile: string
+}
 
 @Component({
   selector: 'app-nuevo',
   templateUrl: './nuevo.component.html',
   styleUrls: ['./nuevo.component.css']
 })
+
 export class NuevoComponent implements OnInit {
 
   validateForm!: FormGroup;
@@ -34,10 +48,13 @@ export class NuevoComponent implements OnInit {
   // NUEVOS //
 
   tiposDePedidos : Array<{ value: string; label: string }> = [] 
-  colores : Array<{ value: string; label: string }> = [] 
+  colores : Array<{ value: string; label: string }> = []
+  requerimientos: Array<Array<Requerimiento>> = []; // Todos
+  currentRequerimientos!: RequerimientoUbicacion;
+  disabledAgregarRequerimiento: boolean = true;
   
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private service :PedidoService, private _router: Router, private msg: NzMessageService) {}
+  constructor(private fb: FormBuilder, private service :PedidoService, private _router: Router, private msg: NzMessageService) {}
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
@@ -94,43 +111,6 @@ export class NuevoComponent implements OnInit {
       state: "Pend. Atencion",
       propietario: "Nicolas del Front",
       encargado: null,
-      /*
-      files: [
-        {
-          name: "File1",
-          type: "PNG",
-          data: "data",
-          requerimientos: [
-            {
-              descripcion: "Descripcion de File1",
-              chequeado: true
-            },
-            {
-              descripcion: "Descripcion de File2",
-              chequeado: false
-            }
-          ]
-        },
-        {
-          name: "File1",
-          type: "PNG",
-          data: "data",
-          requerimientos: []
-        }
-      ],
-      tipo: {
-        id: 1,
-        nombre: tipoPedido?.nombre,
-        alto: tipoPedido?.alto,
-        ancho: tipoPedido?.ancho,
-        tipografia: tipoPedido?.tipografia 
-      },
-      colores: todosLosColores.map((color) => { 
-        return {
-          "nombre": color.nombre, "hexCode": color.value 
-        }
-      }),
-      */
     }
     this.service.agregarPedido(nuevoNuevoPedido).subscribe(response => {
       this.msg.success('Agregado pedido exitosamente!');
@@ -139,47 +119,45 @@ export class NuevoComponent implements OnInit {
   }
   
   beforeUpload = (file: NzUploadFile): boolean => {
+    //console.log("File :", file);
+    //if(this.currentRequerimientos !== undefined) {
+      //console.log("Tengo un current requerimiento, deberia guardarlo antes de seguir")
+    //  this.requerimientos.push(this.currentRequerimientos.requerimientos)
+    //}
+    this.currentRequerimientos = {
+      position: this.fileList.length,
+      requerimientos: [],
+      uidFile: file.uid
+    };
     this.fileList = this.fileList.concat(file)
+    this.disabledAgregarRequerimiento = false;
+    //console.log("FileList Size: ", this.fileList.length)
+    //console.log("Current req: ", this.currentRequerimientos)
+    console.log("Requerimientos", this.requerimientos)
     return false
   };
 
-  /*
-  getBase64 = (file: File): Promise<string | ArrayBuffer | null> => {
-    return (
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    }));
+  agregarRequerimiento = () : void => {
+
+    let current :Requerimiento = {
+      descripcion: '',
+      chequeado: false,
+      desabilitado: true,
+      key: this.currentRequerimientos.requerimientos.length
+    };
+
+    this.currentRequerimientos = {
+      ...this.currentRequerimientos, requerimientos: [...this.currentRequerimientos.requerimientos, 
+        current
+      ]
+    }
   }
 
-  
-  handlePreview = async (file: NzUploadFile): Promise<void> => {
-    if (!file.url && !file['preview']) {
-      file['preview'] = await this.getBase64(file.originFileObj!);
-    }
-    this.previewImage = file.url || file['preview'];
-    this.previewVisible = true;
-  };
-  
+  onChangeReq = (value: string, item: Requerimiento): void => {
+    item.descripcion = value;
+  }
 
-onChange(e: NzUploadChangeParam): void {
-  this.handlePreview(e.file)
-  console.log('Aliyun OSS:', e.fileList);
-}
-
-
-previewFile = (file: NzUploadFile): Observable<string> => {
-  console.log('Your upload file:', file);
-  return this.http
-    .post<{ thumbnail: string }>(`https://next.json-generator.com/api/json/get/4ytyBoLK8`, {
-      method: 'POST',
-      body: file
-    })
-    .pipe(map(res => res.thumbnail));
-};
-*/
+  agregar = (item: Requerimiento): void => {} // No se usa
 
 handleUpload(): void {
   //console.log("Me ejecute!!")
@@ -221,45 +199,21 @@ handleUpload(): void {
     ]
   }
 
-  /*
-  formData.append("jsonPayload", new Blob([JSON.stringify(json)], {
-    type: "application/json"
-  }));
-  */
-
   formData.append('pedido', new Blob([JSON.stringify(nuevoNuevoPedido)], {
-     type: "application/json"
+    type: "application/json"
   }));
 
-  formData.append('requerimientos', new Blob([JSON.stringify([[
-    {
-        "descripcion": "Descripcion desde el front File1",
-        "chequeado": 0
-    },
-    {
-        "descripcion": "Otra descripcion desde el front de File1",
-        "chequeado": 0
-    }
-    ], [
-      {
-          "descripcion": "Descripcion desde el front File2",
-          "chequeado": 0
-      },
-      {
-          "descripcion": "Otra descripcion desde el front File2",
-          "chequeado": 0
-      }
+  this.requerimientos.push(this.currentRequerimientos.requerimientos) // siempre va
 
-    ]])], {
+  formData.append('requerimientos', new Blob([JSON.stringify(this.requerimientos)],{
     type: "application/json"
- }));
+  }));
   
   this.uploading = true;
   
   this.service.upload(formData).
   pipe(filter(e => e instanceof HttpResponse))
   .subscribe( () => {
-      //console.log("FileList :", this.fileList);
       this.uploading = false;
       this.fileList = [];
       this.msg.success('upload successfully.');
@@ -274,132 +228,5 @@ resetForm = () :void => {
   this.fileList = []
   this.validateForm.reset();
 }
-
-/*
-handleChange(info: NzUploadChangeParam): void {
-  if (info.file.status !== 'uploading') {
-    console.log(info.file, info.fileList);
-  }
-  if (info.file.status === 'done') {
-    this.msg.success(`${info.file.name} file uploaded successfully`);
-  } else if (info.file.status === 'error') {
-    this.msg.error(`${info.file.name} file upload failed.`);
-  }
-}
-
-onAction = (file : NzUploadFile) : string | Observable<string> => {
-  //console.log("Me ejecuto")
-  return 'http://localhost:8080/upload'
-}
-
-handleChange(info: NzUploadChangeParam): void {
-  let fileList = [...info.fileList];
-
-  // 1. Limit the number of uploaded files
-  // Only to show two recent uploaded files, and old ones will be replaced by the new
-  fileList = fileList.slice(-2);
-
-  // 2. Read from response and show file link
-  fileList = fileList.map(file => {
-    if (file.response) {
-      // Component will show file.url as link
-      file.url = file.response.url;
-    }
-    return file;
-  });
-
-  this.fileList = fileList;
-}
-*/
-
-/*
-
-
-  handleUpload(): void {
-    console.log("Me ejecute!!")
-    const formData = new FormData()
-    this.fileList.forEach((file: any) => {
-      formData.append('files', file);
-    })
-    console.log("FileList :", this.fileList);
-    this.uploading = true;
-    this.service.upload(formData).
-    pipe(filter(e => e instanceof HttpResponse))
-    .subscribe( () => {
-        this.uploading = false;
-        this.fileList = [];
-        this.msg.success('upload successfully.');
-    }),
-    () => {
-        this.uploading = false;
-        this.msg.error('upload failed.');
-    }
-
-    
-  
-    .subscribe(
-      () => {
-        this.uploading = false;
-        this.fileList = [];
-        this.msg.success('upload successfully.');
-      },
-      () => {
-        this.uploading = false;
-        this.msg.error('upload failed.');
-      }
-    )
-    */
-    // You can use any AJAX library you like
-    /*
-    const req = new HttpRequest('POST', 'https://www.mocky.io/v2/5cc8019d300000980a055e76', formData, {
-      // reportProgress: true
-    });
-    this.http
-      .request(req)
-      .pipe(filter(e => e instanceof HttpResponse))
-      .subscribe(
-        () => {
-          this.uploading = false;
-          this.fileList = [];
-          this.msg.success('upload successfully.');
-        },
-        () => {
-          this.uploading = false;
-          this.msg.error('upload failed.');
-        }
-      );
-      
-  }
-  
-
-  handleUpload(): void {
-    const formData = new FormData();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.fileList.forEach((file: any) => {
-      formData.append('files[]', file);
-    });
-    this.uploading = true;
-    // You can use any AJAX library you like
-    const req = new HttpRequest('POST', 'https://www.mocky.io/v2/5cc8019d300000980a055e76', formData, {
-      // reportProgress: true
-    });
-    this.http
-      .request(req)
-      .pipe(filter(e => e instanceof HttpResponse))
-      .subscribe(
-        () => {
-          this.uploading = false;
-          this.fileList = [];
-          this.msg.success('upload successfully.');
-        },
-        () => {
-          this.uploading = false;
-          this.msg.error('upload failed.');
-        }
-      );
-  }
-*/
-  
-
 
 }
