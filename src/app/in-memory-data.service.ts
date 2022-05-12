@@ -4,7 +4,7 @@ import { PendienteAtencion } from './objects/estado';
 import { Pedido } from './objects/pedido';
 import { Logo } from './objects/tipo';
 
-/*
+
 @Injectable({
   providedIn: 'root'
 })
@@ -80,5 +80,5 @@ export class InMemoryDataService implements InMemoryDbService {
   }
   }
   
-}
-*/
+
+
