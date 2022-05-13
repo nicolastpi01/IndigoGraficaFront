@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PedidoService } from '../../services/pedido.service';
 import { tipografias as arrayLetras } from 'src/app/utils/const/constantes';
-import { todosLosTiposDePedidos } from 'src/app/utils/const/constantes';
-import { todosLosColores } from 'src/app/utils/const/constantes';
 import { Tipo } from 'src/app/objects/tipo';
 import { Color } from 'src/app/objects/color';
 import { Router } from '@angular/router';
@@ -12,6 +10,7 @@ import { filter } from 'rxjs';
 import {  HttpResponse } from '@angular/common/http';
 import {  NzUploadFile } from 'ng-zorro-antd/upload';
 import { ColorService } from 'src/app/services/color.service';
+import { TipoPedidoService } from 'src/app/services/tipo-pedido.service';
 
 // Luego sacar de acá
 export interface Requerimiento {
@@ -50,14 +49,15 @@ export class NuevoComponent implements OnInit {
   tiposDePedidos : Array<{ value: string; label: string }> = [] 
   colores : Array<{ value: string; label: string }> = []
   coloresData : Array<Color> = []
+  tipoPedidosData : Array<Tipo> = []
   requerimientos: Array<RequerimientoUbicacion> = []; // Todos
-  //currentRequerimientos!: RequerimientoUbicacion;
   disabledAgregarRequerimiento: boolean = true;
 
   index = 0;
   tabs: Array<{name: string, disabled: boolean}> = [];
   
-  constructor(private fb: FormBuilder, private service :PedidoService, private colorService :ColorService, private _router: Router, private msg: NzMessageService) {}
+  constructor(private fb: FormBuilder, private service :PedidoService, private tipoService: TipoPedidoService, private colorService :ColorService, 
+    private _router: Router, private msg: NzMessageService) {}
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
@@ -72,14 +72,9 @@ export class NuevoComponent implements OnInit {
       comentario: [null, []],
       remember: [true]
     });
-    todosLosTiposDePedidos.forEach((tipo: Tipo) => {
-      this.tiposDePedidos.push({
-        value: tipo.nombre,
-        label: tipo.nombre
-      })
-    })
-
+    
     this.findColores();
+    this.findPedidos();
 
     
     
@@ -94,6 +89,21 @@ export class NuevoComponent implements OnInit {
           ...this.colores, {
             value: color.hexCode,
             label: color.nombre
+          }
+        ]
+      })
+    });
+  }
+
+  findPedidos() :void {
+    this.tipoService.getAllTiposDePedidos()
+    .subscribe((pedidos :Tipo[]) => {
+      this.tipoPedidosData = pedidos;
+      pedidos.forEach((tipo: Tipo) => {
+        this.tiposDePedidos = [
+          ...this.tiposDePedidos, {
+            value: tipo.nombre,
+            label: tipo.nombre
           }
         ]
       })
@@ -190,18 +200,15 @@ onChangeReq = (value: string, item: Requerimiento): void => {
 }
 
 onChangeSelectedIndexTab = (index: number): void => {
-  //console.log("cambie tab :", index);
 }
 
 
 onClickEliminarReq = (event: MouseEvent, item: Requerimiento): void => {
   event.preventDefault
-  //console.log("Requerimientos antes :", this.requerimientos)
   let currentReq = this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)
   if(currentReq) {
     let filter = currentReq.requerimientos.filter((req: Requerimiento) => req.key !== item.key)
     currentReq!.requerimientos = filter
-    //console.log("Requerimientos despues :", this.requerimientos)
   }
 }
 
@@ -214,10 +221,6 @@ handleUpload(): void {
     let colorRet = this.coloresData.find( (colorData: Color) => colorData.hexCode === colorHexCode)
     if (colorRet) coloresRet.push(colorRet);
   })
-
-  console.log("colores Ret :", coloresRet)
-
-
 
   const formData = new FormData()
   this.fileList.forEach((file: any) => {
@@ -236,13 +239,7 @@ handleUpload(): void {
     state: "Pend. Atencion",
     propietario: "Nicolas del Front",
     encargado: null,
-    tipo: {
-      id:1,
-      nombre: "Logo",
-      alto: 60,
-      ancho: 60,
-      tipografia: "sans serif"
-    },
+    tipo: this.tipoPedidosData.find((tipoPedido: Tipo) => tipoPedido.nombre === form.value.tipo),
     colores: coloresRet
   }
 
