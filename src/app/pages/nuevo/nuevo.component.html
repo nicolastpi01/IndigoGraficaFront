@@ -84,7 +84,6 @@
       <nz-upload
         [nzFileList]="fileList"
         [nzBeforeUpload]="beforeUpload"
-        nzMultiple
       >
         <button nz-button>
           <i nz-icon nzType="upload"></i>
@@ -107,30 +106,23 @@
   </div>
   <div nz-col nzSpan="8">
     <div class="requirements-box">
+      <nz-tabset [(nzSelectedIndex)]="index" nzType="editable-card" nzHideAdd (nzClose)="closeTab($event)" (nzSelectedIndexChange)="onChangeSelectedIndexTab($event)">
+        <nz-tab *ngFor="let tab of tabs; let i = index" [nzTitle]="tab.name">
+
       <button nz-button nzType="primary" [disabled]="disabledAgregarRequerimiento" (click)="agregarRequerimiento()">Agregar requerimiento</button>
       <nz-list class="demo-loadmore-list" *ngIf="currentRequerimientos">
-        <nz-list-item *ngFor="let item of currentRequerimientos.requerimientos">
-          <!--ng-container *ngIf="!item.loading"-->
-            <!--nz-list-item-meta
-              nzAvatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-            >
-            </nz-list-item-meta-->
-
+        <nz-list-item *ngFor="let item of findRequerimientos()">
             <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
               <input type="text" nz-input [ngModel]="item.descripcion" (ngModelChange)="onChangeReq($event, item)" >
-              <!--textarea nz-input [ngModel]="item.descripcion" (ngModelChange)="onChangeReq($event, item)" nzAutosize></textarea-->
             </nz-input-group>
             <ng-template #suffixIconButton>
               <button nz-button nzType="primary" title="eliminar" (click)="onClickEliminarReq($event, item)" nzSearch><i nz-icon nzType="close-circle" nzTheme="outline"></i></button>
-            </ng-template>
-                 
-                
-            <ul nz-list-item-actions>
-              <nz-list-item-action>
-              </nz-list-item-action>
-            </ul>
+            </ng-template>    
         </nz-list-item>
       </nz-list>
+      </nz-tab>
+      </nz-tabset>
+      
       
     </div>
   </div>
