@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PedidoService } from '../pedido.service';
+import { PedidoService } from '../../services/pedido.service';
 import { tipografias as arrayLetras } from 'src/app/utils/const/constantes';
 import { todosLosTiposDePedidos } from 'src/app/utils/const/constantes';
 import { todosLosColores } from 'src/app/utils/const/constantes';
@@ -11,6 +11,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { filter } from 'rxjs';
 import {  HttpResponse } from '@angular/common/http';
 import {  NzUploadFile } from 'ng-zorro-antd/upload';
+import { ColorService } from 'src/app/services/color.service';
 
 // Luego sacar de acá
 export interface Requerimiento {
@@ -48,6 +49,7 @@ export class NuevoComponent implements OnInit {
   // NUEVOS //
   tiposDePedidos : Array<{ value: string; label: string }> = [] 
   colores : Array<{ value: string; label: string }> = []
+  coloresData : Array<Color> = []
   requerimientos: Array<RequerimientoUbicacion> = []; // Todos
   //currentRequerimientos!: RequerimientoUbicacion;
   disabledAgregarRequerimiento: boolean = true;
@@ -55,7 +57,7 @@ export class NuevoComponent implements OnInit {
   index = 0;
   tabs: Array<{name: string, disabled: boolean}> = [];
   
-  constructor(private fb: FormBuilder, private service :PedidoService, private _router: Router, private msg: NzMessageService) {}
+  constructor(private fb: FormBuilder, private service :PedidoService, private colorService :ColorService, private _router: Router, private msg: NzMessageService) {}
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
@@ -76,12 +78,26 @@ export class NuevoComponent implements OnInit {
         label: tipo.nombre
       })
     })
-    todosLosColores.forEach((color: Color) => {
-      this.colores.push({
-        label: color.nombre,
-        value: color.value
+
+    this.findColores();
+
+    
+    
+  }
+
+  findColores() :void {
+    this.colorService.getAllColores()
+    .subscribe((colores :Color[]) => {
+      this.coloresData = colores;
+      colores.forEach((color: Color) => {
+        this.colores = [
+          ...this.colores, {
+            value: color.hexCode,
+            label: color.nombre
+          }
+        ]
       })
-    })
+    });
   }
 
   newTab(name: string): void {
@@ -174,7 +190,7 @@ onChangeReq = (value: string, item: Requerimiento): void => {
 }
 
 onChangeSelectedIndexTab = (index: number): void => {
-  console.log("cambie tab :", index);
+  //console.log("cambie tab :", index);
 }
 
 
@@ -189,9 +205,19 @@ onClickEliminarReq = (event: MouseEvent, item: Requerimiento): void => {
   }
 }
 
-agregar = (item: Requerimiento): void => {} // No se usa
+agregar = (item: Requerimiento): void => {} 
 
 handleUpload(): void {
+
+  let coloresRet :Color[] = [];
+  this.validateForm.value.color.forEach( (colorHexCode: string) => {
+    let colorRet = this.coloresData.find( (colorData: Color) => colorData.hexCode === colorHexCode)
+    if (colorRet) coloresRet.push(colorRet);
+  })
+
+  console.log("colores Ret :", coloresRet)
+
+
 
   const formData = new FormData()
   this.fileList.forEach((file: any) => {
@@ -217,19 +243,9 @@ handleUpload(): void {
       ancho: 60,
       tipografia: "sans serif"
     },
-    colores: [
-      {
-          id:10,
-          nombre: "Rojo",
-          hexCode: "#FF0000"
-      },
-      {
-          id:9,
-          nombre: "Azul",
-          hexCode: "#0000FF"
-      }
-    ]
+    colores: coloresRet
   }
+
   formData.append('pedido', new Blob([JSON.stringify(nuevoNuevoPedido)], {
     type: "application/json"
   }));

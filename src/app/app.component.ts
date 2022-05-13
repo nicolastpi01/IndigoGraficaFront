@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PedidoService } from './pages/pedido.service';
+import { PedidoService } from './services/pedido.service';
 import { PENDIENTEATENCION } from './utils/const/constantes';
 
 @Component({

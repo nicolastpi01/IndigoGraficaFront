@@ -1,5 +1,6 @@
 
 export interface Color {
+    id?: number,
     nombre: string,
-    value: string
+    hexCode: string
 }

@@ -25,12 +25,12 @@ export const todosLosTiposDePedidos : Array<Tipo> =
 ]
 
 export const todosLosColores: Array<Color> = [
-    {nombre: "Rojo", value: "#FF3333"},
-    {nombre: "Azul", value: "#3361FF"},
-    {nombre: "Amarillo", value: "#FFFF33"},
-    {nombre: "Verde", value: "#58FF33"},
-    {nombre: "Negro", value: "#17202A"},
-    {nombre: "Blanco", value: "#FDFEFE"},
+    {nombre: "Rojo", hexCode: "#FF3333"},
+    {nombre: "Azul", hexCode: "#3361FF"},
+    {nombre: "Amarillo", hexCode: "#FFFF33"},
+    {nombre: "Verde", hexCode: "#58FF33"},
+    {nombre: "Negro", hexCode: "#17202A"},
+    {nombre: "Blanco", hexCode: "#FDFEFE"},
 ]
 
 export const mockPropietario: Usuario = {

@@ -3,7 +3,7 @@ import { Pedido } from 'src/app/objects/pedido';
 import { Usuario } from 'src/app/objects/usuario';
 import { PENDIENTEATENCION } from 'src/app/utils/const/constantes';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
-import { PedidoService } from '../pedido.service';
+import { PedidoService } from '../../services/pedido.service';
 
 @Component({
   selector: 'app-pedidos',
