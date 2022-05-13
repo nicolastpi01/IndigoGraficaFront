@@ -115,8 +115,15 @@
               nzAvatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
             >
             </nz-list-item-meta-->
-            
-                  <input type="text" nz-input [ngModel]="item.descripcion" (ngModelChange)="onChangeReq($event, item)" />
+
+            <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+              <input type="text" nz-input [ngModel]="item.descripcion" (ngModelChange)="onChangeReq($event, item)" >
+              <!--textarea nz-input [ngModel]="item.descripcion" (ngModelChange)="onChangeReq($event, item)" nzAutosize></textarea-->
+            </nz-input-group>
+            <ng-template #suffixIconButton>
+              <button nz-button nzType="primary" title="eliminar" (click)="onClickEliminarReq($event, item)" nzSearch><i nz-icon nzType="close-circle" nzTheme="outline"></i></button>
+            </ng-template>
+                 
                 
             <ul nz-list-item-actions>
               <nz-list-item-action>

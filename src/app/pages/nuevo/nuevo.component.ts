@@ -158,6 +158,19 @@ onChangeReq = (value: string, item: Requerimiento): void => {
     item.descripcion = value;
 }
 
+onClickEliminarReq = (event: MouseEvent, item: Requerimiento): void => {
+  //item.descripcion = value;
+  //console.log("Event :", event.currentTarget?.addEventListener)
+  event.preventDefault 
+  //console.log("Item req:", item)
+  this.currentRequerimientos = {
+    ...this.currentRequerimientos, requerimientos: this.currentRequerimientos.requerimientos.filter((req: Requerimiento) => req.key !== item.key)
+  }
+
+  //console.log("Requerimientos :", this.currentRequerimientos.requerimientos.filter((req: Requerimiento) => req.key !== item.key))
+  console.log("Current requerimientos :", this.currentRequerimientos)
+}
+
 agregar = (item: Requerimiento): void => {} // No se usa
 
 handleUpload(): void {
