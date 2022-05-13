@@ -6,12 +6,11 @@ import { todosLosTiposDePedidos } from 'src/app/utils/const/constantes';
 import { todosLosColores } from 'src/app/utils/const/constantes';
 import { Tipo } from 'src/app/objects/tipo';
 import { Color } from 'src/app/objects/color';
-import { PendienteAtencion } from 'src/app/objects/estado';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { filter } from 'rxjs';
 import {  HttpResponse } from '@angular/common/http';
-import {  NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
+import {  NzUploadFile } from 'ng-zorro-antd/upload';
 
 // Luego sacar de acá
 export interface Requerimiento {
@@ -47,11 +46,10 @@ export class NuevoComponent implements OnInit {
   //previewImage: string | undefined = '';
   //previewVisible = false;
   // NUEVOS //
-
   tiposDePedidos : Array<{ value: string; label: string }> = [] 
   colores : Array<{ value: string; label: string }> = []
   requerimientos: Array<RequerimientoUbicacion> = []; // Todos
-  currentRequerimientos!: RequerimientoUbicacion;
+  //currentRequerimientos!: RequerimientoUbicacion;
   disabledAgregarRequerimiento: boolean = true;
 
   index = 0;
@@ -99,9 +97,8 @@ export class NuevoComponent implements OnInit {
   }
 
   findRequerimientos = () => {
-    return this.currentRequerimientos.requerimientos
+    return this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)!.requerimientos;
   }
-
 
   /*
   submitForm(): void {
@@ -116,7 +113,6 @@ export class NuevoComponent implements OnInit {
       });
     }
   }
-  
   agregarPedido(form: FormGroup) {
     let tipoPedido = todosLosTiposDePedidos.find((tipo: Tipo) => tipo.nombre == form.value.tipo)
   
@@ -140,19 +136,18 @@ export class NuevoComponent implements OnInit {
   */
   
   beforeUpload = (file: NzUploadFile): boolean => {
-    //console.log("Before Upload");
-    if(this.currentRequerimientos !== undefined) {
-      //console.log("Tengo un current requerimiento, deberia guardarlo antes de seguir")
-      this.requerimientos.push(this.currentRequerimientos) // guardo una lista de RequerimientoUbicacion
-    }
-    this.newTab("File "+`${this.fileList.length}`)
+    //if(this.currentRequerimientos !== undefined) {
+    //  this.requerimientos.push(this.currentRequerimientos) // guardo una lista de RequerimientoUbicacion
+    //}
+  this.newTab("File "+`${this.fileList.length}`) // actualiza el Index
 
-    this.currentRequerimientos = {
-      position: this.fileList.length,
-      requerimientos: [],
-      index: this.index,
-      uidFile: file.uid // Si borro la imagen quiero borrar el requerimientoUbicacion tambien
-    };
+  let newReq :RequerimientoUbicacion = {
+    position: this.fileList.length,
+    requerimientos: [],
+    index: this.index,
+    uidFile: file.uid // Si borro la imagen quiero borrar el requerimientoUbicacion tambien
+   }
+    this.requerimientos.push(newReq);
     
     this.fileList = this.fileList.concat(file)
     this.disabledAgregarRequerimiento = false;
@@ -163,18 +158,15 @@ export class NuevoComponent implements OnInit {
 
   agregarRequerimiento = () : void => {
 
-    let current :Requerimiento = {
+    let currentReq = this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)
+
+    let nuevo :Requerimiento = {
       descripcion: '',
       chequeado: false,
       desabilitado: true,
-      key: this.currentRequerimientos.requerimientos.length
+      key: currentReq!.requerimientos.length
     };
-
-    this.currentRequerimientos = {
-      ...this.currentRequerimientos, requerimientos: [...this.currentRequerimientos.requerimientos, 
-        current
-      ]
-    }
+    currentReq?.requerimientos.push(nuevo);
   }
 
 onChangeReq = (value: string, item: Requerimiento): void => {
@@ -188,15 +180,16 @@ onChangeSelectedIndexTab = (index: number): void => {
 
 onClickEliminarReq = (event: MouseEvent, item: Requerimiento): void => {
   event.preventDefault
-  this.currentRequerimientos = {
-    ...this.currentRequerimientos, requerimientos: this.currentRequerimientos.requerimientos.filter((req: Requerimiento) => req.key !== item.key)
+  //console.log("Requerimientos antes :", this.requerimientos)
+  let currentReq = this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)
+  if(currentReq) {
+    let filter = currentReq.requerimientos.filter((req: Requerimiento) => req.key !== item.key)
+    currentReq!.requerimientos = filter
+    //console.log("Requerimientos despues :", this.requerimientos)
   }
-  //console.log("Requerimientos :", this.currentRequerimientos.requerimientos.filter((req: Requerimiento) => req.key !== item.key))
-  //console.log("Current requerimientos :", this.currentRequerimientos)
 }
 
 agregar = (item: Requerimiento): void => {} // No se usa
-
 
 handleUpload(): void {
 
@@ -237,12 +230,9 @@ handleUpload(): void {
       }
     ]
   }
-
   formData.append('pedido', new Blob([JSON.stringify(nuevoNuevoPedido)], {
     type: "application/json"
   }));
-
-  this.requerimientos.push(this.currentRequerimientos) // siempre va
 
   let requerimientosRet : Array<Array<Requerimiento>> = [];
   this.requerimientos.map((req: RequerimientoUbicacion) => requerimientosRet.push(req.requerimientos))
