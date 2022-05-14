@@ -242,8 +242,12 @@ handleUpload(): void {
 }
 
 resetForm = () :void => { 
-  this.fileList = []
   this.validateForm.reset();
+  this.fileList = [];
+  this.disabledAgregarRequerimiento = true;
+  this.requerimientos = [];
+  this.tabs = [];
+  this.index = 0;
 }
 
 }
