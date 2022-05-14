@@ -20,13 +20,24 @@
         <td>{{data.nombre}}</td>
         <td>{{data.nombreExtendido}}</td>
         <td>{{data.cantidad}}</td>
-        <td>{{data.propietario.nombre + '-' + data.propietario.contacto}}</td>
-        <td>{{data.colores}}</td>
+        <td>{{data.propietario}}</td>
+        <td>
+          <nz-list nzGrid>
+            <div nz-row [nzGutter]="16">
+              <div nz-col [nzXXl]="8" [nzXl]="4" [nzLg]="6" [nzMd]="6" [nzSm]="12" [nzXs]="24" *ngFor="let color of data.colores">
+                <nz-list-item>
+                    <nz-badge [nzColor]="color.hexCode"></nz-badge>
+                      {{ color.nombre }}
+                </nz-list-item>
+              </div>
+            </div>
+          </nz-list>
+        </td>
         <td>{{data.alto ? data.alto : "-"}}</td>
         <td>{{data.ancho ? data.ancho : "-"}}</td>
         <td>{{data.tipografia}}</td>
         <td>{{data.tipo && data.tipo.nombre ? data.tipo.nombre : "-"}}</td>
-        <td><nz-tag [nzColor]="colorear(data.estado.descripcion)">{{data.estado.descripcion}}</nz-tag></td>
+        <td><nz-tag [nzColor]="colorear(data.state)">{{data.state}}</nz-tag></td>
         <td>{{data.descripcion}}</td>
         <td><button nz-button nzType="default" (click)="reservar(data)" [nzLoading]="loading" nzBlock>Reservar</button></td>
       </tr>

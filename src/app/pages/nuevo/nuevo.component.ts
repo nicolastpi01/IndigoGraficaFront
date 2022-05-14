@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PedidoService } from '../../services/pedido.service';
-import { tipografias as arrayLetras } from 'src/app/utils/const/constantes';
-import { Tipo } from 'src/app/objects/tipo';
-import { Color } from 'src/app/objects/color';
+import { PENDIENTEATENCION, tipografias as arrayLetras } from 'src/app/utils/const/constantes';
+import { Tipo } from 'src/app/interface/tipo';
+import { Color } from 'src/app/interface/color';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { filter } from 'rxjs';
@@ -236,7 +236,7 @@ handleUpload(): void {
     alto: form.value.alto,
     ancho: form.value.ancho,
     descripcion: form.value.comentario,
-    state: "Pend. Atencion",
+    state: PENDIENTEATENCION,
     propietario: "Nicolas del Front",
     encargado: null,
     tipo: this.tipoPedidosData.find((tipoPedido: Tipo) => tipoPedido.nombre === form.value.tipo),

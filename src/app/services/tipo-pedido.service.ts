@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
-import { Tipo } from '../objects/tipo';
+import { Tipo } from '../interface/tipo';
 
 @Injectable({
   providedIn: 'root'

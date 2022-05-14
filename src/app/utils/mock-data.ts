@@ -1,6 +1,7 @@
-import { PendienteAtencion } from "../objects/estado";
-import { Pedido } from "../objects/pedido";
-import { Logo } from "../objects/tipo";
+
+import { Pedido } from "../interface/pedido";
+import { Logo } from "../objects/logo";
+import { PendienteAtencion } from "../objects/pendienteAtencion";
 
 
 

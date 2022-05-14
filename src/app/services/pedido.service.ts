@@ -1,17 +1,14 @@
 import { HttpClient, HttpEvent, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, of, tap } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
-import { Reservado } from '../objects/estado';
-import { Pedido } from '../objects/pedido';
-import { pedidos as mockPedidos } from '../utils/mock-data';
+import { Pedido } from '../interface/pedido';
+import { Reservado } from '../objects/reservado';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PedidoService {
 
-  //private baseUrl = 'http://localhost:4200/api';
   private baseUrl = 'http://localhost:8080'
 
   private usuarioLogueado = {
@@ -24,17 +21,10 @@ export class PedidoService {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
-  //Content type 'application/octet-stream'
-
-  httpOptions2 = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-  };
   
   constructor(private http: HttpClient) { }
 
   upload(formData: FormData): Observable<HttpEvent<FormData>> {
-    //const formData: FormData = new FormData();
-    //formData.append('file', file);
     const req = new HttpRequest('POST', `${this.baseUrl}/pedidos`, formData, {
       reportProgress: true,
       responseType: 'json'
@@ -43,7 +33,7 @@ export class PedidoService {
   }
 
   getPedidos(estado: string) : Observable<Pedido[]> {
-    return this.http.get<Pedido[]>(`${this.baseUrl}/pedidos?state=`+`${'algo'}`) // Ojo, el servicio debe ser igual al objeto que devuelve el fack-api, o sea /pedidos, caso contrario no anda
+    return this.http.get<Pedido[]>(`${this.baseUrl}/pedidos?state=`+ estado) 
   }
 
   reservar(pedido: Pedido) : Observable<any> {
@@ -53,6 +43,7 @@ export class PedidoService {
     )
   }
 
+  /*
   agregarPedido(pedido: Pedido) : Observable<HttpEvent<Pedido>> {
     const req = new HttpRequest('POST', `${this.baseUrl}/pedidos`, pedido, {
       reportProgress: true,
@@ -60,4 +51,5 @@ export class PedidoService {
     });
     return this.http.request(req)
   }
+  */
 }

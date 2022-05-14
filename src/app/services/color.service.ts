@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Color } from '../objects/color';
+import { Color } from '../interface/color';
 import { Observable } from 'rxjs/internal/Observable';
 import { HttpClient } from '@angular/common/http';
 @Injectable({
