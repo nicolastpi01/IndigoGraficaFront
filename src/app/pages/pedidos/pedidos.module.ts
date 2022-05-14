@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { ReactiveFormsModule } from "@angular/forms";
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzMessageModule } from 'ng-zorro-antd/message';
 
 @NgModule({
     imports: [
@@ -26,7 +27,8 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
       FormsModule,
       NzFormModule,
       ReactiveFormsModule,
-      NzBadgeModule
+      NzBadgeModule,
+      NzMessageModule
     ],
     declarations: [PedidosComponent],
     exports: [PedidosComponent]
