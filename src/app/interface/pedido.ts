@@ -3,7 +3,7 @@ import { Tipo } from "./tipo";
 import { Usuario } from "./usuario";
 
 
-export interface Pedido {
+export class Pedido {
     id?: number;
     propietario: Usuario;
     cantidad: number; 
@@ -17,5 +17,24 @@ export interface Pedido {
     colores: string[]; 
     boceto?: File;
     estado: Estado;
-    editor?: Usuario
+    editor?: Usuario;
+    
+    errores: Error[] = [];
+
+    validar(): Error[] {
+        errores = [];
+        if (!this.propietario) {
+            errores.push({ campo: 'propietario', mensajeValidacion: 'Debe ingresar propietario' });
+        }
+        return errores;
+    }  
+    
+    errorParaElCampo(campo: String): String | undefined {
+        this.errores.find((_error) => _error.campo = campo);
+    }
+}
+
+export interface Error {
+    campo: String;
+    mensajeValidacion: String;
 }
