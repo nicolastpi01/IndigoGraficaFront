@@ -14,11 +14,11 @@ import { TipoPedidoService } from 'src/app/services/tipo-pedido.service';
 
 // Luego sacar de acá
 export interface Requerimiento {
-  id?: string, // sacar!!
+  id?: string, 
   descripcion: string,
   chequeado: boolean,
   desabilitado?: true,
-  key?: number // Usar esto en todo caso
+  key?: number 
 }
 // Luego sacar de acá
 export interface RequerimientoUbicacion {
@@ -76,8 +76,6 @@ export class NuevoComponent implements OnInit {
     this.findColores();
     this.findPedidos();
 
-    
-    
   }
 
   findColores() :void {
@@ -126,10 +124,9 @@ export class NuevoComponent implements OnInit {
     return this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)!.requerimientos;
   }
 
-  /*
-  submitForm(): void {
+  onClickAlta(): void {
     if (this.validateForm.valid) {
-      this.agregarPedido(this.validateForm)
+      this.handleUpload()
     } else {
       Object.values(this.validateForm.controls).forEach(control => {
         if (control.invalid) {
@@ -139,28 +136,7 @@ export class NuevoComponent implements OnInit {
       });
     }
   }
-  agregarPedido(form: FormGroup) {
-    let tipoPedido = todosLosTiposDePedidos.find((tipo: Tipo) => tipo.nombre == form.value.tipo)
-  
-    let nuevoNuevoPedido : any = {
-      cantidad: form.value.cantidad,
-      nombre: form.value.titulo,
-      nombreExtendido: form.value.subtitulo,
-      tipografia: form.value.tipografia,
-      alto: form.value.alto,
-      ancho: form.value.ancho,
-      descripcion: form.value.comentario,
-      state: "Pend. Atencion",
-      propietario: "Nicolas del Front",
-      encargado: null,
-    }
-    this.service.agregarPedido(nuevoNuevoPedido).subscribe(response => {
-      this.msg.success('Agregado pedido exitosamente!');
-      this._router.navigateByUrl('/todos')
-    });
-  }
-  */
-  
+
   beforeUpload = (file: NzUploadFile): boolean => {
     //if(this.currentRequerimientos !== undefined) {
     //  this.requerimientos.push(this.currentRequerimientos) // guardo una lista de RequerimientoUbicacion
@@ -173,19 +149,15 @@ export class NuevoComponent implements OnInit {
     index: this.index,
     uidFile: file.uid // Si borro la imagen quiero borrar el requerimientoUbicacion tambien
    }
-    this.requerimientos.push(newReq);
-    
+    this.requerimientos.push(newReq);   
     this.fileList = this.fileList.concat(file)
     this.disabledAgregarRequerimiento = false;
-    
-    
+      
     return false
   };
 
   agregarRequerimiento = () : void => {
-
     let currentReq = this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)
-
     let nuevo :Requerimiento = {
       descripcion: '',
       chequeado: false,
@@ -202,7 +174,6 @@ onChangeReq = (value: string, item: Requerimiento): void => {
 onChangeSelectedIndexTab = (index: number): void => {
 }
 
-
 onClickEliminarReq = (event: MouseEvent, item: Requerimiento): void => {
   event.preventDefault
   let currentReq = this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)
@@ -216,8 +187,11 @@ agregar = (item: Requerimiento): void => {}
 
 handleUpload(): void {
 
+  this.uploading = true;
+  let form = this.validateForm;
+
   let coloresRet :Color[] = [];
-  this.validateForm.value.color.forEach( (colorHexCode: string) => {
+  form.value.color.forEach( (colorHexCode: string) => {
     let colorRet = this.coloresData.find( (colorData: Color) => colorData.hexCode === colorHexCode)
     if (colorRet) coloresRet.push(colorRet);
   })
@@ -226,9 +200,8 @@ handleUpload(): void {
   this.fileList.forEach((file: any) => {
     formData.append('files[]', file);
   })
-
-  let form = this.validateForm;
-  let nuevoNuevoPedido : any = {
+  
+  let nuevoPedido : any = {
     cantidad: form.value.cantidad,
     nombre: form.value.titulo,
     nombreExtendido: form.value.subtitulo,
@@ -243,7 +216,7 @@ handleUpload(): void {
     colores: coloresRet
   }
 
-  formData.append('pedido', new Blob([JSON.stringify(nuevoNuevoPedido)], {
+  formData.append('pedido', new Blob([JSON.stringify(nuevoPedido)], {
     type: "application/json"
   }));
 
@@ -254,18 +227,17 @@ handleUpload(): void {
     type: "application/json"
   }));
   
-  this.uploading = true;
-  
   this.service.upload(formData).
   pipe(filter(e => e instanceof HttpResponse))
   .subscribe( () => {
       this.uploading = false;
       this.fileList = [];
-      this.msg.success('upload successfully.');
+      this.msg.success('Pedido generado satisfactoriamente!');
+      this._router.navigateByUrl('/todos')
   }),
   () => {
       this.uploading = false;
-      this.msg.error('upload failed.');
+      this.msg.error('Fallo la generación del pedido!');
   }
 }
 

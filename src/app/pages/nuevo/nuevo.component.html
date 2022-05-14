@@ -75,7 +75,12 @@
       </nz-input-group>
     </nz-form-item>
     <br>  
-    <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">Alta</button>
+    <button 
+      nz-button class="login-form-button login-form-margin" 
+      [nzLoading]="uploading"
+      (click)="onClickAlta()" 
+      [nzType]="'primary'">{{ uploading ? 'Subiendo...' : 'Alta' }} 
+    </button>
     <button nz-button class="button-clear" (click)="resetForm()">Limpiar</button>
   </form>
   </div>
@@ -87,11 +92,11 @@
       >
         <button nz-button>
           <i nz-icon nzType="upload"></i>
-          Select File
+          Elige un archivo
         </button>
       </nz-upload>
 
-      <button
+      <!--button
         nz-button
         [nzType]="'primary'"
         [nzLoading]="uploading"
@@ -100,7 +105,7 @@
         style="margin-top: 16px"
       >
       {{ uploading ? 'Uploading' : 'Start Upload' }}
-      </button>
+      </button-->
       
     </div>
   </div>
