@@ -1,5 +1,7 @@
 # Indigo
 
+[![CI](https://github.com/nicolastpi01/IndigoGraficaFront/actions/workflows/main.yml/badge.svg)](https://github.com/nicolastpi01/IndigoGraficaFront/actions/workflows/main.yml)
+
 Proyecto generado con [Angular CLI](https://github.com/angular/angular-cli) version 13.3.3.
 node versión: 16.13.2
 angular versión: 13.3.4
