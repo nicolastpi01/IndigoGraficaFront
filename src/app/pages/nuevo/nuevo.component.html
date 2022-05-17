@@ -86,7 +86,7 @@
   </div>
   <div nz-col nzSpan="8">
     <div class="inner-box">
-      <nz-upload
+      <!--nz-upload
         [nzFileList]="fileList"
         [nzBeforeUpload]="beforeUpload"
       >
@@ -94,7 +94,32 @@
           <i nz-icon nzType="upload"></i>
           Elige un archivo
         </button>
+      </nz-upload-->
+      <nz-upload
+        nzAction="http://localhost:8080/upload"
+        nzListType="picture-card"
+        [(nzFileList)]="fileList"
+        [nzShowButton]="fileList.length < 8"
+        [nzPreview]="handlePreview"
+        (nzChange)="handleChange($event)"
+        *ngIf="currentPedido"
+        (click)="clickeo()"
+      >
+        <div>
+          <i nz-icon nzType="plus"></i>
+          <div style="margin-top: 8px">Upload</div>
+        </div>
       </nz-upload>
+      <nz-modal
+        [nzVisible]="previewVisible"
+        [nzContent]="modalContent"
+        [nzFooter]="null"
+        (nzOnCancel)="previewVisible = false"
+      >
+        <ng-template #modalContent>
+          <img nz-image [nzSrc]="previewImage"  [ngStyle]="{ width: '100%' }" />
+        </ng-template>
+      </nz-modal>
 
       <!--button
         nz-button
@@ -127,8 +152,7 @@
       </nz-list>
       </nz-tab>
       </nz-tabset>
-      
-      
+    
     </div>
   </div>
 </div>

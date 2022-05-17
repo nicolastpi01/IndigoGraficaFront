@@ -10,6 +10,7 @@ import { Reservado } from '../objects/reservado';
 export class PedidoService {
 
   private baseUrl = 'http://localhost:8080'
+  private api = "/pedidos"
 
   private usuarioLogueado = {
     direccion: "Calle False 1234",
@@ -32,6 +33,22 @@ export class PedidoService {
     return this.http.request(req);
   }
 
+  create(pedido: Pedido): Observable<HttpEvent<Pedido>> {
+    const req = new HttpRequest('POST', `${this.baseUrl}`+this.api+'/create', pedido, {
+      reportProgress: true,
+      responseType: 'json'
+    });
+    return this.http.request(req);
+  }
+
+  update(pedido: Pedido): Observable<HttpEvent<Pedido>> {
+    const req = new HttpRequest('PUT', `${this.baseUrl}`+this.api+'/update', pedido, {
+      reportProgress: true,
+      responseType: 'json'
+    });
+    return this.http.request(req);
+  }
+
   getPedidos(estado: string) : Observable<Pedido[]> {
     return this.http.get<Pedido[]>(`${this.baseUrl}/pedidos?state=`+ estado) 
   }
@@ -43,13 +60,4 @@ export class PedidoService {
     )
   }
 
-  /*
-  agregarPedido(pedido: Pedido) : Observable<HttpEvent<Pedido>> {
-    const req = new HttpRequest('POST', `${this.baseUrl}/pedidos`, pedido, {
-      reportProgress: true,
-      responseType: 'json'
-    });
-    return this.http.request(req)
-  }
-  */
 }

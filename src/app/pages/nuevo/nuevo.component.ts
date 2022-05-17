@@ -8,9 +8,11 @@ import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { filter } from 'rxjs';
 import {  HttpResponse } from '@angular/common/http';
-import {  NzUploadFile } from 'ng-zorro-antd/upload';
+import {  NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 import { ColorService } from 'src/app/services/color.service';
 import { TipoPedidoService } from 'src/app/services/tipo-pedido.service';
+import { Pedido } from 'src/app/interface/pedido';
+import { FileDB } from 'src/app/interface/fileDB';
 
 // Luego sacar de acá
 export interface Requerimiento {
@@ -38,20 +40,20 @@ export class NuevoComponent implements OnInit {
 
   validateForm!: FormGroup;
   fileList: NzUploadFile[]= [];
-  boceto: string = "";
+  //boceto: string = "";
   tipografias = arrayLetras
   uploading = false;
 
-  // NUEVOS //
-  //previewImage: string | undefined = '';
-  //previewVisible = false;
-  // NUEVOS //
+  previewImage: string = '';
+  previewVisible = false;
+
   tiposDePedidos : Array<{ value: string; label: string }> = [] 
   colores : Array<{ value: string; label: string }> = []
   coloresData : Array<Color> = []
   tipoPedidosData : Array<Tipo> = []
   requerimientos: Array<RequerimientoUbicacion> = []; // Todos
   disabledAgregarRequerimiento: boolean = true;
+  currentPedido!: Pedido;
 
   index = 0;
   tabs: Array<{name: string, disabled: boolean}> = [];
@@ -77,6 +79,58 @@ export class NuevoComponent implements OnInit {
     this.findPedidos();
 
   }
+
+  getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+
+  handlePreview = async (file: NzUploadFile): Promise<void> => {
+    if (!file.url && !file['preview']) {
+      file['preview'] = await this.getBase64(file.originFileObj!);
+    }
+    this.previewImage = file.url || file['preview'];
+    this.previewVisible = true;
+  };
+
+  handleChange({ file, fileList }: NzUploadChangeParam): void {
+    console.log("Ejecuto handleChange")
+    const status = file.status;
+    if (status !== 'uploading') {
+      //console.log(file, fileList);
+    }
+    if (status === 'done') {
+      this.msg.success(`${file.name} Agregado el archivo correctamente!`);
+      // Actualizar el pedido
+      console.log("File :", file); 
+      let newFileDB: FileDB = {
+        id: file.response.id,
+        name: file.response.name,
+        type: file.response.type,
+        data: file.response.data,
+        requerimientos: file.response.requerimientos
+      }
+      this.currentPedido.files?.push(newFileDB);
+      
+      this.service.update(this.currentPedido).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe( (e: any) => { // revisar el any
+            //this.uploading = false;
+            //console.log("Pedido response :", e.body);
+            this.currentPedido = e.body as Pedido
+            //console.log("Current Pedido :", this.currentPedido)
+            this.msg.success('Se actualizo el pedido correctamente!');
+        }),
+        () => {
+            this.msg.error('Fallo la generación del pedido!');
+        }
+    } else if (status === 'error') {
+      this.msg.error(`${file.name} file upload failed.`);
+    }
+  };
 
   findColores() :void {
     this.colorService.getAllColores()
@@ -183,8 +237,55 @@ onClickEliminarReq = (event: MouseEvent, item: Requerimiento): void => {
   }
 }
 
-agregar = (item: Requerimiento): void => {} 
+agregar = (item: Requerimiento): void => {}
 
+handleUpload(): void {
+
+  this.uploading = true;
+
+  let form = this.validateForm;
+
+  let coloresRet :Color[] = [];
+  form.value.color.forEach( (colorHexCode: string) => {
+    let colorRet = this.coloresData.find( (colorData: Color) => colorData.hexCode === colorHexCode)
+    if (colorRet) coloresRet.push(colorRet);
+  })
+
+  let nuevoPedido : any = {
+    cantidad: form.value.cantidad,
+    nombre: form.value.titulo,
+    nombreExtendido: form.value.subtitulo,
+    tipografia: form.value.tipografia,
+    alto: form.value.alto,
+    ancho: form.value.ancho,
+    descripcion: form.value.comentario,
+    state: PENDIENTEATENCION,
+    propietario: "Nicolas del Front",
+    encargado: null,
+    tipo: this.tipoPedidosData.find((tipoPedido: Tipo) => tipoPedido.nombre === form.value.tipo),
+    colores: coloresRet
+  }
+
+  this.service.create(nuevoPedido).
+  pipe(filter(e => e instanceof HttpResponse))
+  .subscribe( (e: any) => { // revisar el any
+      this.uploading = false;
+      //console.log("Pedido response :", e.body);
+      this.currentPedido = e.body as Pedido
+      //console.log("Current Pedido :", this.currentPedido)
+      this.msg.success('Pedido generado satisfactoriamente!');
+  }),
+  () => {
+      this.uploading = false;
+      this.msg.error('Fallo la generación del pedido!');
+  }
+}
+
+clickeo() {
+  console.log("Clickeo")
+}
+
+/*
 handleUpload(): void {
 
   this.uploading = true;
@@ -240,7 +341,7 @@ handleUpload(): void {
       this.msg.error('Fallo la generación del pedido!');
   }
 }
-
+*/
 resetForm = () :void => { 
   this.validateForm.reset();
   this.fileList = [];

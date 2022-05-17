@@ -1,4 +1,6 @@
+import { newArray } from "@angular/compiler/src/util";
 import { Estado } from "./estado";
+import { FileDB } from "./fileDB";
 import { Tipo } from "./tipo";
 import { Usuario } from "./usuario";
 
@@ -15,9 +17,10 @@ export class Pedido {
     ancho?: number; 
     descripcion?: string; 
     colores!: string[]; 
-    boceto?: File;
+    //boceto?: File;
     estado!: Estado;
     editor?: Usuario;
+    files?:  Array<FileDB> = [];
 
     Pedido() {}
     
