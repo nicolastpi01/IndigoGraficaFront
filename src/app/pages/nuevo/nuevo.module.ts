@@ -20,7 +20,7 @@ import { NzListModule } from 'ng-zorro-antd/list';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { NzTabsModule } from 'ng-zorro-antd/tabs';  
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
 
 
 @NgModule({

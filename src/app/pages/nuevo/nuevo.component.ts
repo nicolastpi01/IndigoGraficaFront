@@ -6,13 +6,14 @@ import { Tipo } from 'src/app/interface/tipo';
 import { Color } from 'src/app/interface/color';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { filter } from 'rxjs';
+import { filter, Observable } from 'rxjs';
 import {  HttpResponse } from '@angular/common/http';
 import {  NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 import { ColorService } from 'src/app/services/color.service';
 import { TipoPedidoService } from 'src/app/services/tipo-pedido.service';
 import { Pedido } from 'src/app/interface/pedido';
 import { FileDB } from 'src/app/interface/fileDB';
+import { FileService } from 'src/app/services/file.service';
 
 // Luego sacar de acá
 export interface Requerimiento {
@@ -20,7 +21,7 @@ export interface Requerimiento {
   descripcion: string,
   chequeado: boolean,
   desabilitado?: true,
-  key?: number 
+  llave?: number // Pongo key y no funciona, quedo llave por ahora
 }
 // Luego sacar de acá
 export interface RequerimientoUbicacion {
@@ -40,9 +41,9 @@ export class NuevoComponent implements OnInit {
 
   validateForm!: FormGroup;
   fileList: NzUploadFile[]= [];
-  //boceto: string = "";
   tipografias = arrayLetras
   uploading = false;
+  loadingEliminarPedido= false;
 
   previewImage: string = '';
   previewVisible = false;
@@ -52,14 +53,13 @@ export class NuevoComponent implements OnInit {
   coloresData : Array<Color> = []
   tipoPedidosData : Array<Tipo> = []
   requerimientos: Array<RequerimientoUbicacion> = []; // Todos
-  disabledAgregarRequerimiento: boolean = true;
-  currentPedido!: Pedido;
-
+  currentPedido: Pedido | undefined;
+  currentFile: FileDB | undefined;
   index = 0;
   tabs: Array<{name: string, disabled: boolean}> = [];
   
-  constructor(private fb: FormBuilder, private service :PedidoService, private tipoService: TipoPedidoService, private colorService :ColorService, 
-    private _router: Router, private msg: NzMessageService) {}
+  constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, private tipoService: TipoPedidoService, 
+    private colorService :ColorService, private _router: Router, private msg: NzMessageService) {}
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
@@ -89,13 +89,17 @@ export class NuevoComponent implements OnInit {
   });
 
   handlePreview = async (file: NzUploadFile): Promise<void> => {
+    console.log("Handle Preview")
     if (!file.url && !file['preview']) {
       file['preview'] = await this.getBase64(file.originFileObj!);
     }
+    
     this.previewImage = file.url || file['preview'];
     this.previewVisible = true;
+    //this.index = this.fileList.findIndex((file: NzUploadFile, index: number) => file.uid === file.uid) - 1 VUELVE EL INDEX CUANDO SE TOCA EL OJO
   };
 
+ 
   handleChange({ file, fileList }: NzUploadChangeParam): void {
     console.log("Ejecuto handleChange")
     const status = file.status;
@@ -113,15 +117,33 @@ export class NuevoComponent implements OnInit {
         data: file.response.data,
         requerimientos: file.response.requerimientos
       }
-      this.currentPedido.files?.push(newFileDB);
+      this.currentPedido?.files?.push(newFileDB);
       
-      this.service.update(this.currentPedido).
+      if(this.currentPedido) this.service.update(this.currentPedido).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe( (e: any) => { // revisar el any
             //this.uploading = false;
             //console.log("Pedido response :", e.body);
-            this.currentPedido = e.body as Pedido
+            let pedido = (e.body as Pedido)
+            this.currentPedido = pedido; 
+            //let copiedFiles :FileDB[] | undefined = JSON.parse(JSON.stringify(pedido.files));
+            //this.currentFile = copiedFiles?.pop();
+            this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === newFileDB.id);
+              
+            this.newTab("File "+`${this.fileList.length}`) // actualiza el Index
+
+            //this.disabledAgregarRequerimiento = false;
+          /*
+            let newReq :RequerimientoUbicacion = {
+              position: this.fileList.length,
+              requerimientos: [],
+              index: this.index,
+              uidFile: file.uid 
+             }
+            this.requerimientos.push(newReq);
+            */
             //console.log("Current Pedido :", this.currentPedido)
+            //console.log("Current File :", this.currentFile)
             this.msg.success('Se actualizo el pedido correctamente!');
         }),
         () => {
@@ -145,6 +167,14 @@ export class NuevoComponent implements OnInit {
         ]
       })
     });
+  }
+
+  
+
+  disabledAgregarRequerimiento = () :boolean => {
+    return this.currentFile == undefined || 
+              this.currentFile.requerimientos == undefined || 
+                this.currentFile.requerimientos.length >= 9 
   }
 
   findPedidos() :void {
@@ -175,7 +205,8 @@ export class NuevoComponent implements OnInit {
   }
 
   findRequerimientos = () => {
-    return this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)!.requerimientos;
+    //return this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)!.requerimientos;
+    return this.currentFile?.requerimientos;
   }
 
   onClickAlta(): void {
@@ -191,10 +222,12 @@ export class NuevoComponent implements OnInit {
     }
   }
 
+  /*
   beforeUpload = (file: NzUploadFile): boolean => {
     //if(this.currentRequerimientos !== undefined) {
     //  this.requerimientos.push(this.currentRequerimientos) // guardo una lista de RequerimientoUbicacion
     //}
+  console.log("Me ejecuto beforeUpload")  
   this.newTab("File "+`${this.fileList.length}`) // actualiza el Index
 
   let newReq :RequerimientoUbicacion = {
@@ -209,31 +242,73 @@ export class NuevoComponent implements OnInit {
       
     return false
   };
+  */
 
   agregarRequerimiento = () : void => {
-    let currentReq = this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)
+    //let currentReq = this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)
     let nuevo :Requerimiento = {
       descripcion: '',
       chequeado: false,
       desabilitado: true,
-      key: currentReq!.requerimientos.length
+      llave: this.currentFile?.requerimientos.length
     };
-    currentReq?.requerimientos.push(nuevo);
+    this.currentFile?.requerimientos.push(nuevo);
+    console.log("Current File :", this.currentFile);
+    //currentReq?.requerimientos.push(nuevo);
   }
+
+  agregarTodosLosRequerimientos = () :void => {
+    this.fileService.update(this.currentFile).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe( (e: any) => { 
+          let file = (e.body as FileDB)
+          this.currentFile = file;
+          console.log("Current Pedido:", this.currentPedido) 
+          this.msg.success('Se agregaron los requerimientos correctamente!');
+        }),
+        () => {
+            this.msg.error('Hubo un error, no se pudieron actualizar los requerimientos!');
+        }
+  };
 
 onChangeReq = (value: string, item: Requerimiento): void => {
     item.descripcion = value;
+    //console.log("Current File :", this.currentFile)
 }
 
-onChangeSelectedIndexTab = (index: number): void => {
+onChangeSelectedIndexTab = (i: number): void => {
+  console.log("Index", i);
+  this.currentFile = this.currentPedido?.files?.find((file: FileDB, index: number) => index === i);
+  console.log("CurrentFile: ", this.currentFile)
 }
 
 onClickEliminarReq = (event: MouseEvent, item: Requerimiento): void => {
   event.preventDefault
+  /*
   let currentReq = this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)
   if(currentReq) {
     let filter = currentReq.requerimientos.filter((req: Requerimiento) => req.key !== item.key)
     currentReq!.requerimientos = filter
+  }
+  */
+  if(item.id != undefined) {
+    // Si tiene id es porque se guardo, entonces debo llamar al servicio de actualizar Pedido
+    if(this.currentFile) this.currentFile.requerimientos = this.currentFile?.requerimientos.filter((req: Requerimiento) => req.id !== item.id)
+    this.fileService.update(this.currentFile).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe( (e: any) => { 
+          let file = (e.body as FileDB)
+          this.currentFile = file;
+          console.log("Current Pedido:", this.currentFile) 
+          this.msg.success('Se actualizo el pedido correctamente!');
+        }),
+        () => {
+            this.msg.error('Hubo un error, no se pudieron actualizar los requerimientos!');
+        }
+  }
+  else {
+    if(this.currentFile) this.currentFile.requerimientos = this.currentFile?.requerimientos.filter((req: Requerimiento) => req.llave !== item.llave)
+    //console.log("Current File :", this.currentFile);
   }
 }
 
@@ -272,6 +347,7 @@ handleUpload(): void {
       this.uploading = false;
       //console.log("Pedido response :", e.body);
       this.currentPedido = e.body as Pedido
+      this.service.toggle();
       //console.log("Current Pedido :", this.currentPedido)
       this.msg.success('Pedido generado satisfactoriamente!');
   }),
@@ -281,9 +357,40 @@ handleUpload(): void {
   }
 }
 
-clickeo() {
-  console.log("Clickeo")
+resetForm = () :void => { 
+  this.validateForm.reset();
+  this.currentPedido = undefined;
+  this.fileList = [];
+  //this.disabledAgregarRequerimiento = true;
+  this.requerimientos = [];
+  this.tabs = [];
+  this.index = 0;
 }
+
+eliminarPedido = () :void => {
+  if(!this.currentPedido) {
+    this.msg.warning("Debe generar un pedido antes de proceder a eliminarlo")
+  }
+  else {
+    this.service.eliminar(this.currentPedido?.id).
+    pipe(filter(e => e instanceof HttpResponse))
+    .subscribe( (e: any) => {
+      this.resetForm();
+      this.msg.success(e.body.message);
+      this.loadingEliminarPedido = false;
+    }),
+    (e: any) => {
+        // Ojo, no esta catcheando el error 
+        this.msg.error(e.body.message);
+        this.loadingEliminarPedido = false;
+    }
+  }
+};
+
+
+
+}
+
 
 /*
 handleUpload(): void {
@@ -342,13 +449,3 @@ handleUpload(): void {
   }
 }
 */
-resetForm = () :void => { 
-  this.validateForm.reset();
-  this.fileList = [];
-  this.disabledAgregarRequerimiento = true;
-  this.requerimientos = [];
-  this.tabs = [];
-  this.index = 0;
-}
-
-}

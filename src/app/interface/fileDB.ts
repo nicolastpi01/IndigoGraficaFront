@@ -1,3 +1,4 @@
+import { Requerimiento } from "../pages/nuevo/nuevo.component";
 
 
 
@@ -6,5 +7,5 @@ export interface FileDB {
     name: String,
     type: String,
     data: Blob,
-    requerimientos: any[]
+    requerimientos: Requerimiento[]
 }

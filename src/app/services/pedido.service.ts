@@ -1,5 +1,5 @@
 import { HttpClient, HttpEvent, HttpHeaders, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { Pedido } from '../interface/pedido';
 import { Reservado } from '../objects/reservado';
@@ -8,9 +8,19 @@ import { Reservado } from '../objects/reservado';
   providedIn: 'root'
 })
 export class PedidoService {
+  
 
   private baseUrl = 'http://localhost:8080'
   private api = "/pedidos"
+
+  @Output() change: EventEmitter<boolean> = new EventEmitter();
+  isOpen = false;
+
+  toggle() {
+    this.isOpen = !this.isOpen;
+    console.log("IsOpen :", this.isOpen)
+    this.change.emit(this.isOpen);
+  }
 
   private usuarioLogueado = {
     direccion: "Calle False 1234",
@@ -30,6 +40,11 @@ export class PedidoService {
       reportProgress: true,
       responseType: 'json'
     });
+    return this.http.request(req);
+  }
+
+  eliminar(id: number | undefined) : Observable<HttpEvent<any>> {
+    const req = new HttpRequest('DELETE', `${this.baseUrl}`+`${this.api}/${id}`)
     return this.http.request(req);
   }
 

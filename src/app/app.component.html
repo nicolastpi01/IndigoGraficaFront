@@ -21,7 +21,19 @@
             <a routerLink="/nuevo">Nuevo</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/todos">Todos</a>&nbsp;<nz-badge nzStandalone [nzCount]="cantidad"  [nzStyle]="{ backgroundColor: '#52c41a' }"></nz-badge>
+            <a routerLink="/todos">Todos</a>&nbsp;<nz-badge nzStandalone [nzCount]="cantidadPendienteAtencion" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColor(), color: '#000000' }"></nz-badge>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/reservados">Reservados</a>&nbsp;<nz-badge nzStandalone [nzCount]="cantidadReservados" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColor(), color: '#000000' }"></nz-badge>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/revision">En revisión</a>&nbsp;<nz-badge nzStandalone [nzCount]="cantidadEnRevision" [nzOverflowCount]="99" [nzStyle]="{ backgroundColor: determiteBadgeColor(), color: '#000000' }"></nz-badge>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/retornados">Retornados</a>&nbsp;<nz-badge nzStandalone [nzCount]="cantidadRetornados" [nzOverflowCount]="99" [nzStyle]="{ backgroundColor: determiteBadgeColor(), color: '#000000' }"></nz-badge>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/finalizados">Finalizados</a>&nbsp;<i nz-icon nzType="flag" nzTheme="outline"></i>&nbsp;<nz-badge nzStandalone [nzCount]="cantidadFinalizados" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColor(), color: '#000000' }"></nz-badge>
           </li>
         </ul>
       </li>
@@ -36,6 +48,21 @@
                [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
             ></i>
         </span>
+        <span (click)="onClickCarrito()">
+          <i  class="cart-normal"
+              nz-icon
+              nzType="shopping-cart" 
+              nzTheme="outline"
+          ></i>
+        </span> 
+        <!--span>
+          <strong style="font-size: medium; float: right;"><i
+            class="user" 
+            nz-icon 
+            nzType="user" 
+            nzTheme="outline">
+          </i>Nicolás García</strong>   
+        </span-->
       </div>
     </nz-header>
     <nz-content>

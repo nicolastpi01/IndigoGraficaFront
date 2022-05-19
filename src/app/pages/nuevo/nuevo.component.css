@@ -15,6 +15,13 @@ nz-divider {
     width: 70%;
   }
 
+  .button-delete { 
+    display:flex; 
+    justify-content: flex-end; 
+    outline: 2px;
+    float: right  
+  }
+
   .requirements-box {
     background: #00ffc8;
     min-height: 100%;

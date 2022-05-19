@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit } from '@angular/core';
 import { Pedido } from 'src/app/interface/pedido';
 import { PENDIENTEATENCION } from 'src/app/utils/const/constantes';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { PedidoService } from '../../services/pedido.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { Color } from 'src/app/interface/color';
 
 @Component({
   selector: 'app-pedidos',
@@ -15,11 +16,22 @@ export class PedidosComponent implements OnInit {
   colorear :(descripcion: string) => string | undefined = colorearEstado
   loading: boolean = false
   pedidos: any[] = []
+  AccionText: String = "Reservar"
+
+  //@HostBinding('class.is-open')
+  //Open = false;
   
   constructor(private service: PedidoService,  private msg: NzMessageService) { }
 
   ngOnInit() {
     this.getPedidos()
+    /*
+    this.service.change.subscribe((isOpen: any) => {
+      this.isOpen = isOpen;
+      this.getPedidos()
+    });
+    */
+    
   }
 
   getPedidos(): void {
@@ -27,7 +39,8 @@ export class PedidosComponent implements OnInit {
     .subscribe(pedidos => this.pedidos = pedidos);
   }
 
-  reservar (pedido: Pedido): void {
+
+  onClickAccion (pedido: Pedido): void {
     this.loading = true
     this.service.reservar(pedido)
     .subscribe((_) => {

@@ -23,6 +23,61 @@
     cursor: pointer;
     transition: all .3s,padding 0s;
   }
+
+  .cart-normal {
+    height: 90px;
+    /*width: 90px;*/
+    padding: 20px 30px;
+    font-size: 25px;
+    cursor: pointer;
+    /*transition: all .3s,padding 0s; */
+    display:flex; 
+    justify-content: flex-end; 
+    /*outline: 2px; */
+    float: right  
+    
+  }
+
+  .user {
+    height: 90px;
+    /*width: 90px;*/
+    padding: 20px 30px;
+    font-size: 25px;
+    /*transition: all .3s,padding 0s; */
+    display:flex; 
+    justify-content: flex-end; 
+    /*outline: 2px; */
+    float: right  
+  }
+
+ .cart-shakeit {
+    height: 90px;
+    padding: 20px 24px;
+    font-size: 20px;
+    cursor: pointer;
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+@keyframes shake {
+    10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%, 80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%, 50%, 70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%, 60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
   
   .trigger:hover {
     color: #1890ff;

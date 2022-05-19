@@ -12,5 +12,5 @@ export class ColorService {
 
   getAllColores() : Observable<Color[]> {
     return this.http.get<Color[]>(`${this.baseUrl}/colores`) 
-}
+  }
 }

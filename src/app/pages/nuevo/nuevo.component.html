@@ -1,5 +1,8 @@
 
-<nz-divider nzOrientation="left" nzText="Ingresa tu Pedido!"></nz-divider>
+<button class="button-delete" *ngIf="currentPedido" nz-button nzType="primary" [nzLoading]="loadingEliminarPedido" (click)="eliminarPedido()" nzDanger>Eliminar <i nz-icon nzType="delete" nzTheme="outline"></i></button>
+<h2 nz-typography>Ingresa tu Pedido!</h2>
+<nz-divider nzType="vertical"></nz-divider>
+
 <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
   <div nz-col nzSpan="8">
     <!--form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()"-->
@@ -96,14 +99,13 @@
         </button>
       </nz-upload-->
       <nz-upload
-        nzAction="http://localhost:8080/upload"
+        nzAction="http://localhost:8080/files/upload"
         nzListType="picture-card"
         [(nzFileList)]="fileList"
         [nzShowButton]="fileList.length < 8"
         [nzPreview]="handlePreview"
         (nzChange)="handleChange($event)"
         *ngIf="currentPedido"
-        (click)="clickeo()"
       >
         <div>
           <i nz-icon nzType="plus"></i>
@@ -139,16 +141,17 @@
       <nz-tabset [(nzSelectedIndex)]="index" nzType="editable-card" nzHideAdd (nzClose)="closeTab($event)" (nzSelectedIndexChange)="onChangeSelectedIndexTab($event)">
         <nz-tab *ngFor="let tab of tabs; let i = index" [nzTitle]="tab.name">
 
-      <button nz-button nzType="primary" [disabled]="disabledAgregarRequerimiento" (click)="agregarRequerimiento()">Agregar requerimiento</button>
-      <nz-list class="demo-loadmore-list" *ngIf="requerimientos">
+      <button nz-button nzType="primary" [disabled]="disabledAgregarRequerimiento()" (click)="agregarRequerimiento()">Agregar requerimiento</button>
+      <nz-list class="demo-loadmore-list" *ngIf="currentFile">
         <nz-list-item *ngFor="let item of findRequerimientos()">
             <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
               <input type="text" nz-input [ngModel]="item.descripcion" (ngModelChange)="onChangeReq($event, item)" >
             </nz-input-group>
             <ng-template #suffixIconButton>
               <button nz-button nzType="primary" title="eliminar" (click)="onClickEliminarReq($event, item)" nzSearch><i nz-icon nzType="close-circle" nzTheme="outline"></i></button>
-            </ng-template>    
+            </ng-template>
         </nz-list-item>
+        <nz-list-footer><button nz-button nzType="primary" [disabled]="currentFile && currentFile.requerimientos && currentFile.requerimientos.length <= 0" (click)="agregarTodosLosRequerimientos()">Aceptar</button></nz-list-footer>  
       </nz-list>
       </nz-tab>
       </nz-tabset>
