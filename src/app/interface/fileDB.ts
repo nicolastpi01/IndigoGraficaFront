@@ -7,5 +7,6 @@ export interface FileDB {
     name: String,
     type: String,
     data: Blob,
+    url?: string,
     requerimientos: Requerimiento[]
 }

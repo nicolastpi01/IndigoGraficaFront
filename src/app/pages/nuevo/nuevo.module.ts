@@ -21,6 +21,8 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 
 
 @NgModule({
@@ -45,7 +47,9 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
       NzCheckboxModule,
       FormsModule,
       CommonModule,
-      NzTabsModule   
+      NzTabsModule,
+      ScrollingModule,
+      NzSkeletonModule
     ],
     declarations: [NuevoComponent],
     exports: [NuevoComponent]

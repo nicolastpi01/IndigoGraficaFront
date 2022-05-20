@@ -45,7 +45,7 @@ export class NuevoComponent implements OnInit {
   uploading = false;
   loadingEliminarPedido= false;
 
-  previewImage: string = '';
+  previewImage?: string;
   previewVisible = false;
 
   tiposDePedidos : Array<{ value: string; label: string }> = [] 
@@ -55,6 +55,8 @@ export class NuevoComponent implements OnInit {
   requerimientos: Array<RequerimientoUbicacion> = []; // Todos
   currentPedido: Pedido | undefined;
   currentFile: FileDB | undefined;
+  files: Array<FileDB> = []
+  //images: Array<String | undefined> = []
   index = 0;
   tabs: Array<{name: string, disabled: boolean}> = [];
   
@@ -89,18 +91,25 @@ export class NuevoComponent implements OnInit {
   });
 
   handlePreview = async (file: NzUploadFile): Promise<void> => {
-    console.log("Handle Preview")
-    if (!file.url && !file['preview']) {
-      file['preview'] = await this.getBase64(file.originFileObj!);
-    }
+    //console.log("Handle Preview")
+    //if (!file.url && !file['preview']) {
+    //  file['preview'] = await this.getBase64(file.originFileObj!);
+    //}
     
-    this.previewImage = file.url || file['preview'];
-    this.previewVisible = true;
-    //this.index = this.fileList.findIndex((file: NzUploadFile, index: number) => file.uid === file.uid) - 1 VUELVE EL INDEX CUANDO SE TOCA EL OJO
+    console.log("File requerimientos:", file.response.requerimientos)
+    //this.previewImage = file.url || file['preview'];
+    //this.previewVisible = true;
   };
 
- 
-  handleChange({ file, fileList }: NzUploadChangeParam): void {
+  
+  onClick = (event: MouseEvent, item: FileDB) => {
+    this.currentFile = item;
+    console.log("El item: ", item)
+    
+  }
+  
+
+  async handleChange({ file, fileList }: NzUploadChangeParam): Promise<void> {
     console.log("Ejecuto handleChange")
     const status = file.status;
     if (status !== 'uploading') {
@@ -109,28 +118,75 @@ export class NuevoComponent implements OnInit {
     if (status === 'done') {
       this.msg.success(`${file.name} Agregado el archivo correctamente!`);
       // Actualizar el pedido
-      console.log("File :", file); 
+
+      file['preview'] = await this.getBase64(file.originFileObj!);
+      //this.previewImage = file.url || file['preview'];
+      
+      //console.log("File :", file); 
       let newFileDB: FileDB = {
         id: file.response.id,
         name: file.response.name,
         type: file.response.type,
         data: file.response.data,
-        requerimientos: file.response.requerimientos
+        requerimientos: file.response.requerimientos,
+        url: file.url || file['preview']
       }
+
+      
+      //this.previewVisible = true;
+      
+      this.currentFile = newFileDB;
       this.currentPedido?.files?.push(newFileDB);
+
+      
+      this.files.push(newFileDB)
+
+      this.files = this.files.slice(-3);
+
+      //console.log("Files: ", this.files)
+
+      //console.log("CurrentFile :", newFileDB)
+      /*
+      console.log("typeof:", typeof(newFileDB.data) )
+      */
       
       if(this.currentPedido) this.service.update(this.currentPedido).
         pipe(filter(e => e instanceof HttpResponse))
-        .subscribe( (e: any) => { // revisar el any
+        .subscribe(async (e: any) => { // revisar el any
             //this.uploading = false;
             //console.log("Pedido response :", e.body);
             let pedido = (e.body as Pedido)
             this.currentPedido = pedido; 
             //let copiedFiles :FileDB[] | undefined = JSON.parse(JSON.stringify(pedido.files));
             //this.currentFile = copiedFiles?.pop();
-            this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === newFileDB.id);
+            //await this.handlePreview(file)
+
+            //console.log("FileList :", this.fileList);
+            
+            /*
+            console.log("Files:", pedido.files )
+            this.files = pedido.files ? pedido.files : [];
+
+            let copiedFiles :FileDB[] | undefined = JSON.parse(JSON.stringify(pedido.files));
+            this.currentFile = copiedFiles?.pop();
+
+            console.log("blob:", this.currentFile?.data)
+            //if(newFileDB && newFileDB.data) {
+            //  newFileDB.url = await this.getBase64Dos(newFileDB.data.Blob())
+            //}
+            */
+            //console.log("CurrentFile :", newFileDB)
+             
+
+            
+
+            //let url: fileNz.url //|| fileNz['preview']
+            
+            
+            //this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === newFileDB.id);
               
-            this.newTab("File "+`${this.fileList.length}`) // actualiza el Index
+            
+            //this.newTab("File "+`${this.fileList.length}`) // actualiza el Index
 
             //this.disabledAgregarRequerimiento = false;
           /*
@@ -168,8 +224,6 @@ export class NuevoComponent implements OnInit {
       })
     });
   }
-
-  
 
   disabledAgregarRequerimiento = () :boolean => {
     return this.currentFile == undefined || 
@@ -273,7 +327,7 @@ export class NuevoComponent implements OnInit {
 
 onChangeReq = (value: string, item: Requerimiento): void => {
     item.descripcion = value;
-    //console.log("Current File :", this.currentFile)
+    console.log("Current File :", this.currentFile)
 }
 
 onChangeSelectedIndexTab = (i: number): void => {

@@ -1,1 +1,112 @@
-<p>resolver works with id: {{id}} !</p>
+
+<!--div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }"></div-->
+<button nz-button class="borrar" nzType="primary" nzDanger>Borrar<i nz-icon nzType="delete" nzTheme="outline"></i></button>
+<br>
+<br>
+<nz-collapse  nzAccordion>
+  <nz-collapse-panel *ngFor="let panel of panels" [nzHeader]="panel.name" [nzActive]="panel.active">
+    <ng-template [ngIf]="panel.name === 'Datos' " [ngIfElse]="ifElse">
+    <div nz-col class="gutter-row">
+      <div class="inner-box">
+          <nz-descriptions nzTitle="Pedido" nzBordered >
+              <nz-descriptions-item nzTitle="Product">Cloud Database</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Billing Mode">Prepaid</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Automatic Renewal">YES</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Order Time">2018-04-24 18:00:00</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Usage Time" [nzSpan]="2">
+                2018-04-24 18:00:00 To 2019-04-24 18:00:00
+              </nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Status" [nzSpan]="3">
+                <nz-badge nzStatus="processing" nzText="Running"></nz-badge>
+              </nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Negotiated Amount">$80.00</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Discount">$20.00</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Official Receipts">$60.00</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Config Info">
+                Data disk type: MongoDB
+                <br />
+                Database version: 3.4
+                <br />
+                Package: dds.mongo.mid
+                <br />
+                Storage space: 10 GB
+                <br />
+                Replication_factor:3
+                <br />
+                Region: East China 1
+              </nz-descriptions-item>
+            </nz-descriptions>
+      </div>
+    </div>
+     </ng-template>
+
+     <ng-template #ifElse>
+     <ng-template [ngIf]="panel.name === 'Files' " [ngIfElse]="Solucion">
+      <div nz-col class="gutter-row" [nzSpan]="16">
+        <div class="inner-box">
+            col-16
+            <nz-list nzGrid>
+                <div nz-row [nzGutter]="16">
+                  <div nz-col [nzSpan]="6" *ngFor="let item of data">
+                    <nz-list-item>
+                        <nz-card [nzCover]="coverTemplate" [nzActions]="[actionSetting, actionEdit, actionEllipsis]">
+                            <nz-card-meta
+                                nzTitle="Card title"
+                                nzDescription="This is the description"
+                                [nzAvatar]="avatarTemplate"
+                            ></nz-card-meta>
+                            <ng-template #avatarTemplate>
+                                <nz-avatar nzSrc="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"></nz-avatar>
+                              </ng-template>
+                              <ng-template #coverTemplate>
+                                <img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
+                              </ng-template>
+                              <ng-template #actionSetting>
+                                <i nz-icon nzType="setting"></i>
+                              </ng-template>
+                              <ng-template #actionEdit>
+                                <i nz-icon nzType="edit"></i>
+                              </ng-template>
+                              <ng-template #actionEllipsis>
+                                <i nz-icon nzType="ellipsis"></i>
+                              </ng-template>
+                        </nz-card>
+                    </nz-list-item>
+                  </div>
+                </div>
+            </nz-list>
+        </div>
+      </div>
+     </ng-template>
+    </ng-template>
+
+     <ng-template #Solucion>
+      <div nz-col class="gutter-row"  [nzSpan]="6">
+        <div class="inner-box">
+            col-6
+            <div class="clearfix">
+                <nz-upload
+                  nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  nzListType="picture"
+                  [(nzFileList)]="fileList1"
+                >
+                  <button nz-button>
+                    <i nz-icon nzType="upload"></i>
+                    Upload
+                  </button>
+                </nz-upload>
+            </div>
+        </div>
+      </div>
+     </ng-template>
+  </nz-collapse-panel>
+</nz-collapse>
+<br>
+
+<div nz-row class="buttonGroup" [nzGutter]="16">
+  <div nz-col><button nz-button nzType="default" style="width: 120px;">Salir<i nz-icon nzType="home" nzTheme="outline"></i></button></div>
+  <div nz-col><button nz-button nzType="primary">Resolver<i nz-icon nzType="check" nzTheme="outline"></i></button></div>
+</div>
+
+
+

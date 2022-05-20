@@ -22,16 +22,6 @@
         <td>{{data.cantidad}}</td>
         <td>{{data.propietario}}</td>
         <td>
-          <!--nz-list nzGrid>
-            <div nz-row [nzGutter]="16">
-              <div nz-col [nzXXl]="8" [nzXl]="4" [nzLg]="6" [nzMd]="6" [nzSm]="12" [nzXs]="24" *ngFor="let color of data.colores">
-                <nz-list-item>
-                    <nz-badge [nzColor]="color.hexCode"></nz-badge>
-                      {{ color.nombre }}
-                </nz-list-item>
-              </div>
-            </div>
-          </nz-list-->
           <cdk-virtual-scroll-viewport itemSize="4" class="demo-infinite-container">
             <nz-list>
               <nz-list-item *cdkVirtualFor="let color of data.colores">

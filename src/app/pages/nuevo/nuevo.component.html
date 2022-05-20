@@ -3,8 +3,9 @@
 <h2 nz-typography>Ingresa tu Pedido!</h2>
 <nz-divider nzType="vertical"></nz-divider>
 
-<div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
-  <div nz-col nzSpan="8">
+<!--div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }"-->
+<div nz-row [nzGutter]="{ lg: 32 }">
+  <div nz-col nzSpan="6">
     <!--form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()"-->
     <form nz-form [formGroup]="validateForm" class="login-form">
       <nz-form-item>
@@ -45,21 +46,21 @@
       <nz-form-item>
           <nz-form-control>
               <nz-input-group>
-                <nz-select nzShowSearch nzAllowClear id="tipografia" nzPlaceHolder="Tipografía" formControlName="tipografia" [nzOptions]="tipografias" style=" min-width: 500px;"></nz-select>
+                <nz-select nzShowSearch nzAllowClear id="tipografia" nzPlaceHolder="Tipografía" formControlName="tipografia" [nzOptions]="tipografias" style=" min-width: 370px;"></nz-select>
               </nz-input-group>
           </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-control nzHasFeedback nzErrorTip="Por favor ingrese un tipo!">
             <nz-input-group>
-              <nz-select nzShowSearch nzAllowClear id="tipos" nzPlaceHolder="Tipo" formControlName="tipo" [nzOptions]="tiposDePedidos" style=" min-width: 500px;"></nz-select>
+              <nz-select nzShowSearch nzAllowClear id="tipos" nzPlaceHolder="Tipo" formControlName="tipo" [nzOptions]="tiposDePedidos" style=" min-width: 370px;"></nz-select>
             </nz-input-group>
         </nz-form-control>
     </nz-form-item>
     <nz-form-item>
       <nz-form-control>
         <nz-input-group>
-          <nz-select nzAllowClear nzPlaceHolder="Colores" nzMode="multiple" formControlName="color" [nzCustomTemplate]="multipleTemplate" [nzOptions]="colores" style=" min-width: 500px;">
+          <nz-select nzAllowClear nzPlaceHolder="Colores" nzMode="multiple" formControlName="color" [nzCustomTemplate]="multipleTemplate" [nzOptions]="colores" style=" min-width: 370px;">
           </nz-select>
           <ng-template #multipleTemplate let-selected>
             <div class="ant-select-selection-item-content">
@@ -87,7 +88,7 @@
     <button nz-button class="button-clear" (click)="resetForm()">Limpiar</button>
   </form>
   </div>
-  <div nz-col nzSpan="8">
+  <div nz-col nzSpan="6">
     <div class="inner-box">
       <!--nz-upload
         [nzFileList]="fileList"
@@ -119,27 +120,24 @@
         (nzOnCancel)="previewVisible = false"
       >
         <ng-template #modalContent>
-          <img nz-image [nzSrc]="previewImage"  [ngStyle]="{ width: '100%' }" />
+          <img nz-image nzDisablePreview *ngIf="previewImage" [nzSrc]="previewImage"  [ngStyle]="{ width: '100%' }" />
         </ng-template>
       </nz-modal>
-
-      <!--button
-        nz-button
-        [nzType]="'primary'"
-        [nzLoading]="uploading"
-        (click)="handleUpload()"
-        [disabled]="fileList.length === 0"
-        style="margin-top: 16px"
-      >
-      {{ uploading ? 'Uploading' : 'Start Upload' }}
-      </button-->
-      
     </div>
   </div>
-  <div nz-col nzSpan="8">
+  <div nz-col nzSpan="6">
+    <div class="inner-box">
+        <nz-list>
+          <nz-list-item *ngFor="let file of files">
+            <img nz-image (click)="onClick($event, file)" nzDisablePreview *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '100%', cursor: 'pointer' }">
+          </nz-list-item>
+        </nz-list>        
+    </div>
+  </div>
+  <div nz-col nzSpan="6">
     <div class="requirements-box">
-      <nz-tabset [(nzSelectedIndex)]="index" nzType="editable-card" nzHideAdd (nzClose)="closeTab($event)" (nzSelectedIndexChange)="onChangeSelectedIndexTab($event)">
-        <nz-tab *ngFor="let tab of tabs; let i = index" [nzTitle]="tab.name">
+      <!--nz-tabset [(nzSelectedIndex)]="index" nzType="editable-card" nzHideAdd (nzClose)="closeTab($event)" (nzSelectedIndexChange)="onChangeSelectedIndexTab($event)">
+        <nz-tab *ngFor="let tab of tabs; let i = index" [nzTitle]="tab.name"-->
 
       <button nz-button nzType="primary" [disabled]="disabledAgregarRequerimiento()" (click)="agregarRequerimiento()">Agregar requerimiento</button>
       <nz-list class="demo-loadmore-list" *ngIf="currentFile">
@@ -153,8 +151,8 @@
         </nz-list-item>
         <nz-list-footer><button nz-button nzType="primary" [disabled]="currentFile && currentFile.requerimientos && currentFile.requerimientos.length <= 0" (click)="agregarTodosLosRequerimientos()">Aceptar</button></nz-list-footer>  
       </nz-list>
-      </nz-tab>
-      </nz-tabset>
+      <!--/nz-tab>
+      </nz-tabset-->
     
     </div>
   </div>
