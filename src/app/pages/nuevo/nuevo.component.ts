@@ -59,8 +59,10 @@ export class NuevoComponent implements OnInit {
   currentFile: FileDB | undefined;
   files: Array<FileDB> = []
   //images: Array<String | undefined> = []
-  index = 0;
-  tabs: Array<{name: string, disabled: boolean}> = [];
+  //index = 0;
+  //tabs: Array<{name: string, disabled: boolean}> = [];
+
+  isVisibleMiddle = false;
   
   constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, private tipoService: TipoPedidoService, 
     private colorService :ColorService, private _router: Router, private msg: NzMessageService) {}
@@ -90,7 +92,7 @@ export class NuevoComponent implements OnInit {
       },
       {
         active: false,
-        disabled: false,
+        disabled: true,
         name: 'Archivos'
       },
       
@@ -118,11 +120,7 @@ export class NuevoComponent implements OnInit {
   };
 
   
-  onClick = (event: MouseEvent, item: FileDB) => {
-    this.currentFile = item;
-    console.log("El item: ", item)
-    
-  }
+  
   
 
   async handleChange({ file, fileList }: NzUploadChangeParam): Promise<void> {
@@ -262,6 +260,7 @@ export class NuevoComponent implements OnInit {
     });
   }
 
+  /*
   newTab(name: string): void {
     this.tabs.push({
       name: name,
@@ -273,6 +272,7 @@ export class NuevoComponent implements OnInit {
   closeTab({ index }: { index: number }): void {
     this.tabs.splice(index, 1);
   }
+  */
 
   findRequerimientos = () => {
     //return this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)!.requerimientos;
@@ -289,11 +289,11 @@ export class NuevoComponent implements OnInit {
           }}
           else {
             return {
-              ...panel, active: true
+              ...panel, active: true, disabled: false,
             }
           }
         })
-        
+
     } else {
       Object.values(this.validateForm.controls).forEach(control => {
         if (control.invalid) {
@@ -427,16 +427,32 @@ handleUpload(): void {
   pipe(filter(e => e instanceof HttpResponse))
   .subscribe( (e: any) => { // revisar el any
       this.uploading = false;
-      //console.log("Pedido response :", e.body);
       this.currentPedido = e.body as Pedido
       this.service.toggle();
-      //console.log("Current Pedido :", this.currentPedido)
       this.msg.success('Pedido generado satisfactoriamente!');
   }),
   () => {
       this.uploading = false;
       this.msg.error('Fallo la generación del pedido!');
   }
+}
+onClickFile = (event: MouseEvent, item: FileDB) => {
+  this.currentFile = item;
+  this.showModalMiddle();
+  //console.log("El item: ", item)
+}
+
+showModalMiddle(): void {
+  this.isVisibleMiddle = true;
+}
+
+handleOkMiddle(): void {
+  console.log('click ok');
+  this.isVisibleMiddle = false;
+}
+
+handleCancelMiddle(): void {
+  this.isVisibleMiddle = false;
 }
 
 resetForm = () :void => { 
@@ -445,8 +461,8 @@ resetForm = () :void => {
   this.fileList = [];
   //this.disabledAgregarRequerimiento = true;
   this.requerimientos = [];
-  this.tabs = [];
-  this.index = 0;
+  //this.tabs = [];
+  //this.index = 0;
 }
 
 eliminarPedido = () :void => {

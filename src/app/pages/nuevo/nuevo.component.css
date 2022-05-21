@@ -32,7 +32,7 @@ nz-divider {
     display:flex; 
     justify-content: flex-end; 
     outline: 2px;
-    float: right  
+    float: right;
   }
 
   .requirements-box {

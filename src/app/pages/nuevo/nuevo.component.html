@@ -1,17 +1,15 @@
 
 <!--*ngIf="currentPedido" -->
-<h2 nz-typography>Ingresa tu pedido!</h2>
-<nz-space>
-<button class="button-delete" *nzSpaceItem nz-button nzType="primary" [nzLoading]="loadingEliminarPedido" (click)="eliminarPedido()" nzDanger>Eliminar <i nz-icon nzType="delete" nzTheme="outline"></i></button>
-<button nz-button class="salirButton" *nzSpaceItem nzType="primary">Salir<i nz-icon nzType="home" nzTheme="outline"></i></button>
-</nz-space>
 
+<div class="row">
+<h2 style="float: left" nz-typography>Ingresa tu pedido!</h2>
+<button class="button-delete" nz-button nzType="primary" [nzLoading]="loadingEliminarPedido" (click)="eliminarPedido()" nzDanger>Eliminar <i nz-icon nzType="delete" nzTheme="outline"></i></button>
+</div>
 
-<nz-divider nzType="vertical"></nz-divider>
-
-
-<nz-collapse  nzAccordion>
-  <nz-collapse-panel *ngFor="let panel of panels" [nzHeader]="panel.name" [nzActive]="panel.active">
+<br>
+<br>
+<nz-collapse nzAccordion>
+  <nz-collapse-panel *ngFor="let panel of panels" [nzHeader]="panel.name" [nzActive]="panel.active" [nzDisabled]="panel.disabled">
     <ng-template [ngIf]="panel.name === 'Datos' " [ngIfElse]="ifElse">
     <div nz-row nzJustify="center" nzAlign="top">
     <div nz-col>
@@ -153,7 +151,7 @@
                               </ng-template>
                               <ng-template #coverTemplate>
                                 <!--img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" /-->
-                                <img nz-image (click)="onClick($event, file)" nzDisablePreview *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '100%', cursor: 'pointer' }">
+                                <img nz-image (click)="onClickFile($event, file)" nzDisablePreview *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '100%', cursor: 'pointer' }">
                               </ng-template>
                               <!--ng-template #actionSetting>
                                 <i nz-icon nzType="setting"></i>
@@ -168,7 +166,37 @@
                     </nz-list-item>
                   </div>
                 </div>
-            </nz-list>        
+            </nz-list>
+            <nz-modal
+              [(nzVisible)]="isVisibleMiddle"
+              [nzBodyStyle]="{ minHeight: '600px' }"
+              nzWidth="800px"
+              nzTitle="Agregar requerimientos"
+              nzCentered
+              (nzOnCancel)="handleCancelMiddle()"
+              (nzOnOk)="handleOkMiddle()"
+            >
+              <ng-container *nzModalContent>
+                <div nz-col>
+                  <!--div class="requirements-box"-->
+                    <button nz-button nzType="primary" [disabled]="disabledAgregarRequerimiento()" (click)="agregarRequerimiento()">Agregar requerimiento</button>
+                    <nz-list class="demo-loadmore-list" *ngIf="currentFile">
+                      <nz-list-item *ngFor="let item of findRequerimientos()">
+                          <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                            <input type="text" nz-input [ngModel]="item.descripcion" (ngModelChange)="onChangeReq($event, item)" >
+                          </nz-input-group>
+                          <ng-template #suffixIconButton>
+                            <button nz-button nzType="primary" title="eliminar" (click)="onClickEliminarReq($event, item)" nzSearch><i nz-icon nzType="close-circle" nzTheme="outline"></i></button>
+                          </ng-template>
+                      </nz-list-item>
+                      <!--nz-list-footer>
+                        <button nz-button nzType="primary" [disabled]="currentFile && currentFile.requerimientos && currentFile.requerimientos.length <= 0" (click)="agregarTodosLosRequerimientos()">Aceptar</button>
+                      </nz-list-footer-->  
+                    </nz-list>
+                  <!--/div-->
+                </div>
+              </ng-container>
+            </nz-modal>        
           </div>
         </div>
       </div>
@@ -176,6 +204,7 @@
   </nz-collapse-panel>
 </nz-collapse>
 <br>
+<button nz-button class="salirButton" nzType="primary">Salir<i nz-icon nzType="home" nzTheme="outline"></i></button>
 
 
 

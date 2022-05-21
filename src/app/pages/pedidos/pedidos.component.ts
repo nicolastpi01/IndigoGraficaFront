@@ -18,19 +18,19 @@ export class PedidosComponent implements OnInit {
   pedidos: any[] = []
   AccionText: String = "Reservar"
 
-  //@HostBinding('class.is-open')
-  //Open = false;
+  @HostBinding('class.is-open')
+  isOpen = false;
   
   constructor(private service: PedidoService,  private msg: NzMessageService) { }
 
   ngOnInit() {
     this.getPedidos()
-    /*
+    //console.log("Pedidos :", this.pedidos)
     this.service.change.subscribe((isOpen: any) => {
       this.isOpen = isOpen;
       this.getPedidos()
     });
-    */
+    
     
   }
 

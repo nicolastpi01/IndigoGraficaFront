@@ -9,7 +9,7 @@ import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 @Component({
   selector: 'app-reservados',
   templateUrl: '../pedidos/pedidos.component.html',
-  styleUrls: ['./reservados.component.css']
+  styleUrls: ['../pedidos/pedidos.component.css']
 })
 export class ReservadosComponent implements OnInit {
 
