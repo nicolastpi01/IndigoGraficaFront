@@ -447,8 +447,9 @@ showModalMiddle(): void {
 }
 
 handleOkMiddle(): void {
-  console.log('click ok');
+  //console.log('click ok');
   this.isVisibleMiddle = false;
+  this.agregarTodosLosRequerimientos();
 }
 
 handleCancelMiddle(): void {
