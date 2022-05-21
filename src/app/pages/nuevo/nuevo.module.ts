@@ -23,7 +23,8 @@ import { CommonModule } from '@angular/common';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
-
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 
 @NgModule({
     imports: [
@@ -49,7 +50,9 @@ import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
       CommonModule,
       NzTabsModule,
       ScrollingModule,
-      NzSkeletonModule
+      NzSkeletonModule,
+      NzCollapseModule,
+      NzAvatarModule
     ],
     declarations: [NuevoComponent],
     exports: [NuevoComponent]

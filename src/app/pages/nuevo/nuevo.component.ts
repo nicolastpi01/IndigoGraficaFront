@@ -39,6 +39,8 @@ export interface RequerimientoUbicacion {
 
 export class NuevoComponent implements OnInit {
 
+  panels: Array<{active: boolean, name: string, disabled: boolean}> = [];
+
   validateForm!: FormGroup;
   fileList: NzUploadFile[]= [];
   tipografias = arrayLetras
@@ -79,6 +81,20 @@ export class NuevoComponent implements OnInit {
     
     this.findColores();
     this.findPedidos();
+
+    this.panels = [
+      {
+        active: true,
+        name: 'Datos',
+        disabled: false
+      },
+      {
+        active: false,
+        disabled: false,
+        name: 'Archivos'
+      },
+      
+    ];
 
   }
 
@@ -266,6 +282,18 @@ export class NuevoComponent implements OnInit {
   onClickAlta(): void {
     if (this.validateForm.valid) {
       this.handleUpload()
+      this.panels = this.panels.map((panel) => {
+        if(panel.name === 'Datos') {
+          return {
+            ...panel, active: false
+          }}
+          else {
+            return {
+              ...panel, active: true
+            }
+          }
+        })
+        
     } else {
       Object.values(this.validateForm.controls).forEach(control => {
         if (control.invalid) {
