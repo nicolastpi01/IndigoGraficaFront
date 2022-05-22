@@ -12,7 +12,7 @@
   <nz-collapse-panel *ngFor="let panel of panels" [nzHeader]="panel.name" [nzActive]="panel.active" [nzDisabled]="panel.disabled">
     <ng-template [ngIf]="panel.name === 'Datos' " [ngIfElse]="ifElse">
     <div nz-row nzJustify="center" nzAlign="top">
-    <div nz-col>
+    <div nz-col nzSpan="8">
         <form nz-form [formGroup]="validateForm" class="login-form">
           <nz-form-item>
             <nz-form-control nzHasFeedback nzErrorTip="Por favor ingresa un título!">
@@ -52,22 +52,21 @@
           <nz-form-item>
               <nz-form-control>
                   <nz-input-group>
-                    <nz-select nzShowSearch nzAllowClear id="tipografia" nzPlaceHolder="Tipografía" formControlName="tipografia" [nzOptions]="tipografias" style=" min-width: 370px;"></nz-select>
+                    <nz-select nzShowSearch nzAllowClear id="tipografia" nzPlaceHolder="Tipografía" formControlName="tipografia" [nzOptions]="tipografias"></nz-select>
                   </nz-input-group>
               </nz-form-control>
           </nz-form-item>
           <nz-form-item>
             <nz-form-control nzHasFeedback nzErrorTip="Por favor ingrese un tipo!">
                 <nz-input-group>
-                  <nz-select nzShowSearch nzAllowClear id="tipos" nzPlaceHolder="Tipo" formControlName="tipo" [nzOptions]="tiposDePedidos" style=" min-width: 370px;"></nz-select>
+                  <nz-select nzShowSearch nzAllowClear id="tipos" nzPlaceHolder="Tipo" formControlName="tipo" [nzOptions]="tiposDePedidos" ></nz-select>
                 </nz-input-group>
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-control>
             <nz-input-group>
-              <nz-select nzAllowClear nzPlaceHolder="Colores" nzMode="multiple" formControlName="color" [nzCustomTemplate]="multipleTemplate" [nzOptions]="colores" style=" min-width: 370px;">
-              </nz-select>
+              <nz-select nzAllowClear nzPlaceHolder="Colores" nzMode="multiple" formControlName="color" [nzCustomTemplate]="multipleTemplate" [nzOptions]="colores"></nz-select>
               <ng-template #multipleTemplate let-selected>
                 <div class="ant-select-selection-item-content">
                   <nz-badge [nzColor]="selected.nzValue"></nz-badge>
@@ -204,7 +203,7 @@
   </nz-collapse-panel>
 </nz-collapse>
 <br>
-<button nz-button class="salirButton" nzType="primary">Salir<i nz-icon nzType="home" nzTheme="outline"></i></button>
+<button nz-button class="button-out" nzType="primary">Salir<i nz-icon nzType="home" nzTheme="outline"></i></button>
 
 
 

@@ -3,7 +3,6 @@
   min-width: 60px;
   border: 1px solid #e8e8e8;
   border-radius: 4px;
-  
 }
 
 nz-divider {
@@ -25,14 +24,16 @@ nz-divider {
     display:flex; 
     justify-content: flex-end; 
     outline: 2px;
-    float: right  
+    float: right;
+    width:100px;
   }
 
-  .salirButton {
+  .button-out {
     display:flex; 
     justify-content: flex-end; 
     outline: 2px;
     float: right;
+    width:100px;
   }
 
   .requirements-box {
@@ -65,8 +66,8 @@ nz-divider {
       width: 50%;
   }
   
-  .nz-select {
-    min-width: 300px;
+  nz-select {
+    min-width: 100%;
   }
 
   .button-upload {
