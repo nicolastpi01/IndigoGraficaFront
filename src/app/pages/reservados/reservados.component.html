@@ -1,1 +1,74 @@
-<p>reservados works!</p>
+<!--p>reservados works!</p-->
+
+
+<!--nz-list nzSize="large" nzBordered>
+        <nz-list-item *ngFor="let pedido of pedidos" nzNoFlex-->
+          <!--nzLayout="vertical" -->
+            <nz-descriptions nzTitle="Pedido" nzBordered [nzExtra]="extraTpl" [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+                <nz-descriptions-item nzTitle="Título" >{{ currentPedido.nombre }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Subtítulo">{{ currentPedido.nombreExtendido }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Cantidad">{{ currentPedido.cantidad }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Propietario ">{{ currentPedido.propietario }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Alto">{{ currentPedido.alto }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Ancho">{{ currentPedido.ancho }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Tipografia"> {{ currentPedido.tipografia }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Tipo"> {{ currentPedido.tipo.nombre }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Estado" [nzSpan]="8"><nz-tag [nzColor]="colorear(currentPedido.state)">{{currentPedido.state}}</nz-tag></nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Colores" [nzSpan]="8">
+                    <div nz-row  *ngFor="let color of currentPedido.colores">
+                      <div nz-col class="gutter-row" [nzSpan]="4"><div class="inner-box"></div>
+                        <nz-badge [nzColor]="color.hexCode">{{ color.nombre }}</nz-badge>
+                      </div>
+                    </div>
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Descripción" [nzSpan]="8">
+                {{ currentPedido.descripcion }}
+                </nz-descriptions-item>
+            </nz-descriptions>
+            <ng-template #extraTpl>
+              <button nz-button nzType="primary" (click)="onClickAccion(currentPedido)">{{ AccionText }}</button>
+            </ng-template>
+        <!--/nz-list-item-->
+
+        <!--nz-list-pagination-->
+          <br>
+          <nz-pagination [nzPageIndex]="pageIndex" [nzTotal]="total" [nzPageSize]="1" [nzShowTotal]="totalTemplate" (nzPageIndexChange)="indexChange($event)" (nzChange)="handleChange($event)" (click)="onPageIndexChange($event)"></nz-pagination>
+          <ng-template #totalTemplate let-total><strong>Total pedidos : {{ total }} </strong></ng-template> 
+        <!--/nz-list-pagination-->
+       
+    
+<!--/nz-list-->
+
+
+<!--nz-list nzGrid>
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="8" *ngFor="let file of files">
+        <nz-list-item>
+            <!--nz-card [nzCover]="coverTemplate" [nzActions]="[actionSetting, actionEdit, actionEllipsis]"-->
+            <!--nz-card [nzCover]="coverTemplate">
+                <nz-card-meta
+                    nzTitle="Card title"
+                    nzDescription="This is the description"
+                    [nzAvatar]="avatarTemplate"
+                ></nz-card-meta>
+                <ng-template #avatarTemplate>
+                    <nz-avatar [nzSrc]="file.url"></nz-avatar>
+                  </ng-template>
+                  <ng-template #coverTemplate-->
+                    <!--img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" /-->
+                    <!--img nz-image (click)="onClickFile($event, file)" nzDisablePreview *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '100%', cursor: 'pointer' }">
+                  </ng-template-->
+                  <!--ng-template #actionSetting>
+                    <i nz-icon nzType="setting"></i>
+                  </ng-template>
+                  <ng-template #actionEdit>
+                    <i nz-icon nzType="edit"></i>
+                  </ng-template>
+                  <ng-template #actionEllipsis>
+                    <i nz-icon nzType="ellipsis"></i>
+                  </ng-template-->
+            <!--/nz-card>
+        </nz-list-item>
+      </div>
+    </div>
+</nz-list-->

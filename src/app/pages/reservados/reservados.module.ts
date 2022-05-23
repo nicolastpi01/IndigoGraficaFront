@@ -15,6 +15,8 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 
 @NgModule({
     imports: [
@@ -32,7 +34,9 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
       NzBadgeModule,
       NzMessageModule,
       NzSelectModule,
-      ScrollingModule 
+      ScrollingModule,
+      NzDescriptionsModule,
+      NzPaginationModule 
     ],
     declarations: [ReservadosComponent],
     exports: [ReservadosComponent]
