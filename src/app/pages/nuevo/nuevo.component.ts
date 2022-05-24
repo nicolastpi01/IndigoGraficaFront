@@ -14,22 +14,8 @@ import { TipoPedidoService } from 'src/app/services/tipo-pedido.service';
 import { Pedido } from 'src/app/interface/pedido';
 import { FileDB } from 'src/app/interface/fileDB';
 import { FileService } from 'src/app/services/file.service';
+import { Requerimiento } from 'src/app/interface/requerimiento';
 
-// Luego sacar de acá
-export interface Requerimiento {
-  id?: string, 
-  descripcion: string,
-  chequeado: boolean,
-  desabilitado?: true,
-  llave?: number // Pongo key y no funciona, quedo llave por ahora
-}
-// Luego sacar de acá
-export interface RequerimientoUbicacion {
-  requerimientos: Array<Requerimiento>,
-  position: number,
-  index: number 
-  uidFile: string
-}
 
 @Component({
   selector: 'app-nuevo',
@@ -40,30 +26,22 @@ export interface RequerimientoUbicacion {
 export class NuevoComponent implements OnInit {
 
   panels: Array<{active: boolean, name: string, disabled: boolean}> = [];
-
   validateForm!: FormGroup;
-  fileList: NzUploadFile[]= [];
+  currentPedido: Pedido | undefined;
+  loadingAlta = false;
   tipografias = arrayLetras
-  uploading = false;
-  loadingEliminarPedido= false;
-
-  previewImage?: string;
-  previewVisible = false;
-
-  tiposDePedidos : Array<{ value: string; label: string }> = [] 
   colores : Array<{ value: string; label: string }> = []
   coloresData : Array<Color> = []
   tipoPedidosData : Array<Tipo> = []
-  requerimientos: Array<RequerimientoUbicacion> = []; // Todos
-  currentPedido: Pedido | undefined;
+  tiposDePedidos : Array<{ value: string; label: string }> = []
+  fileList: NzUploadFile[] = [];
+  previewImage?: string;
+  previewVisible = false;
+  isVisibleMiddle = false;
   currentFile: FileDB | undefined;
   files: Array<FileDB> = []
-  //images: Array<String | undefined> = []
-  //index = 0;
-  //tabs: Array<{name: string, disabled: boolean}> = [];
+  loadingEliminarPedido= false;
 
-  isVisibleMiddle = false;
-  
   constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, private tipoService: TipoPedidoService, 
     private colorService :ColorService, private _router: Router, private msg: NzMessageService) {}
 
@@ -100,130 +78,6 @@ export class NuevoComponent implements OnInit {
 
   }
 
-  getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
-
-  handlePreview = async (file: NzUploadFile): Promise<void> => {
-    //console.log("Handle Preview")
-    //if (!file.url && !file['preview']) {
-    //  file['preview'] = await this.getBase64(file.originFileObj!);
-    //}
-    
-    console.log("File requerimientos:", file.response.requerimientos)
-    //this.previewImage = file.url || file['preview'];
-    //this.previewVisible = true;
-  };
-
-  
-  
-  
-
-  async handleChange({ file, fileList }: NzUploadChangeParam): Promise<void> {
-    console.log("Ejecuto handleChange")
-    const status = file.status;
-    if (status !== 'uploading') {
-      //console.log(file, fileList);
-    }
-    if (status === 'done') {
-      this.msg.success(`${file.name} Agregado el archivo correctamente!`);
-      // Actualizar el pedido
-
-      file['preview'] = await this.getBase64(file.originFileObj!);
-      //this.previewImage = file.url || file['preview'];
-      
-      //console.log("File :", file); 
-      let newFileDB: FileDB = {
-        id: file.response.id,
-        name: file.response.name,
-        type: file.response.type,
-        data: file.response.data,
-        requerimientos: file.response.requerimientos,
-        url: file.url || file['preview']
-      }
-
-      
-      //this.previewVisible = true;
-      
-      this.currentFile = newFileDB;
-      this.currentPedido?.files?.push(newFileDB);
-
-      
-      this.files.push(newFileDB)
-
-      this.files = this.files.slice(-3);
-
-      //console.log("Files: ", this.files)
-
-      //console.log("CurrentFile :", newFileDB)
-      /*
-      console.log("typeof:", typeof(newFileDB.data) )
-      */
-      
-      if(this.currentPedido) this.service.update(this.currentPedido).
-        pipe(filter(e => e instanceof HttpResponse))
-        .subscribe(async (e: any) => { // revisar el any
-            //this.uploading = false;
-            //console.log("Pedido response :", e.body);
-            let pedido = (e.body as Pedido)
-            this.currentPedido = pedido; 
-            //let copiedFiles :FileDB[] | undefined = JSON.parse(JSON.stringify(pedido.files));
-            //this.currentFile = copiedFiles?.pop();
-            //await this.handlePreview(file)
-
-            //console.log("FileList :", this.fileList);
-            
-            /*
-            console.log("Files:", pedido.files )
-            this.files = pedido.files ? pedido.files : [];
-
-            let copiedFiles :FileDB[] | undefined = JSON.parse(JSON.stringify(pedido.files));
-            this.currentFile = copiedFiles?.pop();
-
-            console.log("blob:", this.currentFile?.data)
-            //if(newFileDB && newFileDB.data) {
-            //  newFileDB.url = await this.getBase64Dos(newFileDB.data.Blob())
-            //}
-            */
-            //console.log("CurrentFile :", newFileDB)
-             
-
-            
-
-            //let url: fileNz.url //|| fileNz['preview']
-            
-            
-            //this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === newFileDB.id);
-              
-            
-            //this.newTab("File "+`${this.fileList.length}`) // actualiza el Index
-
-            //this.disabledAgregarRequerimiento = false;
-          /*
-            let newReq :RequerimientoUbicacion = {
-              position: this.fileList.length,
-              requerimientos: [],
-              index: this.index,
-              uidFile: file.uid 
-             }
-            this.requerimientos.push(newReq);
-            */
-            //console.log("Current Pedido :", this.currentPedido)
-            //console.log("Current File :", this.currentFile)
-            this.msg.success('Se actualizo el pedido correctamente!');
-        }),
-        () => {
-            this.msg.error('Fallo la generación del pedido!');
-        }
-    } else if (status === 'error') {
-      this.msg.error(`${file.name} file upload failed.`);
-    }
-  };
-
   findColores() :void {
     this.colorService.getAllColores()
     .subscribe((colores :Color[]) => {
@@ -237,12 +91,6 @@ export class NuevoComponent implements OnInit {
         ]
       })
     });
-  }
-
-  disabledAgregarRequerimiento = () :boolean => {
-    return this.currentFile == undefined || 
-              this.currentFile.requerimientos == undefined || 
-                this.currentFile.requerimientos.length >= 9 
   }
 
   findPedidos() :void {
@@ -260,28 +108,10 @@ export class NuevoComponent implements OnInit {
     });
   }
 
-  /*
-  newTab(name: string): void {
-    this.tabs.push({
-      name: name,
-      disabled: false
-    });
-    this.index = this.tabs.length - 1;
-  }
-
-  closeTab({ index }: { index: number }): void {
-    this.tabs.splice(index, 1);
-  }
-  */
-
-  findRequerimientos = () => {
-    //return this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)!.requerimientos;
-    return this.currentFile?.requerimientos;
-  }
-
+  // Alta del Form
   onClickAlta(): void {
     if (this.validateForm.valid) {
-      this.handleUpload()
+      this.createPedido()
       this.panels = this.panels.map((panel) => {
         if(panel.name === 'Datos') {
           return {
@@ -304,30 +134,175 @@ export class NuevoComponent implements OnInit {
     }
   }
 
-  /*
-  beforeUpload = (file: NzUploadFile): boolean => {
-    //if(this.currentRequerimientos !== undefined) {
-    //  this.requerimientos.push(this.currentRequerimientos) // guardo una lista de RequerimientoUbicacion
-    //}
-  console.log("Me ejecuto beforeUpload")  
-  this.newTab("File "+`${this.fileList.length}`) // actualiza el Index
+  createPedido = (): void => {
 
-  let newReq :RequerimientoUbicacion = {
-    position: this.fileList.length,
-    requerimientos: [],
-    index: this.index,
-    uidFile: file.uid // Si borro la imagen quiero borrar el requerimientoUbicacion tambien
-   }
-    this.requerimientos.push(newReq);   
-    this.fileList = this.fileList.concat(file)
-    this.disabledAgregarRequerimiento = false;
+    this.loadingAlta = true;
+  
+    let form = this.validateForm;
+  
+    let coloresRet :Color[] = [];
+    form.value.color.forEach( (colorHexCode: string) => { // Sacar el ForEach
+      let colorRet = this.coloresData.find( (colorData: Color) => colorData.hexCode === colorHexCode)
+      if (colorRet) coloresRet.push(colorRet);
+    })
+  
+    let nuevoPedido : Pedido = {
+      cantidad: form.value.cantidad,
+      nombre: form.value.titulo,
+      nombreExtendido: form.value.subtitulo,
+      tipografia: form.value.tipografia,
+      alto: form.value.alto,
+      ancho: form.value.ancho,
+      descripcion: form.value.comentario,
+      state: PENDIENTEATENCION,
+      propietario: "Nicolas del Front",
+      encargado: null,
+      tipo: this.tipoPedidosData.find((tipoPedido: Tipo) => tipoPedido.nombre === form.value.tipo),
+      colores: coloresRet
+    }
+  
+    this.service.create(nuevoPedido).
+    pipe(filter(e => e instanceof HttpResponse))
+    .subscribe( (e: any) => { // revisar el any
+        this.currentPedido = e.body as Pedido
+        this.service.toggle(); // para que se actualice el contador del Sidebar
+        this.loadingAlta = false;
+        this.msg.success('Pedido generado satisfactoriamente!');
+    }),
+    () => {
+        this.loadingAlta = false;
+        this.msg.error('Fallo la generación del pedido!');
+    }
+  }
+
+  async handleChange({ file, fileList }: NzUploadChangeParam): Promise<void> {
+    const status = file.status;
+    if (status !== 'uploading') {
+    }
+    if (status === 'done') {
+      this.msg.success(`${file.name} Agregado el archivo correctamente!`);
+
+      // Actualizar el pedido
+      file['preview'] = await this.getBase64(file.originFileObj!);
+      this.fileList = fileList.map((nZFile: NzUploadFile) => {
+        if(nZFile.uid == file.uid) {
+          return {
+            ...nZFile, url: file['preview']
+          }
+        }
+        else return nZFile
+      });
       
-    return false
-  };
-  */
+      // Armo el nuevo File con la rta del server
+      let newFileDB: FileDB = {
+        id: file.response.id,
+        name: file.response.name,
+        type: file.response.type,
+        data: file.response.data,
+        requerimientos: file.response.requerimientos,
+        url: file.url || file['preview']
+      }
+      
+      this.currentPedido?.files?.push(newFileDB); // Agrego el current File al Current Pedido. 
 
+      if(this.currentPedido) this.service.update(this.currentPedido).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe(async (e: any) => { // revisar el any
+            //this.uploading = false;
+            //console.log("Pedido response :", e.body);
+            let pedido = (e.body as Pedido) 
+            this.currentPedido = pedido;
+            let lastFile :FileDB | undefined = this.currentPedido.files?.pop();
+
+            if(lastFile) {
+              this.currentFile = {...lastFile, url: newFileDB.url }; // ref. al current File 
+              this.files.push(this.currentFile) // Agrego el current File a la lista de Files subidos
+              this.currentPedido.files?.push(this.currentFile);
+            }
+            
+            this.files = this.files.slice(-3); // Me quedo con los ultimos tres Files
+            //console.log("Current Pedido :", this.currentPedido)
+            //console.log("Current File :", this.currentFile)
+            //console.log("Files :", this.files)
+            console.log("FileList :", this.fileList)
+            this.msg.success('Se actualizo el pedido correctamente!');
+        }),
+        () => {
+            console.log("Paso por acá")
+            this.currentPedido?.files?.pop();
+            this.msg.error('Fallo la generación del pedido!');
+        }
+    } else if (status === 'error') {
+      this.msg.error(`${file.name} file upload failed.`);
+    }
+  };
+
+
+  getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+
+  handlePreview = (file: NzUploadFile): void => {
+    this.previewImage = file.url || file['preview'];
+    this.previewVisible = true;
+  };
+
+  onClickEditFile = (event: MouseEvent, item: FileDB) => {
+    this.currentFile = item;
+    this.showModalMiddle();
+  }
+  
+  showModalMiddle(): void {
+    this.isVisibleMiddle = true;
+  }
+
+  eliminarPedido = () :void => {
+    if(!this.currentPedido) {
+      this.msg.warning("Debe generar un pedido antes de proceder a eliminarlo")
+    }
+    else {
+      this.loadingEliminarPedido = true;
+      this.service.eliminar(this.currentPedido?.id).
+      pipe(filter(e => e instanceof HttpResponse))
+      .subscribe( (e: any) => {
+        this.resetForm();
+        this.msg.success(e.body.message);
+        this.loadingEliminarPedido = false;
+      }),
+      (e: any) => {
+          // Ojo, no esta catcheando el error 
+          this.msg.error(e.body.message);
+          this.loadingEliminarPedido = false;
+      }
+    }
+  };
+
+  onClickDeleteFile = (event: MouseEvent, item: FileDB) => {
+    // Hay que llamar al servicio!!
+    this.files = this.files.filter((file: FileDB) => item.id !== file.id)
+    this.currentPedido = {
+      ...this.currentPedido,
+      files: this.files
+    };
+    //this.currentFile = undefined // y si no es el ultimo ?
+  
+    this.fileList = this.fileList.filter((file: NzUploadFile) => file.response.id !== item.id)
+
+    console.log("FileList: ", this.fileList)
+    //console.log("CurrentFile: ", this.currentFile)
+    console.log("CurrentPedido: ", this.currentPedido)
+    console.log("CurrentFiles: ", this.files)
+  };
+
+  disabledAgregarRequerimiento = () :boolean => {
+    return this.currentFile !== undefined && this.currentFile.requerimientos.length >= 8 
+  };
+  
   agregarRequerimiento = () : void => {
-    //let currentReq = this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)
     let nuevo :Requerimiento = {
       descripcion: '',
       chequeado: false,
@@ -335,11 +310,21 @@ export class NuevoComponent implements OnInit {
       llave: this.currentFile?.requerimientos.length
     };
     this.currentFile?.requerimientos.push(nuevo);
-    console.log("Current File :", this.currentFile);
-    //currentReq?.requerimientos.push(nuevo);
+    //console.log("Current File :", this.currentFile);
   }
 
+  handleOkMiddle(): void {
+    this.isVisibleMiddle = false;
+    this.agregarTodosLosRequerimientos();
+  }
+
+  goOutside = () => {
+    // Deberia mostrar un modal indicando el pedido generado (brevemente)
+    this._router.navigateByUrl('/todos')
+  };
+  
   agregarTodosLosRequerimientos = () :void => {
+    // Cambiar por el que updatea el Pedido
     this.fileService.update(this.currentFile).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe( (e: any) => { 
@@ -353,142 +338,64 @@ export class NuevoComponent implements OnInit {
         }
   };
 
-onChangeReq = (value: string, item: Requerimiento): void => {
-    item.descripcion = value;
-    console.log("Current File :", this.currentFile)
-}
-
-onChangeSelectedIndexTab = (i: number): void => {
-  console.log("Index", i);
-  this.currentFile = this.currentPedido?.files?.find((file: FileDB, index: number) => index === i);
-  console.log("CurrentFile: ", this.currentFile)
-}
-
-onClickEliminarReq = (event: MouseEvent, item: Requerimiento): void => {
-  event.preventDefault
-  /*
-  let currentReq = this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)
-  if(currentReq) {
-    let filter = currentReq.requerimientos.filter((req: Requerimiento) => req.key !== item.key)
-    currentReq!.requerimientos = filter
-  }
-  */
-  if(item.id != undefined) {
-    // Si tiene id es porque se guardo, entonces debo llamar al servicio de actualizar Pedido
-    if(this.currentFile) this.currentFile.requerimientos = this.currentFile?.requerimientos.filter((req: Requerimiento) => req.id !== item.id)
-    this.fileService.update(this.currentFile).
-        pipe(filter(e => e instanceof HttpResponse))
-        .subscribe( (e: any) => { 
-          let file = (e.body as FileDB)
-          this.currentFile = file;
-          console.log("Current Pedido:", this.currentFile) 
-          this.msg.success('Se actualizo el pedido correctamente!');
-        }),
-        () => {
-            this.msg.error('Hubo un error, no se pudieron actualizar los requerimientos!');
-        }
-  }
-  else {
-    if(this.currentFile) this.currentFile.requerimientos = this.currentFile?.requerimientos.filter((req: Requerimiento) => req.llave !== item.llave)
-    //console.log("Current File :", this.currentFile);
-  }
-}
-
-agregar = (item: Requerimiento): void => {}
-
-handleUpload(): void {
-
-  this.uploading = true;
-
-  let form = this.validateForm;
-
-  let coloresRet :Color[] = [];
-  form.value.color.forEach( (colorHexCode: string) => {
-    let colorRet = this.coloresData.find( (colorData: Color) => colorData.hexCode === colorHexCode)
-    if (colorRet) coloresRet.push(colorRet);
-  })
-
-  let nuevoPedido : any = {
-    cantidad: form.value.cantidad,
-    nombre: form.value.titulo,
-    nombreExtendido: form.value.subtitulo,
-    tipografia: form.value.tipografia,
-    alto: form.value.alto,
-    ancho: form.value.ancho,
-    descripcion: form.value.comentario,
-    state: PENDIENTEATENCION,
-    propietario: "Nicolas del Front",
-    encargado: null,
-    tipo: this.tipoPedidosData.find((tipoPedido: Tipo) => tipoPedido.nombre === form.value.tipo),
-    colores: coloresRet
+  onChangeReq = (value: string, item: Requerimiento): void => {
+      item.descripcion = value;
   }
 
-  this.service.create(nuevoPedido).
-  pipe(filter(e => e instanceof HttpResponse))
-  .subscribe( (e: any) => { // revisar el any
-      this.uploading = false;
-      this.currentPedido = e.body as Pedido
-      this.service.toggle();
-      this.msg.success('Pedido generado satisfactoriamente!');
-  }),
-  () => {
-      this.uploading = false;
-      this.msg.error('Fallo la generación del pedido!');
+  handleCancelMiddle(): void {
+    // Si no guardo los requerimientos deberian vaciarse
+    this.isVisibleMiddle = false;
   }
-}
-onClickFile = (event: MouseEvent, item: FileDB) => {
-  this.currentFile = item;
-  this.showModalMiddle();
-  //console.log("El item: ", item)
-}
 
-showModalMiddle(): void {
-  this.isVisibleMiddle = true;
-}
-
-handleOkMiddle(): void {
-  //console.log('click ok');
-  this.isVisibleMiddle = false;
-  this.agregarTodosLosRequerimientos();
-}
-
-handleCancelMiddle(): void {
-  this.isVisibleMiddle = false;
-}
-
-resetForm = () :void => { 
-  this.validateForm.reset();
-  this.currentPedido = undefined;
-  this.fileList = [];
-  //this.disabledAgregarRequerimiento = true;
-  this.requerimientos = [];
-  //this.tabs = [];
-  //this.index = 0;
-}
-
-eliminarPedido = () :void => {
-  if(!this.currentPedido) {
-    this.msg.warning("Debe generar un pedido antes de proceder a eliminarlo")
-  }
-  else {
-    this.service.eliminar(this.currentPedido?.id).
-    pipe(filter(e => e instanceof HttpResponse))
-    .subscribe( (e: any) => {
-      this.resetForm();
-      this.msg.success(e.body.message);
-      this.loadingEliminarPedido = false;
-    }),
-    (e: any) => {
-        // Ojo, no esta catcheando el error 
-        this.msg.error(e.body.message);
-        this.loadingEliminarPedido = false;
+  onClickEliminarReq = (event: MouseEvent, item: Requerimiento): void => {
+    event.preventDefault
+    /*
+    let currentReq = this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)
+    if(currentReq) {
+      let filter = currentReq.requerimientos.filter((req: Requerimiento) => req.key !== item.key)
+      currentReq!.requerimientos = filter
+    }
+    */
+    if(item.id != undefined) {
+      // Si tiene id es porque se guardo, entonces debo llamar al servicio de actualizar Pedido
+      if(this.currentFile) this.currentFile.requerimientos = this.currentFile?.requerimientos.filter((req: Requerimiento) => req.id !== item.id)
+      this.fileService.update(this.currentFile).
+          pipe(filter(e => e instanceof HttpResponse))
+          .subscribe( (e: any) => { 
+            let file = (e.body as FileDB)
+            this.currentFile = file;
+            console.log("Current Pedido:", this.currentFile) 
+            this.msg.success('Se actualizo el pedido correctamente!');
+          }),
+          () => {
+              this.msg.error('Hubo un error, no se pudieron actualizar los requerimientos!');
+          }
+    }
+    else {
+      if(this.currentFile) this.currentFile.requerimientos = this.currentFile?.requerimientos.filter((req: Requerimiento) => req.llave !== item.llave)
+      //console.log("Current File :", this.currentFile);
     }
   }
-};
 
+  resetForm = () :void => { 
+    this.validateForm.reset();
+    this.currentPedido = undefined;
+    this.currentFile = undefined;
+    this.fileList = [];
+    this.files = [];
+  }
 
 
 }
+
+
+
+
+
+
+
+
+
 
 
 /*

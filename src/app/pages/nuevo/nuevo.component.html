@@ -1,11 +1,9 @@
 
 <!--*ngIf="currentPedido" -->
-
 <div class="row">
 <h2 style="float: left" nz-typography>Ingresa tu pedido!</h2>
 <button class="button-delete" nz-button nzType="primary" [nzLoading]="loadingEliminarPedido" (click)="eliminarPedido()" nzDanger>Eliminar <i nz-icon nzType="delete" nzTheme="outline"></i></button>
 </div>
-
 <br>
 <br>
 <nz-collapse nzAccordion>
@@ -86,9 +84,9 @@
         <br>  
         <button 
           nz-button class="login-form-button login-form-margin" 
-          [nzLoading]="uploading"
+          [nzLoading]="loadingAlta"
           (click)="onClickAlta()" 
-          [nzType]="'primary'">{{ uploading ? 'Subiendo...' : 'Alta' }} 
+          [nzType]="'primary'">{{ loadingAlta ? 'Espere...' : 'Alta' }} 
         </button>
         <button nz-button class="button-clear" (click)="resetForm()">Limpiar</button>
       </form>
@@ -112,7 +110,7 @@
             >
               <div>
                 <i nz-icon nzType="plus"></i>
-                <div style="margin-top: 8px">Upload</div>
+                <div style="margin-top: 8px">Subir archivo</div>
               </div>
             </nz-upload>
             <nz-modal
@@ -122,43 +120,39 @@
               (nzOnCancel)="previewVisible = false"
             >
               <ng-template #modalContent>
-                <img nz-image nzDisablePreview *ngIf="previewImage" [nzSrc]="previewImage"  [ngStyle]="{ width: '100%' }" />
+                <!--nzDisablePreview-->
+                <img nz-image *ngIf="previewImage" [nzSrc]="previewImage"  [ngStyle]="{ width: '100%' }" />
               </ng-template>
             </nz-modal>
           </div>
         </div>
         <div nz-col nzSpan="16">
           <div class="inner-box">
-              <!--nz-list>
-                <nz-list-item *ngFor="let file of files">
-                  <img nz-image (click)="onClick($event, file)" nzDisablePreview *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '100%', cursor: 'pointer' }">
-                </nz-list-item>
-              </nz-list-->
               <nz-list nzGrid>
                 <div nz-row [nzGutter]="16">
                   <div nz-col [nzSpan]="8" *ngFor="let file of files">
                     <nz-list-item>
-                        <!--nz-card [nzCover]="coverTemplate" [nzActions]="[actionSetting, actionEdit, actionEllipsis]"-->
-                        <nz-card [nzCover]="coverTemplate">
+                        <!--nz-card [nzCover]="coverTemplate" [nzActions]="[actionEllipsis]"-->
+                        <nz-card [nzCover]="coverTemplate" [nzActions]="[actionDelete, actionEdit]">
                             <nz-card-meta
-                                nzTitle="Card title"
-                                nzDescription="This is the description"
+                                [nzTitle]="file.name"
+                                nzDescription=""
                                 [nzAvatar]="avatarTemplate"
                             ></nz-card-meta>
-                            <ng-template #avatarTemplate>
-                                <nz-avatar [nzSrc]="file.url"></nz-avatar>
+                              <ng-template #avatarTemplate>
+                                <!--nz-avatar [nzSrc]="file.url"></nz-avatar-->
                               </ng-template>
                               <ng-template #coverTemplate>
-                                <!--img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" /-->
-                                <img nz-image (click)="onClickFile($event, file)" nzDisablePreview *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '100%', cursor: 'pointer' }">
+                                <!--nzDisablePreview-->
+                                <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '100%', cursor: 'pointer' }">
                               </ng-template>
-                              <!--ng-template #actionSetting>
-                                <i nz-icon nzType="setting"></i>
+                              <ng-template #actionDelete>
+                                <i nz-icon nzType="delete" (click)="onClickDeleteFile($event, file)"></i>
                               </ng-template>
                               <ng-template #actionEdit>
-                                <i nz-icon nzType="edit"></i>
+                                <i nz-icon nzType="edit" (click)="onClickEditFile($event, file)"></i>
                               </ng-template>
-                              <ng-template #actionEllipsis>
+                              <!--ng-template #actionEllipsis>
                                 <i nz-icon nzType="ellipsis"></i>
                               </ng-template-->
                         </nz-card>
@@ -180,7 +174,7 @@
                   <!--div class="requirements-box"-->
                     <button nz-button nzType="primary" [disabled]="disabledAgregarRequerimiento()" (click)="agregarRequerimiento()">Agregar requerimiento</button>
                     <nz-list class="demo-loadmore-list" *ngIf="currentFile">
-                      <nz-list-item *ngFor="let item of findRequerimientos()">
+                      <nz-list-item *ngFor="let item of currentFile.requerimientos">
                           <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
                             <input type="text" nz-input [ngModel]="item.descripcion" (ngModelChange)="onChangeReq($event, item)" >
                           </nz-input-group>
@@ -203,155 +197,5 @@
   </nz-collapse-panel>
 </nz-collapse>
 <br>
-<button nz-button class="button-out" nzType="primary">Salir<i nz-icon nzType="home" nzTheme="outline"></i></button>
-
-
-
-
-
-
-<!--div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }"-->
-<!--div nz-row [nzGutter]="{ lg: 32 }">
-  <div nz-col nzSpan="6">
-    
-    <form nz-form [formGroup]="validateForm" class="login-form">
-      <nz-form-item>
-        <nz-form-control nzHasFeedback nzErrorTip="Por favor ingresa un título!">
-          <nz-input-group>
-            <input type="text" nz-input formControlName="titulo" placeholder="Titulo" required/>
-          </nz-input-group>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-control  nzHasFeedback nzErrorTip="Por favor ingrese un subtítulo!">
-          <nz-input-group>
-            <input type="text" nz-input formControlName="subtitulo" placeholder="Subtítulo" />
-          </nz-input-group>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-          <nz-form-control nzHasFeedback nzErrorTip="Por favor ingrese una cantidad!">
-            <nz-input-group>
-              <input type="number" nz-input formControlName="cantidad" placeholder="Cantidad (por defecto 1)"/>
-            </nz-input-group>
-          </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-          <nz-form-control  nzErrorTip="El alto debe ser mayor a cero!">
-              <nz-input-group>
-                <input type="number" nz-input formControlName="alto" placeholder="Alto (px)"/>
-              </nz-input-group>
-          </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-          <nz-form-control nzErrorTip="El ancho debe ser mayor a cero!">
-              <nz-input-group>
-                <input type="number" nz-input formControlName="ancho" placeholder="Ancho (px)"/>
-              </nz-input-group>
-          </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-          <nz-form-control>
-              <nz-input-group>
-                <nz-select nzShowSearch nzAllowClear id="tipografia" nzPlaceHolder="Tipografía" formControlName="tipografia" [nzOptions]="tipografias" style=" min-width: 370px;"></nz-select>
-              </nz-input-group>
-          </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-control nzHasFeedback nzErrorTip="Por favor ingrese un tipo!">
-            <nz-input-group>
-              <nz-select nzShowSearch nzAllowClear id="tipos" nzPlaceHolder="Tipo" formControlName="tipo" [nzOptions]="tiposDePedidos" style=" min-width: 370px;"></nz-select>
-            </nz-input-group>
-        </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-control>
-        <nz-input-group>
-          <nz-select nzAllowClear nzPlaceHolder="Colores" nzMode="multiple" formControlName="color" [nzCustomTemplate]="multipleTemplate" [nzOptions]="colores" style=" min-width: 370px;">
-          </nz-select>
-          <ng-template #multipleTemplate let-selected>
-            <div class="ant-select-selection-item-content">
-              <nz-badge [nzColor]="selected.nzValue"></nz-badge>
-                {{ selected.nzLabel }}
-            </div>
-          </ng-template>
-        </nz-input-group>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-input-group>
-        <nz-textarea-count [nzMaxCharacterCount]="100" >
-          <textarea rows="4" placeholder="Descripción" formControlName="comentario" nz-input></textarea>
-        </nz-textarea-count>
-      </nz-input-group>
-    </nz-form-item>
-    <br>  
-    <button 
-      nz-button class="login-form-button login-form-margin" 
-      [nzLoading]="uploading"
-      (click)="onClickAlta()" 
-      [nzType]="'primary'">{{ uploading ? 'Subiendo...' : 'Alta' }} 
-    </button>
-    <button nz-button class="button-clear" (click)="resetForm()">Limpiar</button>
-  </form>
-  </div>
-  <div nz-col nzSpan="6">
-    <div class="inner-box">
-      
-      <nz-upload
-        nzAction="http://localhost:8080/files/upload"
-        nzListType="picture-card"
-        [(nzFileList)]="fileList"
-        [nzShowButton]="fileList.length < 8"
-        [nzPreview]="handlePreview"
-        (nzChange)="handleChange($event)"
-        *ngIf="currentPedido"
-      >
-        <div>
-          <i nz-icon nzType="plus"></i>
-          <div style="margin-top: 8px">Upload</div>
-        </div>
-      </nz-upload>
-      <nz-modal
-        [nzVisible]="previewVisible"
-        [nzContent]="modalContent"
-        [nzFooter]="null"
-        (nzOnCancel)="previewVisible = false"
-      >
-        <ng-template #modalContent>
-          <img nz-image nzDisablePreview *ngIf="previewImage" [nzSrc]="previewImage"  [ngStyle]="{ width: '100%' }" />
-        </ng-template>
-      </nz-modal>
-    </div>
-  </div>
-  <div nz-col nzSpan="6">
-    <div class="inner-box">
-        <nz-list>
-          <nz-list-item *ngFor="let file of files">
-            <img nz-image (click)="onClick($event, file)" nzDisablePreview *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '100%', cursor: 'pointer' }">
-          </nz-list-item>
-        </nz-list>        
-    </div>
-  </div>
-  <div nz-col nzSpan="6">
-    <div class="requirements-box">
-    
-
-      <button nz-button nzType="primary" [disabled]="disabledAgregarRequerimiento()" (click)="agregarRequerimiento()">Agregar requerimiento</button>
-      <nz-list class="demo-loadmore-list" *ngIf="currentFile">
-        <nz-list-item *ngFor="let item of findRequerimientos()">
-            <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-              <input type="text" nz-input [ngModel]="item.descripcion" (ngModelChange)="onChangeReq($event, item)" >
-            </nz-input-group>
-            <ng-template #suffixIconButton>
-              <button nz-button nzType="primary" title="eliminar" (click)="onClickEliminarReq($event, item)" nzSearch><i nz-icon nzType="close-circle" nzTheme="outline"></i></button>
-            </ng-template>
-        </nz-list-item>
-        <nz-list-footer><button nz-button nzType="primary" [disabled]="currentFile && currentFile.requerimientos && currentFile.requerimientos.length <= 0" (click)="agregarTodosLosRequerimientos()">Aceptar</button></nz-list-footer>  
-      </nz-list>
-      
-    
-    </div>
-  </div>
-</div-->
+<button nz-button class="button-out" nzType="primary" (click)="goOutside()">Salir<i nz-icon nzType="home" nzTheme="outline"></i></button>
 

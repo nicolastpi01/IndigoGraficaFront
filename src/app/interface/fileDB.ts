@@ -1,11 +1,10 @@
-import { Requerimiento } from "../pages/nuevo/nuevo.component";
-
+import { Requerimiento } from "./requerimiento";
 
 
 export interface FileDB {
-    id?: String,
-    name: String,
-    type: String,
+    id?: string,
+    name: string,
+    type: string,
     data: Blob,
     url?: string,
     requerimientos: Requerimiento[]

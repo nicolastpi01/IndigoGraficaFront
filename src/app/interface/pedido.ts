@@ -1,4 +1,4 @@
-import { newArray } from "@angular/compiler/src/util";
+import { Color } from "./color";
 import { Estado } from "./estado";
 import { FileDB } from "./fileDB";
 import { Tipo } from "./tipo";
@@ -7,23 +7,26 @@ import { Usuario } from "./usuario";
 
 export class Pedido {
     id?: number;
-    propietario!: Usuario;
-    cantidad!: number; 
-    nombre!: string; 
-    nombreExtendido!: string; 
+    propietario?: Usuario | string;
+    cantidad?: number; 
+    nombre?: string; 
+    nombreExtendido?: string; 
     tipografia?: string; 
     tipo?: Tipo; 
     alto?: number; 
-    ancho?: number; 
+    ancho?: number;
+    state?: string; // Estado
     descripcion?: string; 
-    colores!: string[]; 
+    colores?: Color[]; 
     //boceto?: File;
-    estado!: Estado;
+    //estado!: Estado;
     editor?: Usuario;
+    encargado?: Usuario | null;
     files?:  Array<FileDB> = [];
 
-    Pedido() {}
+    //Pedido() {}
     
+    /*
     errores: Error[] = [];
 
     validar(): Error[] {
@@ -37,6 +40,7 @@ export class Pedido {
     errorParaElCampo = (campo: String): Error | undefined => {
         return this.errores.find((_error) => _error.campo = campo);
     };
+    */
 }
 
 export interface Error {

@@ -137,5 +137,11 @@
   .inner-content {
     padding: 24px;
     background: #fff;
-    height: 100%;
+    overflow: 'hidden';
+    margin: '1px 1px'; 
+    
+   /* min-height: 'calc(105vh - 128px)'; */
+    background: '#f7f8f8';
+    height: 100%; 
   }
+  
