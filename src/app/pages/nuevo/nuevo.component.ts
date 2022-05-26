@@ -15,6 +15,7 @@ import { Pedido } from 'src/app/interface/pedido';
 import { FileDB } from 'src/app/interface/fileDB';
 import { FileService } from 'src/app/services/file.service';
 import { Requerimiento } from 'src/app/interface/requerimiento';
+import { ThisReceiver } from '@angular/compiler';
 
 
 @Component({
@@ -39,7 +40,7 @@ export class NuevoComponent implements OnInit {
   previewVisible = false;
   isVisibleMiddle = false;
   currentFile: FileDB | undefined;
-  files: Array<FileDB> = []
+  files: Array<FileDB> | undefined = []
   loadingEliminarPedido= false;
 
   constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, private tipoService: TipoPedidoService, 
@@ -176,21 +177,26 @@ export class NuevoComponent implements OnInit {
   }
 
   async handleChange({ file, fileList }: NzUploadChangeParam): Promise<void> {
+    //console.log("Handle Change")
     const status = file.status;
     if (status !== 'uploading') {
     }
     if (status === 'done') {
       this.msg.success(`${file.name} Agregado el archivo correctamente!`);
 
-      // Actualizar el pedido
       file['preview'] = await this.getBase64(file.originFileObj!);
       this.fileList = fileList.map((nZFile: NzUploadFile) => {
-        return {
-          ...nZFile, url: file['preview']
+        if(nZFile.response.id === file.response.id) {
+          console.log("Paso por aca")
+          return {
+            ...nZFile, url: file['preview']
+          }
+        }
+        else {
+          return nZFile;
         }
       });
       
-      // Armo el nuevo File con la rta del server
       let newFileDB: FileDB = {
         id: file.response.id,
         name: file.response.name,
@@ -199,30 +205,34 @@ export class NuevoComponent implements OnInit {
         requerimientos: file.response.requerimientos,
         url: file.url || file['preview']
       }
-      
-      //this.currentPedido?.files?.push(newFileDB); // Agrego el current File al Current Pedido. 
+      this.currentPedido?.files?.push(newFileDB); 
 
-      if(this.currentPedido && this.currentPedido.files) this.service.update(
-        {
-          ...this.currentPedido, 
-          files: [...this.currentPedido.files, newFileDB]
-        }).
+      //if(this.currentPedido && this.currentPedido.files) 
+      this.service.update(this.currentPedido).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe(async (e: any) => { // revisar el any
             //this.uploading = false;
-            //console.log("Pedido response :", e.body);
             let pedido = (e.body as Pedido) 
             this.currentPedido = pedido;
-            let lastFile :FileDB | undefined = this.currentPedido.files?.pop();
+            this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
+              return {
+                ...file, url: this.fileList.find((nZFile: NzUploadFile) => nZFile.response.id === file.id)?.url
+              }
+            });
 
-            if(lastFile) {
-              this.currentFile = {...lastFile, url: newFileDB.url }; // ref. al current File 
-              this.files.push(this.currentFile) // Agrego el current File a la lista de Files subidos
-              this.currentPedido.files?.push(this.currentFile);
-              //console.log("Files :", this.files)
+            let currentFileAux: FileDB | undefined = this.currentPedido.files?.find((file: FileDB) => file.id === newFileDB.id);
+            if (currentFileAux) this.files?.push(currentFileAux);
+            this.currentFile = currentFileAux;
+            /*
+            if(newFile) {
+              this.currentFile = {...newFile, url: newFileDB.url }; // ref. al current File
+              if(this.files) this.files = [...this.files, this.currentFile] 
+              //this.files?.push(this.currentFile) // Agrego el current File a la lista de Files subidos
+              //this.currentPedido.files?.push(this.currentFile);
             }
-            
-            this.files = this.files.slice(-3); // Me quedo con los ultimos tres Files
+            */
+            //this.files = this.files?.slice(-3); // Me quedo con los ultimos tres Files
+
             //console.log("Current Pedido :", this.currentPedido)
             //console.log("Current File :", this.currentFile)
             //console.log("Files :", this.files)
@@ -230,7 +240,6 @@ export class NuevoComponent implements OnInit {
             this.msg.success('Se actualizo el pedido correctamente!');
         }),
         () => {
-            console.log("Paso por acá")
             this.currentPedido?.files?.pop();
             this.msg.error('Fallo la generación del pedido!');
         }
@@ -253,14 +262,7 @@ export class NuevoComponent implements OnInit {
     this.previewVisible = true;
   };
 
-  onClickEditFile = (event: MouseEvent, item: FileDB) => {
-    this.currentFile = item;
-    this.showModalMiddle();
-  }
   
-  showModalMiddle(): void {
-    this.isVisibleMiddle = true;
-  }
 
   eliminarPedido = () :void => {
     if(!this.currentPedido) {
@@ -291,7 +293,7 @@ export class NuevoComponent implements OnInit {
     }).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe(async (e: any) => { // revisar el any
-            this.files = this.files.filter((file: FileDB) => item.id !== file.id) 
+            this.files = this.files?.filter((file: FileDB) => item.id !== file.id) 
             this.fileList = this.fileList.filter((file: NzUploadFile) => file.response.id !== item.id)
             this.currentPedido = (e.body as Pedido);
             
@@ -309,27 +311,44 @@ export class NuevoComponent implements OnInit {
 
     //console.log("FileList: ", this.fileList)
     //console.log("CurrentFile: ", this.currentFile)
-    console.log("CurrentPedido: ", this.currentPedido)
+    //console.log("CurrentPedido: ", this.currentPedido)
     //console.log("CurrentFiles: ", this.files)
   };
 
   disabledAgregarRequerimiento = () :boolean => {
-    return this.currentFile !== undefined && this.currentFile.requerimientos.length >= 8 
+    return this.currentFile !== undefined && this.currentFile.requerimientos !== undefined && this.currentFile.requerimientos.length >= 8 
   };
   
   agregarRequerimiento = () : void => {
+    //console.log("OnClickAgregarRequerimiento")
     let nuevo :Requerimiento = {
       descripcion: '',
       chequeado: false,
       desabilitado: true,
-      llave: this.currentFile?.requerimientos.length
+      llave: this.currentFile?.requerimientos?.length
     };
-    this.currentFile?.requerimientos.push(nuevo);
+    //this.currentFile?.requerimientos?.push(nuevo); No estamos agregando
+    if (this.currentFile && this.currentFile.requerimientos) {
+      console.log("OnClickAgregarRequerimiento")
+      this.currentFile.requerimientos = [...this.currentFile.requerimientos, nuevo ]
+    }
+    //console.log("Current File :", this.currentFile)
+  }
+
+  onClickEditFile = (event: MouseEvent, item: FileDB) => {
+    console.log("OnClickEditFile")
+    this.currentFile = item;
+    this.showModalMiddle();
   }
 
   handleOkMiddle(): void {
-    this.isVisibleMiddle = false;
+    console.log("onClickAceptarModal")
     this.agregarTodosLosRequerimientos();
+    this.isVisibleMiddle = false;
+  }
+
+  showModalMiddle(): void {
+    this.isVisibleMiddle = true;
   }
 
   goOutside = () => {
@@ -338,38 +357,55 @@ export class NuevoComponent implements OnInit {
   };
   
   agregarTodosLosRequerimientos = () :void => {
-    let url: string | undefined = this.currentFile?.url;
-    this.fileService.update(this.currentFile).
-        pipe(filter(e => e instanceof HttpResponse))
-        .subscribe( (e: any) => { 
-          let file = (e.body as FileDB)
-          this.currentFile = {...file, url: url }
-           
-          this.files = this.files.map((file: FileDB) => { 
-            if(file.id === this.currentFile?.id) 
-              return {
-                ...file, requerimientos: this.currentFile ? this.currentFile.requerimientos : file.requerimientos // revisar aca
-              }
-              else return file
-          });
-        
-          this.service.getPedido(this.currentPedido?.id).subscribe((e: any) => { 
-            this.currentPedido = (e as Pedido);
-              this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
-                return {
-                  ...file, url: this.fileList.find((nZFile: NzUploadFile) => nZFile.response.id === file.id)?.url
-                }
-              })
 
-              console.log("Current Pedido :", this.currentPedido)
-          });
-          
-          /* fileList: NzUploadFile[] = []; // No actualizo */
-          this.msg.success('Se agregaron los requerimientos correctamente!');
-        }),
-        () => {
-            this.msg.error('Hubo un error, no se pudieron actualizar los requerimientos!');
+    /*
+    let pedido = (e.body as Pedido) 
+    this.currentPedido = pedido;
+    this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
+      return {
+        ...file, url: this.fileList.find((nZFile: NzUploadFile) => nZFile.response.id === file.id)?.url
+      }
+    });
+
+    let currentFileAux: FileDB | undefined = this.currentPedido.files?.find((file: FileDB) => file.id === newFileDB.id);
+    if (currentFileAux) this.files?.push(currentFileAux);
+    this.currentFile = currentFileAux;
+    */
+    this.service.update(this.currentPedido).
+    pipe(filter(e => e instanceof HttpResponse))
+    .subscribe( (e: any) => { 
+      let pedido = (e.body as Pedido)
+      this.currentPedido = pedido;
+      this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
+        return {
+          ...file, url: this.fileList.find((nZFile: NzUploadFile) => nZFile.response.id === file.id)?.url
         }
+      });
+      //let newCurrentFile :FileDB | undefined = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)
+      //this.currentFile = newCurrentFile
+
+      //this.files = this.currentPedido.files; 
+      /*
+      this.files?.map((file: FileDB) => {
+        if(file.id === this.currentFile?.id) {
+          return {
+            ...file, requerimientos: this.currentFile?.requerimientos
+            }
+          }
+          else {
+            return file
+          }
+      });
+      */
+
+      this.msg.success('Se agregaron los requerimientos correctamente!');
+      //console.log("CurrentFile :", this.currentFile)
+      //console.log("Files :", this.files)
+      console.log("Current Pedido :", this.currentPedido)
+    });
+    () => {
+      this.msg.error('Hubo un error, no se pudieron agregar los requerimientos!');
+    } 
   };
 
   onChangeReq = (value: string, item: Requerimiento): void => {
@@ -377,38 +413,67 @@ export class NuevoComponent implements OnInit {
   }
 
   handleCancelMiddle(): void {
-    // Si no guardo los requerimientos deberian vaciarse
+    // Si no guardo los requerimientos deberian vaciarse los current requerimientos no agregados
+    // this.currentFile?.requerimientos?.push(nuevo);
     this.isVisibleMiddle = false;
-  }
+  };
 
   onClickEliminarReq = (event: MouseEvent, item: Requerimiento): void => {
-    // ESPERA
     event.preventDefault
-    /*
-    let currentReq = this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)
-    if(currentReq) {
-      let filter = currentReq.requerimientos.filter((req: Requerimiento) => req.key !== item.key)
-      currentReq!.requerimientos = filter
-    }
-    */
-    if(item.id != undefined) {
+    if(item.id !== undefined) {
       // Si tiene id es porque se guardo, entonces debo llamar al servicio de actualizar Pedido
-      if(this.currentFile) this.currentFile.requerimientos = this.currentFile?.requerimientos.filter((req: Requerimiento) => req.id !== item.id)
-      this.fileService.update(this.currentFile).
+      console.log("Estoy eliminando un req que se persistio")
+      // JSON.parse(JSON.stringify(obj1)) deep copy
+      //if(this.currentFile) this.currentFile.requerimientos = this.currentFile?.requerimientos?.filter((req: Requerimiento) => req.id !== item.id)
+      let url = this.currentFile?.url;
+      let currentFileCopy = JSON.parse(JSON.stringify(this.currentFile))
+      this.fileService.update({
+        ...currentFileCopy, requerimientos: currentFileCopy?.requerimientos?.filter((req: Requerimiento) => req.id !== item.id)
+      }).
           pipe(filter(e => e instanceof HttpResponse))
           .subscribe( (e: any) => { 
+            //if(this.currentFile) this.currentFile.requerimientos = this.currentFile?.requerimientos?.filter((req: Requerimiento) => req.id !== item.id)
             let file = (e.body as FileDB)
-            this.currentFile = file;
-            console.log("Current Pedido:", this.currentFile) 
-            this.msg.success('Se actualizo el pedido correctamente!');
+            this.currentFile = {...file, url };
+            let indexCurrentFileInFiles = this.files?.findIndex((f: FileDB) => f.id === file.id)
+            // ?.requerimientos?.filter((req: Requerimiento) => req.id !== item.id)
+            this.files = this.files?.map((file: FileDB, index: number) => {
+              if(index === indexCurrentFileInFiles) {
+                return {
+                  ...file, requerimientos: file.requerimientos?.filter((req: Requerimiento) => req.id !== item.id)
+                }
+              }
+              else {
+                return file
+              }
+            })
+            /*
+            let indexCurrentFileInPedido = this.currentPedido?.files?.findIndex((f: FileDB) => f.id === file.id)
+            if(this.currentPedido) this.currentPedido.files = this.currentPedido?.files?.map((file: FileDB, index: number) => {
+              if(index === indexCurrentFileInPedido) {
+                return {
+                  ...file, requerimientos: file.requerimientos?.filter((req: Requerimiento) => req.id !== item.id)
+                }
+              }
+              else {
+                return file
+              }
+            })
+            */
+            // actualizar la lista de files X
+            // actualizar current File X
+            // Actualizar current Pedido
+            console.log("Current Pedido:", this.currentPedido) // Hay que eliminar tambien de currentPedido
+            console.log("Current Files :", this.files)
+            console.log("Current File :", this.currentFile) 
+            this.msg.success('Se elimino el requerimiento correctamente!');
           }),
           () => {
-              this.msg.error('Hubo un error, no se pudieron actualizar los requerimientos!');
+              this.msg.error('Hubo un error, no se pudieron eliminar los requerimientos marcados!');
           }
     }
     else {
-      if(this.currentFile) this.currentFile.requerimientos = this.currentFile?.requerimientos.filter((req: Requerimiento) => req.llave !== item.llave)
-      //console.log("Current File :", this.currentFile);
+      if(this.currentFile) this.currentFile.requerimientos = this.currentFile?.requerimientos?.filter((req: Requerimiento) => req.llave !== item.llave)
     }
   }
 
@@ -419,6 +484,5 @@ export class NuevoComponent implements OnInit {
     this.fileList = [];
     this.files = [];
   }
-
 
 }

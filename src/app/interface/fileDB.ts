@@ -7,5 +7,5 @@ export interface FileDB {
     type: string,
     data: Blob,
     url?: string,
-    requerimientos: Requerimiento[]
+    requerimientos?: Requerimiento[]
 }

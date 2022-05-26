@@ -56,7 +56,7 @@ export class PedidoService {
     return this.http.request(req);
   }
 
-  update(pedido: Pedido): Observable<HttpEvent<Pedido>> {
+  update(pedido: Pedido | undefined): Observable<HttpEvent<Pedido>> {
     const req = new HttpRequest('PUT', `${this.baseUrl}`+this.api+'/update', pedido, {
       reportProgress: true,
       responseType: 'json'

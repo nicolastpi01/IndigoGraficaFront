@@ -144,7 +144,7 @@
                               </ng-template>
                               <ng-template #coverTemplate>
                                 <!--nzDisablePreview-->
-                                <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '100%', cursor: 'pointer' }">
+                                <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '100%', height: '140px', cursor: 'pointer' }">
                               </ng-template>
                               <ng-template #actionDelete>
                                 <i nz-icon nzType="delete" (click)="onClickDeleteFile($event, file)"></i>
