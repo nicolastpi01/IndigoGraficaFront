@@ -205,10 +205,13 @@ export class NuevoComponent implements OnInit {
         requerimientos: file.response.requerimientos,
         url: file.url || file['preview']
       }
-      this.currentPedido?.files?.push(newFileDB); 
+      //this.currentPedido?.files?.push(newFileDB);
+      
+      let currentPedidoCopy = JSON.parse(JSON.stringify(this.currentPedido))
+      currentPedidoCopy.files = [...currentPedidoCopy.files, newFileDB ]
 
       //if(this.currentPedido && this.currentPedido.files) 
-      this.service.update(this.currentPedido).
+      this.service.update(currentPedidoCopy).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe(async (e: any) => { // revisar el any
             //this.uploading = false;
@@ -221,7 +224,7 @@ export class NuevoComponent implements OnInit {
             });
 
             let currentFileAux: FileDB | undefined = this.currentPedido.files?.find((file: FileDB) => file.id === newFileDB.id);
-            if (currentFileAux) this.files?.push(currentFileAux);
+            if (currentFileAux && this.files) this.files = [...this.files, currentFileAux ] // this.files?.push(currentFileAux); 
             this.currentFile = currentFileAux;
             /*
             if(newFile) {
@@ -336,6 +339,7 @@ export class NuevoComponent implements OnInit {
   }
 
   onClickEditFile = (event: MouseEvent, item: FileDB) => {
+    event.preventDefault()
     //console.log("OnClickEditFile")
     this.currentFile = item;
     this.showModalMiddle();
@@ -379,13 +383,27 @@ export class NuevoComponent implements OnInit {
       this.currentPedido = pedido;
       this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
         return {
-          ...file, url: this.fileList.find((nZFile: NzUploadFile) => nZFile.response.id === file.id)?.url
+          ...file, url: this.fileList.find((nZFile: NzUploadFile) => nZFile.response.id === file.id)?.url,
+          requerimientos: file.requerimientos?.reverse()
         }
       });
       let newCurrentFile :FileDB | undefined = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)
       this.currentFile = newCurrentFile
 
-      this.files = this.currentPedido.files; 
+      this.files = this.files?.map((file: FileDB) => {
+        if(file.id === this.currentFile?.id) {
+          return {
+            ...file, requerimientos: file.requerimientos?.map((req: Requerimiento) => {
+              return {
+                ...req, id: this.currentFile?.requerimientos?.find((req2: Requerimiento) => req2.id === req.id)?.id
+              }
+            })//?.reverse() // USAR EL ORDEN DE LOS REQUERIMIENTOS QUE YA TIENE
+          }
+        }
+        else {
+          return file;
+        }
+      }) //this.currentPedido.files; 
       
       this.msg.success('Se agregaron los requerimientos correctamente!');
       //console.log("CurrentFile :", this.currentFile)
@@ -404,7 +422,7 @@ export class NuevoComponent implements OnInit {
   handleCancelMiddle(): void {
     // Si no guardo los requerimientos deberian vaciarse los current requerimientos no agregados
     // this.currentFile?.requerimientos?.push(nuevo);
-    if (this.currentFile) this.currentFile.requerimientos = this.currentFile.requerimientos?.filter((req: Requerimiento) => req.id !== undefined) 
+    //if (this.currentFile) this.currentFile.requerimientos = this.currentFile.requerimientos?.filter((req: Requerimiento) => req.id !== undefined) 
     this.isVisibleMiddle = false;
   };
 
