@@ -6,7 +6,7 @@ import { Tipo } from 'src/app/interface/tipo';
 import { Color } from 'src/app/interface/color';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { filter, Observable } from 'rxjs';
+import { filter } from 'rxjs';
 import {  HttpResponse } from '@angular/common/http';
 import {  NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 import { ColorService } from 'src/app/services/color.service';
@@ -15,8 +15,6 @@ import { Pedido } from 'src/app/interface/pedido';
 import { FileDB } from 'src/app/interface/fileDB';
 import { FileService } from 'src/app/services/file.service';
 import { Requerimiento } from 'src/app/interface/requerimiento';
-import { ThisReceiver } from '@angular/compiler';
-
 
 @Component({
   selector: 'app-nuevo',
@@ -248,7 +246,6 @@ export class NuevoComponent implements OnInit {
     }
   };
 
-
   getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -261,8 +258,6 @@ export class NuevoComponent implements OnInit {
     this.previewImage = file.url || file['preview'];
     this.previewVisible = true;
   };
-
-  
 
   eliminarPedido = () :void => {
     if(!this.currentPedido) {
@@ -402,8 +397,6 @@ export class NuevoComponent implements OnInit {
   }
 
   handleCancelMiddle(): void {
-    // Si no guardo los requerimientos deberian vaciarse los current requerimientos no agregados
-    // this.currentFile?.requerimientos?.push(nuevo);
     if (this.currentFile) this.currentFile.requerimientos = this.currentFile.requerimientos?.filter((req: Requerimiento) => req.id !== undefined) 
     this.isVisibleMiddle = false;
   };
