@@ -68,6 +68,10 @@ export class PedidoService {
     return this.http.get<Pedido[]>(`${this.baseUrl}/pedidos?state=`+ estado) 
   }
 
+  getPedido(id: number | undefined) :Observable<Pedido> {
+    return this.http.get<Pedido>(`${this.baseUrl}`+`${this.api}/${id}`);
+  }
+
   reservar(pedido: Pedido) : Observable<any> {
     
     return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, {...pedido, estado: new Reservado(), editor: this.usuarioLogueado }, this.httpOptions).pipe(

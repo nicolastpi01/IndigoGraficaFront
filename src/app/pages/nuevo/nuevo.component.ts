@@ -185,12 +185,9 @@ export class NuevoComponent implements OnInit {
       // Actualizar el pedido
       file['preview'] = await this.getBase64(file.originFileObj!);
       this.fileList = fileList.map((nZFile: NzUploadFile) => {
-        if(nZFile.uid == file.uid) {
-          return {
-            ...nZFile, url: file['preview']
-          }
+        return {
+          ...nZFile, url: file['preview']
         }
-        else return nZFile
       });
       
       // Armo el nuevo File con la rta del server
@@ -203,9 +200,13 @@ export class NuevoComponent implements OnInit {
         url: file.url || file['preview']
       }
       
-      this.currentPedido?.files?.push(newFileDB); // Agrego el current File al Current Pedido. 
+      //this.currentPedido?.files?.push(newFileDB); // Agrego el current File al Current Pedido. 
 
-      if(this.currentPedido) this.service.update(this.currentPedido).
+      if(this.currentPedido && this.currentPedido.files) this.service.update(
+        {
+          ...this.currentPedido, 
+          files: [...this.currentPedido.files, newFileDB]
+        }).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe(async (e: any) => { // revisar el any
             //this.uploading = false;
@@ -218,13 +219,14 @@ export class NuevoComponent implements OnInit {
               this.currentFile = {...lastFile, url: newFileDB.url }; // ref. al current File 
               this.files.push(this.currentFile) // Agrego el current File a la lista de Files subidos
               this.currentPedido.files?.push(this.currentFile);
+              //console.log("Files :", this.files)
             }
             
             this.files = this.files.slice(-3); // Me quedo con los ultimos tres Files
             //console.log("Current Pedido :", this.currentPedido)
             //console.log("Current File :", this.currentFile)
             //console.log("Files :", this.files)
-            console.log("FileList :", this.fileList)
+            //console.log("FileList :", this.fileList)
             this.msg.success('Se actualizo el pedido correctamente!');
         }),
         () => {
@@ -282,20 +284,33 @@ export class NuevoComponent implements OnInit {
   };
 
   onClickDeleteFile = (event: MouseEvent, item: FileDB) => {
-    // Hay que llamar al servicio!!
-    this.files = this.files.filter((file: FileDB) => item.id !== file.id)
-    this.currentPedido = {
+    //console.log("FileList :", this.fileList)
+    this.service.update({
       ...this.currentPedido,
-      files: this.files
-    };
-    //this.currentFile = undefined // y si no es el ultimo ?
-  
-    this.fileList = this.fileList.filter((file: NzUploadFile) => file.response.id !== item.id)
+      files: this.currentPedido?.files?.filter((file: FileDB) => file.id !== item.id)
+    }).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe(async (e: any) => { // revisar el any
+            this.files = this.files.filter((file: FileDB) => item.id !== file.id) 
+            this.fileList = this.fileList.filter((file: NzUploadFile) => file.response.id !== item.id)
+            this.currentPedido = (e.body as Pedido);
+            
+            this.currentPedido.files = this.currentPedido.files?.map((f: FileDB) => {
+              return {
+                ...f, url: this.fileList.find((nZFile: NzUploadFile) => nZFile.response.id === f.id)?.url
+              }
+            });
+            //console.log("Current Pedido :", this.currentPedido)
+            this.msg.success('File eliminado correctamente!');
+        }),
+        () => {
+            this.msg.error('No pudo eliminarse el File!');
+        }
 
-    console.log("FileList: ", this.fileList)
+    //console.log("FileList: ", this.fileList)
     //console.log("CurrentFile: ", this.currentFile)
     console.log("CurrentPedido: ", this.currentPedido)
-    console.log("CurrentFiles: ", this.files)
+    //console.log("CurrentFiles: ", this.files)
   };
 
   disabledAgregarRequerimiento = () :boolean => {
@@ -310,7 +325,6 @@ export class NuevoComponent implements OnInit {
       llave: this.currentFile?.requerimientos.length
     };
     this.currentFile?.requerimientos.push(nuevo);
-    //console.log("Current File :", this.currentFile);
   }
 
   handleOkMiddle(): void {
@@ -324,13 +338,33 @@ export class NuevoComponent implements OnInit {
   };
   
   agregarTodosLosRequerimientos = () :void => {
-    // Cambiar por el que updatea el Pedido
+    let url: string | undefined = this.currentFile?.url;
     this.fileService.update(this.currentFile).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe( (e: any) => { 
           let file = (e.body as FileDB)
-          this.currentFile = file;
-          console.log("Current Pedido:", this.currentPedido) 
+          this.currentFile = {...file, url: url }
+           
+          this.files = this.files.map((file: FileDB) => { 
+            if(file.id === this.currentFile?.id) 
+              return {
+                ...file, requerimientos: this.currentFile ? this.currentFile.requerimientos : file.requerimientos // revisar aca
+              }
+              else return file
+          });
+        
+          this.service.getPedido(this.currentPedido?.id).subscribe((e: any) => { 
+            this.currentPedido = (e as Pedido);
+              this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
+                return {
+                  ...file, url: this.fileList.find((nZFile: NzUploadFile) => nZFile.response.id === file.id)?.url
+                }
+              })
+
+              console.log("Current Pedido :", this.currentPedido)
+          });
+          
+          /* fileList: NzUploadFile[] = []; // No actualizo */
           this.msg.success('Se agregaron los requerimientos correctamente!');
         }),
         () => {
@@ -348,6 +382,7 @@ export class NuevoComponent implements OnInit {
   }
 
   onClickEliminarReq = (event: MouseEvent, item: Requerimiento): void => {
+    // ESPERA
     event.preventDefault
     /*
     let currentReq = this.requerimientos.find((req: RequerimientoUbicacion) => req.index === this.index)

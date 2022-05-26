@@ -20,4 +20,9 @@ export class FileService {
     return this.http.request(req);
   }
 
+  delete(id: string | undefined): Observable<HttpEvent<any>> {
+    const req = new HttpRequest('DELETE', `${this.baseUrl}`+`${this.api}/${id}`)
+    return this.http.request(req);
+  }
+
 }
