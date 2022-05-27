@@ -4,6 +4,8 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/bienvenido' },
   { path: 'bienvenido', loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomeModule) },
+  { path: 'login', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule) },
+  { path: 'regisrar', loadChildren: () => import('./pages/registrar/registrar.module').then(m => m.RegistrarModule) },
   { path: 'todos', loadChildren: () => import('./pages/pedidos/pedidos.module').then(m => m.PedidosModule) },
   { path: 'nuevo', loadChildren: () => import('./pages/nuevo/nuevo.module').then(m => m.NuevoModule) },
   { path: 'reservados', loadChildren: () => import('./pages/reservados/reservados.module').then(m => m.ReservadosModule) },

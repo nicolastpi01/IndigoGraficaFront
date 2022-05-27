@@ -1,0 +1,9 @@
+nz-layout {
+    background: #fff;
+    color: #fff;
+}
+
+nz-footer {
+    padding: 0%;
+    align-self: flex-end;
+}

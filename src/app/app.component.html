@@ -17,22 +17,22 @@
           <li nz-menu-item nzMatchRouter>
             <a routerLink="/bienvenido">Bienvenido</a>
           </li>
-          <li nz-menu-item nzMatchRouter>
+          <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesCliente">
             <a routerLink="/nuevo">Nuevo</a>
           </li>
-          <li nz-menu-item nzMatchRouter>
+          <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado">
             <a routerLink="/todos">Todos</a>&nbsp;<nz-badge nzStandalone [nzCount]="cantidadPendienteAtencion" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColor(), color: '#000000' }"></nz-badge>
           </li>
-          <li nz-menu-item nzMatchRouter>
+          <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado">
             <a routerLink="/reservados">Reservados</a>&nbsp;<nz-badge nzStandalone [nzCount]="cantidadReservados" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColor(), color: '#000000' }"></nz-badge>
           </li>
-          <li nz-menu-item nzMatchRouter>
+          <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado">
             <a routerLink="/revision">En revisión</a>&nbsp;<nz-badge nzStandalone [nzCount]="cantidadEnRevision" [nzOverflowCount]="99" [nzStyle]="{ backgroundColor: determiteBadgeColor(), color: '#000000' }"></nz-badge>
           </li>
-          <li nz-menu-item nzMatchRouter>
+          <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado">
             <a routerLink="/retornados">Retornados</a>&nbsp;<nz-badge nzStandalone [nzCount]="cantidadRetornados" [nzOverflowCount]="99" [nzStyle]="{ backgroundColor: determiteBadgeColor(), color: '#000000' }"></nz-badge>
           </li>
-          <li nz-menu-item nzMatchRouter>
+          <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado">
             <a routerLink="/finalizados">Finalizados</a>&nbsp;<i nz-icon nzType="flag" nzTheme="outline"></i>&nbsp;<nz-badge nzStandalone [nzCount]="cantidadFinalizados" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColor(), color: '#000000' }"></nz-badge>
           </li>
         </ul>
@@ -48,7 +48,28 @@
                [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
             ></i>
         </span>
-        <span (click)="onClickCarrito()">
+        <!-- login -->
+        <span (click)="showModalLogin()" *ngIf="!isLoggedIn">
+          <i class="cart-normal" 
+             nz-icon nzType="login" 
+             nzTheme="outline">
+          </i>
+        </span>
+        <!-- logout -->
+        <span (click)="logout()" *ngIf="isLoggedIn">
+          <i class="cart-normal" 
+             nz-icon nzType="logout" 
+             nzTheme="outline">
+          </i>
+        </span>
+        <!-- signon -->
+        <span (click)="showModalRegistrar()" *ngIf="!isLoggedIn">
+          <i class="cart-normal" 
+             nz-icon nzType="user-add" 
+             nzTheme="outline">
+          </i>
+        </span>
+        <span (click)="onClickCarrito()" *ngIf="isLoggedIn">
           <i  class="cart-normal"
               nz-icon
               nzType="shopping-cart" 
@@ -68,6 +89,20 @@
     <nz-content>
       <div class="inner-content">
         <router-outlet></router-outlet>
+        <nz-layout>
+          <nz-modal [nzFooter]="null" [(nzVisible)]="isVisibleLogin" nzTitle="login" (nzOnCancel)="handleCancelLogin()" (nzOnOk)="handleOkLogin()">
+            <ng-container *nzModalContent>
+              <login-component></login-component>
+            </ng-container>
+          </nz-modal>
+        </nz-layout>
+        <nz-layout>
+          <nz-modal [nzFooter]="null" [(nzVisible)]="isVisibleRegistrar" nzTitle="Registrarse" (nzOnCancel)="handleCancelRegistrar()" (nzOnOk)="handleOkRegistrar()">
+            <ng-container *nzModalContent>
+              <registrar-component></registrar-component>
+            </ng-container>
+          </nz-modal>
+        </nz-layout>
       </div>
     </nz-content>
   </nz-layout>

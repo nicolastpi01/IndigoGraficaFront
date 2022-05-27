@@ -1,6 +1,7 @@
 import { Component, HostBinding } from '@angular/core';
 import { Router } from '@angular/router';
 import { PedidoService } from './services/pedido.service';
+import { TokenStorageService } from './services/token-storage.service';
 import { CLEAR, DANGER, FINALIZADOS, PENDIENTEATENCION, RESERVADO, RETORNADOS, REVISION, WARNING } from './utils/const/constantes';
 
 @Component({
@@ -9,20 +10,39 @@ import { CLEAR, DANGER, FINALIZADOS, PENDIENTEATENCION, RESERVADO, RETORNADOS, R
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  isLoggedIn = false;
   isCollapsed = false;
   cantidadPendienteAtencion : number = 0;
   cantidadReservados: number = 0;
   cantidadFinalizados: number = 0;
   cantidadEnRevision: number = 0;
   cantidadRetornados: number = 0;
+  mostrarOpcionesCliente = false;
+  mostrarOpcionesEncargado = false;
+  private roles: string[] = [];
+  username: string = '';
   title = 'indigo'
+
+  isVisible = false;
+  isVisibleLogin = false;
+  isVisibleRegistrar = false;
 
   @HostBinding('class.is-open')
   isOpen = false;
   
-  constructor(private service: PedidoService, private _router: Router) {}
+  constructor(private service: PedidoService, private _router: Router,private tokenStorageService: TokenStorageService) {}
 
   ngOnInit() {
+    this.isLoggedIn = !!this.tokenStorageService.getToken();
+    if (this.isLoggedIn) {
+      const user = this.tokenStorageService.getUser();
+      this.roles = user.roles;
+
+      this.mostrarOpcionesCliente = this.roles.includes('ROLE_USER');
+      this.mostrarOpcionesEncargado = this.roles.includes('ROLE_ENCARGADO');
+
+      this.username = user.username;
+    }
     this.buscarTodos()
     this.service.change.subscribe((isOpen: any) => {
       this.isOpen = isOpen;
@@ -81,5 +101,41 @@ export class AppComponent {
   
   onClickCarrito = () => {
     this._router.navigateByUrl('/carrito')
+  }
+
+  showModal(): void {
+    this.isVisibleLogin = true;
+  }
+
+  // modal login
+  showModalLogin(): void {
+    console.log('modal login show');
+    this.isVisibleLogin = true;
+  }
+
+  handleOkLogin(): void {
+    this.isVisibleLogin = false;
+  }
+
+  handleCancelLogin(): void {
+    this.isVisibleLogin = false;
+  }
+
+  showModalRegistrar(): void {
+    console.log('modal login show');
+    this.isVisibleRegistrar = true;
+  }
+
+  handleOkRegistrar(): void {
+    this.isVisibleRegistrar = false;
+  }
+
+  handleCancelRegistrar(): void {
+    this.isVisibleRegistrar = false;
+  }
+
+  logout() {
+    this.tokenStorageService.signOut();
+    window.location.reload();
   }
 }
