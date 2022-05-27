@@ -46,14 +46,14 @@ fixture.detectChanges();
 
 const altaButton = fixture.nativeElement.querySelector('.login-form-button');
 
-const previewMiniImage = fixture.nativeElement.querySelector('.previewImage');
+const uploadFile = fixture.nativeElement.querySelector('.upload-currentPedido');
 
 it('Deberia coincidir el texto del boton Alta en el acordeon de arriba', () => {
   expect(altaButton.textContent).toContain('Alta');
 });
 
-it('Deberia no encontrar la imagen de muestra del File mini', () => {
-  expect(previewMiniImage).toBeNull() 
+it('Deberia no encontrar el componente para subir un file', () => {
+  expect(uploadFile).toBeNull() 
 });
 
 // Luego agregar un test de Service !!
