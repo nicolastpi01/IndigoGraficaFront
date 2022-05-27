@@ -20,6 +20,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { LoginModule } from './pages/login/login.module';
 import { RegistrarModule } from './pages/registrar/registrar.module';
 
+
 registerLocaleData(es);
 
 @NgModule({

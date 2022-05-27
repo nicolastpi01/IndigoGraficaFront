@@ -41,6 +41,7 @@ export class NuevoComponent implements OnInit {
   files: Array<FileDB> | undefined = []
   loadingEliminarPedido= false;
 
+  
   constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, private tipoService: TipoPedidoService, 
     private colorService :ColorService, private _router: Router, private msg: NzMessageService) {}
 
