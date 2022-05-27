@@ -25,6 +25,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 
 @NgModule({
     imports: [
@@ -52,7 +53,8 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
       ScrollingModule,
       NzSkeletonModule,
       NzCollapseModule,
-      NzAvatarModule
+      NzAvatarModule,
+      NzDatePickerModule
     ],
     declarations: [NuevoComponent],
     exports: [NuevoComponent]

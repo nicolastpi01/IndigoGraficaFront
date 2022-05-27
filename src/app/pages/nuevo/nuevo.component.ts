@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { PedidoService } from '../../services/pedido.service';
 import { PENDIENTEATENCION, tipografias as arrayLetras } from 'src/app/utils/const/constantes';
 import { Tipo } from 'src/app/interface/tipo';
 import { Color } from 'src/app/interface/color';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { filter } from 'rxjs';
+import { filter, Observable, Observer } from 'rxjs';
 import {  HttpResponse } from '@angular/common/http';
 import {  NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 import { ColorService } from 'src/app/services/color.service';
@@ -48,13 +48,14 @@ export class NuevoComponent implements OnInit {
     this.validateForm = this.fb.group({
       titulo: [null, [Validators.required]],
       subtitulo: [null, [Validators.required]],
-      cantidad: [null, [Validators.required, Validators.min(1)]],
-      color: [null, []],
-      alto: [null, [ Validators.min(1)]],
-      ancho: [null, [ Validators.min(1)]],
+      cantidad: [null, []], // La cantidad por defecto es uno, y si no esta definido se pone uno en el Pedido
+      alto: [null, [ Validators.min(30)], [(control: FormControl) => this.dimensionAsyncValidator (control, 'ancho') ]],
+      ancho: [null, [ Validators.min(30)], [(control: FormControl) => this.dimensionAsyncValidator (control, 'alto') ]],
+      datePicker: [null, [Validators.required], [this.confirmDateValidator]],
       tipografia: [null, []],
       tipo:  [null, [Validators.required]],
-      comentario: [null, []],
+      color: [null, []],
+      comentario: [null, [Validators.maxLength(150) ]],
       remember: [true]
     });
     
@@ -76,6 +77,31 @@ export class NuevoComponent implements OnInit {
     ];
 
   }
+
+  dimensionAsyncValidator = (control: FormControl, dimension: string) =>
+    new Observable((observer: Observer<ValidationErrors | null>) => {
+      setTimeout(() => {
+        if(this.validateForm.value) {
+          if ( (control.value !== this.validateForm.value[dimension]) && this.validateForm.value[dimension] ) {
+            observer.next({ error: true, differDimension: true });
+          } else {
+            observer.next(null);
+          }
+          observer.complete();
+        }
+      }, 1000);
+  });
+
+  confirmDateValidator = (control: FormControl) => 
+    new Observable((observer: Observer<ValidationErrors | null>) => {
+      if((control.value as Date).getTime() < Date.now()) {
+        observer.next({ error: true, postTodayDate: true });
+      } 
+      else {
+        observer.next(null);
+      }
+      observer.complete();
+  });
 
   findColores() :void {
     this.colorService.getAllColores()
@@ -146,7 +172,7 @@ export class NuevoComponent implements OnInit {
     })
   
     let nuevoPedido : Pedido = {
-      cantidad: form.value.cantidad,
+      cantidad: form.value.cantidad ? form.value.cantidad : 1,
       nombre: form.value.titulo,
       nombreExtendido: form.value.subtitulo,
       tipografia: form.value.tipografia,
