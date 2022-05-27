@@ -26,6 +26,7 @@ import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 @NgModule({
     imports: [
@@ -54,7 +55,8 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
       NzSkeletonModule,
       NzCollapseModule,
       NzAvatarModule,
-      NzDatePickerModule
+      NzDatePickerModule,
+      OverlayModule
     ],
     declarations: [NuevoComponent],
     exports: [NuevoComponent]

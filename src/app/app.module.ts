@@ -15,6 +15,7 @@ import { HttpClientInMemoryWebApiModule, InMemoryWebApiModule } from 'angular-in
 //import { InMemoryDataService } from './in-memory-data.service';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 
+
 registerLocaleData(es);
 
 @NgModule({
