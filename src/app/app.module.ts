@@ -11,9 +11,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IconsProviderModule } from './icons-provider.module';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
-import { HttpClientInMemoryWebApiModule, InMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
+// import { HttpClientInMemoryWebApiModule, InMemoryWebApiModule } from 'angular-in-memory-web-api';
 //import { InMemoryDataService } from './in-memory-data.service';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { authInterceptorProviders } from './helpers/auth.interceptor';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { LoginModule } from './pages/login/login.module';
+import { RegistrarModule } from './pages/registrar/registrar.module';
 
 
 registerLocaleData(es);
@@ -30,7 +35,11 @@ registerLocaleData(es);
     NzLayoutModule,
     NzMenuModule,
     NzBadgeModule,
-    AppRoutingModule,
+    NzModalModule,
+    NzNotificationModule,
+    LoginModule,
+    RegistrarModule,
+    AppRoutingModule, 
 
 // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
 // and returns simulated server responses.
@@ -44,7 +53,7 @@ registerLocaleData(es);
   AppRoutingModule
 
   ],
-  providers: [{ provide: NZ_I18N, useValue: es_ES }, ],
+  providers: [{ provide: NZ_I18N, useValue: es_ES },authInterceptorProviders ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

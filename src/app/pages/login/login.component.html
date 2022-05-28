@@ -1,0 +1,29 @@
+<form nz-form [formGroup]="loginForm" class="login-form">
+      <nz-layout >
+        <nz-content>
+      <nz-form-item>
+        <nz-form-label nzRequired [nzSpan]="5">Usuario</nz-form-label>
+      <nz-form-control nzHasFeedback nzErrorTip="Por favor ingresa tu usuario">
+        <nz-input-group>
+          <input type="text" nz-input formControlName="usuario" placeholder="usuario" required/>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSpan]="5">Contrasenia</nz-form-label>
+      <nz-form-control nzHasFeedback nzErrorTip="Por favor ingresa tu contraseña">
+        <nz-input-group>
+          <input type="password" nz-input formControlName="password" placeholder="password" required/>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-content>
+  <nz-footer>
+    <button
+    nz-button class="login-form-button login-form-margin" 
+    (click)="onSubmit()" 
+    [nzType]="'primary'">Ingresar 
+  </button>
+</nz-footer>
+</nz-layout>
+</form>
