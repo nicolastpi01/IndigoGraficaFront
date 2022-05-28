@@ -27,7 +27,7 @@ import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+//import { HttpClientTestingModule } from '@angular/common/http/testing';
 @NgModule({
     imports: [
       NuevoRoutingModule, 
@@ -57,7 +57,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
       NzAvatarModule,
       NzDatePickerModule,
       OverlayModule,
-      HttpClientTestingModule
+      //HttpClientTestingModule
     ],
     declarations: [NuevoComponent],
     exports: [NuevoComponent]
