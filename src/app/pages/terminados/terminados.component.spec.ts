@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TerminadosComponent } from './terminados.component';
-
+/*
 describe('TerminadosComponent', () => {
   let component: TerminadosComponent;
   let fixture: ComponentFixture<TerminadosComponent>;
@@ -23,3 +23,4 @@ describe('TerminadosComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+*/

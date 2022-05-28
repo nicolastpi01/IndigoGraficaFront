@@ -6,16 +6,15 @@ import { HttpClient, HttpHandler } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Overlay } from '@angular/cdk/overlay';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 
 TestBed.configureTestingModule({
   declarations: [ NuevoComponent ],
-  imports: [RouterTestingModule],
+  imports: [RouterTestingModule,  HttpClientTestingModule],
   providers: [
      { provide: FormBuilder},
-     { provide: HttpClient},
      { provide: PedidoService },
-     { provide: HttpHandler },
      { provide: NzMessageService },
      { provide: Overlay },
   ]
