@@ -54,8 +54,8 @@ export class NuevoComponent implements OnInit {
       ancho: [null, [ Validators.min(30)], [(control: FormControl) => this.dimensionAsyncValidator (control, 'alto') ]],
       datePicker: [null, [Validators.required], [this.confirmDateValidator]],
       tipografia: [null, []],
-      tipo:  [null, [Validators.required]],
-      color: [null, []],
+      tipo:  [[], [Validators.required]],
+      color: [[], []],
       comentario: [null, [Validators.maxLength(150) ]],
       remember: [true]
     });
