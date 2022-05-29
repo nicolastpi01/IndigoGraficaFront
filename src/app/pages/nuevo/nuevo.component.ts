@@ -40,6 +40,8 @@ export class NuevoComponent implements OnInit {
   currentFile: FileDB | undefined;
   files: Array<FileDB> | undefined = []
   loadingEliminarPedido= false;
+  dateFormat = 'dd/MM/YYYY';
+  
 
   
   constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, private tipoService: TipoPedidoService, 

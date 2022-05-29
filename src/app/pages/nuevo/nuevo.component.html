@@ -63,7 +63,7 @@
           <nz-form-item>
             <nz-form-label [nzSpan]="5" nzRequired>Fecha</nz-form-label>
               <nz-form-control nzHasFeedback nzValidatingTip="Revisando..." [nzErrorTip]="FechaErrorTpl">
-                <nz-date-picker formControlName="datePicker" nzPlaceHolder="Fecha de entrega" [ngStyle]="{ width: '100%' }"></nz-date-picker>
+                <nz-date-picker formControlName="datePicker" nzPlaceHolder="Fecha de entrega" [nzFormat]="dateFormat" [ngStyle]="{ width: '100%' }"></nz-date-picker>
                 <ng-template #FechaErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">por favor ingrese una fecha</ng-container>
                   <ng-container *ngIf="control.hasError('postTodayDate')">La fecha debe ser posterior a hoy</ng-container>
