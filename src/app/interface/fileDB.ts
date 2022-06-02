@@ -1,3 +1,4 @@
+import { Comentario } from "./comentario";
 import { Requerimiento } from "./requerimiento";
 
 
@@ -8,4 +9,5 @@ export interface FileDB {
     data: Blob,
     url?: string,
     requerimientos?: Requerimiento[]
+    comentarios?: Comentario[]
 }

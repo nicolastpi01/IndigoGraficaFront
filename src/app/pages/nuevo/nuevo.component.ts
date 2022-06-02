@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { PedidoService } from '../../services/pedido.service';
 import { PENDIENTEATENCION, tipografias as arrayLetras } from 'src/app/utils/const/constantes';
@@ -15,6 +15,7 @@ import { Pedido } from 'src/app/interface/pedido';
 import { FileDB } from 'src/app/interface/fileDB';
 import { FileService } from 'src/app/services/file.service';
 import { Requerimiento } from 'src/app/interface/requerimiento';
+import { Comentario } from 'src/app/interface/comentario';
 
 @Component({
   selector: 'app-nuevo',
@@ -41,6 +42,9 @@ export class NuevoComponent implements OnInit {
   files: Array<FileDB> | undefined = []
   loadingEliminarPedido= false;
   dateFormat = 'dd/MM/YYYY';
+
+  isVisibleModalComment = false;
+
   
 
   
@@ -79,6 +83,24 @@ export class NuevoComponent implements OnInit {
       
     ];
 
+  }
+
+  agregarMockComentarios = () :Array<Comentario> =>  {
+    let comentarios :Array<Comentario> = [];
+    var i: number; 
+    for(i=0; i <= 10; i++) { 
+       comentarios.push({
+          pos: { x: '0', y: '0' },
+          terminado: false,
+          isVisible: false,
+          texto: '',
+          numero: 0,
+          style: {
+            position: 'absolute', left: 0, top: 0
+          }
+       }); 
+    }
+    return comentarios;
   }
 
   dimensionAsyncValidator = (control: FormControl, dimension: string) =>
@@ -230,6 +252,7 @@ export class NuevoComponent implements OnInit {
         type: file.response.type,
         data: file.response.data,
         requerimientos: file.response.requerimientos,
+        //comentarios: this.agregarMockComentarios(),
         url: file.url || file['preview']
       }
       //this.currentPedido?.files?.push(newFileDB);
@@ -253,6 +276,7 @@ export class NuevoComponent implements OnInit {
             let currentFileAux: FileDB | undefined = this.currentPedido.files?.find((file: FileDB) => file.id === newFileDB.id);
             if (currentFileAux && this.files) this.files = [...this.files, currentFileAux ] // this.files?.push(currentFileAux); 
             this.currentFile = currentFileAux;
+            if(this.currentFile) this.currentFile.comentarios = this.agregarMockComentarios() // Agrego los comentarios para probar la nueva funcionalidad
             /*
             if(newFile) {
               this.currentFile = {...newFile, url: newFileDB.url }; // ref. al current File
@@ -365,19 +389,63 @@ export class NuevoComponent implements OnInit {
 
   onClickEditFile = (event: MouseEvent, item: FileDB) => {
     event.preventDefault()
-    //console.log("OnClickEditFile")
     this.currentFile = item;
     this.showModalMiddle();
+    
   }
 
+  onClickComment = (event: MouseEvent, item: FileDB) => {
+    event.preventDefault();
+    this.currentFile = item;
+    this.showModalComment();
+  }
+
+  onClickFile = (event: MouseEvent) => {
+    // FUNCA !!!!!!
+    event.preventDefault();
+    const element :HTMLImageElement = event.target as HTMLImageElement
+    const bounds = (event.target as HTMLElement).getBoundingClientRect();
+    var left= bounds.left;
+    var top= bounds.top;
+    var posX = event.pageX - left;
+    var posY = event.pageY - top;
+    var cw= element.clientWidth
+    var ch= element.clientHeight
+    var iw= element.naturalWidth
+    var ih= element.naturalHeight
+    var px= posX/cw*iw
+    var py= posY/ch*ih
+
+
+    if (this.currentFile) this.currentFile.comentarios = this.currentFile.comentarios?.map((comentario: Comentario) => {
+      return {
+        ...comentario, numero: 1,
+        pos: {
+          x: '50%',
+          y: '50%'
+        },
+        style: {
+          position: 'absolute', 
+          left: posX.toString() + 'px', 
+          top: posY.toString() + 'px'
+        },
+      }
+    });
+    console.log("Current File :", this.currentFile) 
+    //alert("click on "+element.tagName+" at pixel ("+px+","+py+") mouse pos ("+posX+"," + posY+ ") relative to boundingClientRect at ("+left+","+top+") client image size: "+cw+" x "+ch+" natural image size: "+iw+" x "+ih );
+  };
+
   handleOkMiddle(): void {
-    //console.log("onClickAceptarModal")
     this.agregarTodosLosRequerimientos();
     this.isVisibleMiddle = false;
   }
 
   showModalMiddle(): void {
     this.isVisibleMiddle = true;
+  }
+
+  showModalComment(): void {
+    this.isVisibleModalComment = true;
   }
 
   goOutside = () => {

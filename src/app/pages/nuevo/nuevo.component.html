@@ -163,7 +163,7 @@
                   <div nz-col [nzSpan]="8" *ngFor="let file of files">
                     <nz-list-item>
                         <!--nz-card [nzCover]="coverTemplate" [nzActions]="[actionEllipsis]"-->
-                        <nz-card [nzCover]="coverTemplate" [nzActions]="[actionDelete, actionEdit]">
+                        <nz-card [nzCover]="coverTemplate" [nzActions]="[actionDelete, actionEdit, actionAddComment]">
                             <nz-card-meta
                                 [nzTitle]="file.name"
                                 nzDescription=""
@@ -181,6 +181,9 @@
                               </ng-template>
                               <ng-template #actionEdit>
                                 <i nz-icon nzType="edit" (click)="onClickEditFile($event, file)"></i>
+                              </ng-template>
+                              <ng-template #actionAddComment>
+                                <i nz-icon nzType="comment" (click)="onClickComment($event, file)" nzTheme="outline"></i>
                               </ng-template>
                               <!--ng-template #actionEllipsis>
                                 <i nz-icon nzType="ellipsis"></i>
@@ -201,7 +204,6 @@
             >
               <ng-container *nzModalContent>
                 <div nz-col>
-                  <!--div class="requirements-box"-->
                     <button nz-button nzType="primary" [disabled]="disabledAgregarRequerimiento()" (click)="agregarRequerimiento()">Agregar requerimiento</button>
                     <nz-list class="demo-loadmore-list" *ngIf="currentFile">
                       <nz-list-item *ngFor="let item of currentFile.requerimientos">
@@ -212,14 +214,68 @@
                             <button nz-button nzType="primary" title="eliminar" (click)="onClickEliminarReq($event, item)" nzSearch><i nz-icon nzType="close-circle" nzTheme="outline"></i></button>
                           </ng-template>
                       </nz-list-item>
+                    </nz-list>
+                </div>
+              </ng-container>
+            </nz-modal>
+            
+            <nz-modal
+              [(nzVisible)]="isVisibleModalComment"
+              [nzBodyStyle]="{ minHeight: '600px' }"
+              nzWidth="100%"
+              nzTitle="Agregar comentarios"
+              nzCentered
+              (nzOnCancel)="handleCancelMiddle()"
+              (nzOnOk)="handleOkMiddle()"
+            >
+              <ng-container *nzModalContent>
+                
+                    <!--button nz-button nzType="primary" [disabled]="disabledAgregarRequerimiento()" (click)="agregarRequerimiento()">Agregar requerimiento</button-->
+                    <!--nz-list class="comment-list" *ngIf="currentFile">
+                      <nz-list-item *ngFor="let item of currentFile.requerimientos">
+                          <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                            <input type="text" nz-input [ngModel]="item.descripcion" (ngModelChange)="onChangeReq($event, item)" >
+                          </nz-input-group>
+                          <ng-template #suffixIconButton>
+                            <button nz-button nzType="primary" title="eliminar" (click)="onClickEliminarReq($event, item)" nzSearch><i nz-icon nzType="close-circle" nzTheme="outline"></i></button>
+                          </ng-template>
+                      </nz-list-item-->
                       <!--nz-list-footer>
                         <button nz-button nzType="primary" [disabled]="currentFile && currentFile.requerimientos && currentFile.requerimientos.length <= 0" (click)="agregarTodosLosRequerimientos()">Aceptar</button>
                       </nz-list-footer-->  
-                    </nz-list>
+                    <!--/nz-list-->
                   <!--/div-->
-                </div>
+                  <div nz-row  style="position: relative;" >
+                    <div nz-col nzSpan="16" style="position: relative;" >
+                      <img nz-image (click)="onClickFile($event)" nzDisablePreview *ngIf="currentFile && currentFile.url" [nzSrc]="currentFile.url" [ngStyle]="{ width: '100%', height: '100%', cursor: 'pointer' }">
+                      <div *ngIf="currentFile && currentFile.comentarios">
+                        <div *ngFor="let item of currentFile.comentarios">
+                          <!--nz-badge [nzCount]="item.numero" nzShowZero [nzStyle]="{position: 'absolute', left: item.pos.y, top: item.pos.x }"-->
+                          <!--  `/${pedido.id}`    -->
+                          <nz-badge
+                            [nzCount]="item.numero"
+                            nzShowZero
+                            
+                            [style]="item.style">
+                          </nz-badge>
+                        </div>
+                      </div>
+
+                       <!--nz-badge
+                            [nzCount]="item.numero"
+                            nzShowZero
+                            [style]="item.style"  
+                            >
+                        </nz-badge-->
+
+                        <!--[nzStyle]="{ position: 'absolute', left: item.pos.y, top: item.pos.x }" input type="text" style="position: absolute; left: 40px; top: 40px" -->
+                        
+                    </div>
+                    
+
+                  </div>
               </ng-container>
-            </nz-modal>        
+            </nz-modal> 
           </div>
         </div>
       </div>
