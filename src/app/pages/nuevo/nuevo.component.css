@@ -21,6 +21,10 @@ nz-divider {
     min-height: 100%;
     width: 70%;
   }
+  .inner-box2 {
+    background: #0092ff;
+    
+  }
 
   .button-delete { 
     display:flex; 

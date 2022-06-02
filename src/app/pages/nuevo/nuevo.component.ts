@@ -520,6 +520,7 @@ export class NuevoComponent implements OnInit {
 
   onChangeComment = (value: string, item: Comentario): void => {
     item.texto = value;
+    console.log("Current File :", this.currentFile)
   }
 
   onClickEliminarComment = (event: MouseEvent, item: Comentario): void => {

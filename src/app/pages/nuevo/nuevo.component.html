@@ -246,8 +246,8 @@
                     <!--/nz-list-->
                   <!--/div-->
                   <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" >
-                    <div nz-col nzSpan="16" style="position: relative;" >
-                      <img nz-image (click)="onClickFile($event)" nzDisablePreview *ngIf="currentFile && currentFile.url" [nzSrc]="currentFile.url" [ngStyle]="{ width: '100%', height: '100%', cursor: 'pointer' }">
+                    <div nz-col nzSpan="16" class="inner-box2" style="position: relative;" >
+                      <img nz-image (click)="onClickFile($event)" nzDisablePreview *ngIf="currentFile && currentFile.url" [nzSrc]="currentFile.url" [ngStyle]="{ width: '1220px', height: '100%', cursor: 'pointer' }">
                       <div *ngIf="currentFile && currentFile.comentarios">
                         <div *ngFor="let item of currentFile.comentarios">
                           <!--nz-badge [nzCount]="item.numero" nzShowZero [nzStyle]="{position: 'absolute', left: item.pos.y, top: item.pos.x }"-->
