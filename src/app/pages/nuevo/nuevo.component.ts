@@ -87,6 +87,7 @@ export class NuevoComponent implements OnInit {
 
   }
 
+  /*
   agregarMockComentarios = () :Array<Comentario> =>  {
     let comentarios :Array<Comentario> = [];
     var i: number; 
@@ -104,6 +105,7 @@ export class NuevoComponent implements OnInit {
     }
     return comentarios;
   }
+  */
 
   dimensionAsyncValidator = (control: FormControl, dimension: string) =>
     new Observable((observer: Observer<ValidationErrors | null>) => {
@@ -255,7 +257,8 @@ export class NuevoComponent implements OnInit {
         data: file.response.data,
         requerimientos: file.response.requerimientos,
         //comentarios: this.agregarMockComentarios(),
-        url: file.url || file['preview']
+        url: file.url || file['preview'],
+        comentarios : []
       }
       //this.currentPedido?.files?.push(newFileDB);
       
@@ -278,7 +281,7 @@ export class NuevoComponent implements OnInit {
             let currentFileAux: FileDB | undefined = this.currentPedido.files?.find((file: FileDB) => file.id === newFileDB.id);
             if (currentFileAux && this.files) this.files = [...this.files, currentFileAux ] // this.files?.push(currentFileAux); 
             this.currentFile = currentFileAux;
-            if(this.currentFile) this.currentFile.comentarios = this.agregarMockComentarios() // Agrego los comentarios para probar la nueva funcionalidad
+            if(this.currentFile) this.currentFile.comentarios = [] //this.agregarMockComentarios() // Agrego los comentarios para probar la nueva funcionalidad
             /*
             if(newFile) {
               this.currentFile = {...newFile, url: newFileDB.url }; // ref. al current File
@@ -420,27 +423,20 @@ export class NuevoComponent implements OnInit {
 
 
     this.nextCommentNumber = this.nextCommentNumber + 1;
-    if (this.currentFile) this.currentFile.comentarios = this.currentFile.comentarios?.map((comentario: Comentario, index: number) => {
-      if(index+1 === this.nextCommentNumber) {
-        return {
-          ...comentario, numero: this.nextCommentNumber,
-          pos: {
-            x: '50%',
-            y: '50%'
-          },
-          style: {
-            position: 'absolute', 
-            left: posX.toString() + 'px', 
-            top: posY.toString() + 'px'
-          },
+    if (this.currentFile) this.currentFile.comentarios = [...this.currentFile.comentarios,
+      {
+        pos: { x: '0', y: '0' },
+        terminado: false,
+        isVisible: false,
+        texto: '',
+        numero: this.nextCommentNumber,
+        style: {
+          position: 'absolute', 
+          left: posX.toString() + 'px', 
+          top: posY.toString() + 'px'
         }
-      }
-      else {
-        return comentario;
-      }
-    });
-    
-    
+     }
+    ];
     console.log("Current File :", this.currentFile) 
     //alert("click on "+element.tagName+" at pixel ("+px+","+py+") mouse pos ("+posX+"," + posY+ ") relative to boundingClientRect at ("+left+","+top+") client image size: "+cw+" x "+ch+" natural image size: "+iw+" x "+ih );
   };

@@ -1,8 +1,10 @@
 .demo-infinite-container {
-  height: 80px;
-  min-width: 60px;
+  height: 100%;
+  min-width: 100%;
+  /*
   border: 1px solid #e8e8e8;
   border-radius: 4px;
+  */
 }
 
 nz-divider {
@@ -82,5 +84,7 @@ nz-divider {
     outline: 2px;
     float: right
   }
+
+ 
 
   

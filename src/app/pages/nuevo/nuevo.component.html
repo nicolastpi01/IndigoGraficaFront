@@ -260,8 +260,9 @@
                       </div>
                     </div>
                     <div nz-col nzSpan="8">
+                      <cdk-virtual-scroll-viewport itemSize="10" class="demo-infinite-container">
                       <nz-list *ngIf="currentFile && currentFile.comentarios">
-                        <nz-list-item *ngFor="let item of currentFile.comentarios">
+                        <nz-list-item *cdkVirtualFor="let item of currentFile.comentarios">
                             <nz-input-group nzSearch [nzAddOnBefore]="addOnBeforeTemplate" [nzAddOnAfter]="suffixIconButton">
                               <input type="text" nz-input [ngModel]="item.texto" (ngModelChange)="onChangeComment($event, item)" >
                             </nz-input-group>
@@ -276,6 +277,7 @@
                             </ng-template>
                         </nz-list-item>
                       </nz-list>
+                      </cdk-virtual-scroll-viewport>
                     </div>
                   </div>
               </ng-container>

@@ -9,5 +9,5 @@ export interface FileDB {
     data: Blob,
     url?: string,
     requerimientos?: Requerimiento[]
-    comentarios?: Comentario[]
+    comentarios: Comentario[]
 }
