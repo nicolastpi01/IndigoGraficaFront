@@ -45,6 +45,8 @@ export class NuevoComponent implements OnInit {
 
   isVisibleModalComment = false;
 
+  nextCommentNumber = 0;
+
   
 
   
@@ -88,7 +90,7 @@ export class NuevoComponent implements OnInit {
   agregarMockComentarios = () :Array<Comentario> =>  {
     let comentarios :Array<Comentario> = [];
     var i: number; 
-    for(i=0; i <= 10; i++) { 
+    for(i=0; i <= 100; i++) { 
        comentarios.push({
           pos: { x: '0', y: '0' },
           terminado: false,
@@ -417,20 +419,28 @@ export class NuevoComponent implements OnInit {
     var py= posY/ch*ih
 
 
-    if (this.currentFile) this.currentFile.comentarios = this.currentFile.comentarios?.map((comentario: Comentario) => {
-      return {
-        ...comentario, numero: 1,
-        pos: {
-          x: '50%',
-          y: '50%'
-        },
-        style: {
-          position: 'absolute', 
-          left: posX.toString() + 'px', 
-          top: posY.toString() + 'px'
-        },
+    this.nextCommentNumber = this.nextCommentNumber + 1;
+    if (this.currentFile) this.currentFile.comentarios = this.currentFile.comentarios?.map((comentario: Comentario, index: number) => {
+      if(index+1 === this.nextCommentNumber) {
+        return {
+          ...comentario, numero: this.nextCommentNumber,
+          pos: {
+            x: '50%',
+            y: '50%'
+          },
+          style: {
+            position: 'absolute', 
+            left: posX.toString() + 'px', 
+            top: posY.toString() + 'px'
+          },
+        }
+      }
+      else {
+        return comentario;
       }
     });
+    
+    
     console.log("Current File :", this.currentFile) 
     //alert("click on "+element.tagName+" at pixel ("+px+","+py+") mouse pos ("+posX+"," + posY+ ") relative to boundingClientRect at ("+left+","+top+") client image size: "+cw+" x "+ch+" natural image size: "+iw+" x "+ih );
   };
@@ -511,6 +521,14 @@ export class NuevoComponent implements OnInit {
   onChangeReq = (value: string, item: Requerimiento): void => {
       item.descripcion = value;
   }
+
+  onChangeComment = (value: string, item: Comentario): void => {
+    item.texto = value;
+  }
+
+  onClickEliminarComment = (event: MouseEvent, item: Comentario): void => {
+    console.log("Click eliminar comment deberia eliminar el texto, y scar el Badge")
+  };
 
   handleCancelMiddle(): void {
     // Si no guardo los requerimientos deberian vaciarse los current requerimientos no agregados
