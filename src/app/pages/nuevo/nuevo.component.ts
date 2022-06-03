@@ -18,6 +18,7 @@ import { Requerimiento } from 'src/app/interface/requerimiento';
 import { Comentario, Interaccion, Position } from 'src/app/interface/comentario';
 import { valueFunctionProp } from 'ng-zorro-antd/core/util';
 import { PosicionService } from 'src/app/services/posicion.service';
+import { ThisReceiver } from '@angular/compiler';
 
 @Component({
   selector: 'app-nuevo',
@@ -401,9 +402,9 @@ export class NuevoComponent implements OnInit {
     
   }
 
-  onClickComment = (event: MouseEvent, item: FileDB) => {
-    event.preventDefault();
-    this.currentFile = item;
+  onClickComment = (event: MouseEvent, item: any) => {
+    event.preventDefault;
+    this.currentFile = item; 
     this.showModalComment();
   }
 
@@ -444,32 +445,6 @@ export class NuevoComponent implements OnInit {
     return {
       'margin-top': '4px'
     }
-  };
-
-  onClickFile = (event: MouseEvent) => {
-    
-    event.preventDefault();
-    let position : {left: number, top: number, posx: number, posy: number, px: number, py: number } = this.determineMousePosition(event);
-    
-    this.nextCommentNumber = this.nextCommentNumber + 1;
-    if (this.currentFile) this.currentFile.comentarios = [...this.currentFile.comentarios,
-      {
-        x: position.posx, 
-        y: position.posy,
-        terminado: false,
-        isVisible: false,
-        interacciones: [
-          { 
-            texto: '',
-            rol: 'USUARIO' // Temporal
-          }
-        ],
-        numero: this.nextCommentNumber,
-        llave: this.nextCommentNumber // agrego como key el id del Badge (probemos)
-     }
-    ];
-    //console.log("Current File :", this.currentFile) 
-    //alert("click on "+element.tagName+" at pixel ("+px+","+py+") mouse pos ("+posX+"," + posY+ ") relative to boundingClientRect at ("+left+","+top+") client image size: "+cw+" x "+ch+" natural image size: "+iw+" x "+ih );
   };
 
   handleOkMiddle(): void {
@@ -566,7 +541,7 @@ export class NuevoComponent implements OnInit {
         return {
           ...file, url: this.fileList.find((nZFile: NzUploadFile) => nZFile.response.id === file.id)?.url,
           //requerimientos: file.requerimientos?.reverse()
-          comentarios: file.comentarios?.reverse()
+          comentarios: file.comentarios //?.reverse()
         }
       });
       let newCurrentFile :FileDB | undefined = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)
@@ -575,11 +550,7 @@ export class NuevoComponent implements OnInit {
       this.files = this.files?.map((file: FileDB) => {
         if(file.id === this.currentFile?.id) {
           return {
-            ...file, comentarios: file.comentarios?.map((comentario: Comentario) => {
-              return {
-                ...comentario, id: this.currentFile?.comentarios?.find((comentario2: Comentario) => comentario2.id === comentario.id)?.id
-              }
-            })//?.reverse() // USAR EL ORDEN DE LOS REQUERIMIENTOS QUE YA TIENE
+            ...file, comentarios: this.currentFile?.comentarios ? this.currentFile?.comentarios : [] 
           }
         }
         else {
@@ -587,9 +558,9 @@ export class NuevoComponent implements OnInit {
         }
       }) 
       this.msg.success('Se agregaron los requerimientos correctamente!');
-      console.log("CurrentFile :", this.currentFile)
-      console.log("Files :", this.files)
-      console.log("Current Pedido :", this.currentPedido)
+      //console.log("CurrentFile :", this.currentFile) // EXCELENT
+      //console.log("Files :", this.files) // EXCELENT
+      //console.log("Current Pedido :", this.currentPedido) // REVISAR
     });
     () => {
       this.msg.error('Hubo un error, no se pudieron agregar los requerimientos!');
@@ -670,10 +641,43 @@ export class NuevoComponent implements OnInit {
   };
 
   handleCancelMiddle(): void {
-    // Si no guardo los requerimientos deberian vaciarse los current requerimientos no agregados
-    // this.currentFile?.requerimientos?.push(nuevo);
-    //if (this.currentFile) this.currentFile.requerimientos = this.currentFile.requerimientos?.filter((req: Requerimiento) => req.id !== undefined) 
     this.isVisibleMiddle = false;
+  };
+
+  handleCancelComments(): void {
+    // Si no guardo los comentarios deberian elimnarse los current comentarios no agregados
+    if (this.currentFile) {
+       //console.log("COMENTARIOS: ", this.currentFile.comentarios)
+      let lengthWithKeys : number = this.currentFile?.comentarios.filter((com: Comentario) => com.id === undefined && com.llave !== undefined).length;
+      this.currentFile.comentarios = this.currentFile.comentarios.filter((com: Comentario) => com.id !== undefined )
+      this.nextCommentNumber = this.nextCommentNumber - lengthWithKeys
+    } 
+    this.isVisibleModalComment = false;
+  };
+
+  onClickFile = (event: MouseEvent) => {
+    event.preventDefault();
+    let position : {left: number, top: number, posx: number, posy: number, px: number, py: number } = this.determineMousePosition(event);
+    
+    this.nextCommentNumber = this.nextCommentNumber + 1;
+    if (this.currentFile) this.currentFile.comentarios = [...this.currentFile.comentarios,
+      {
+        x: position.posx, 
+        y: position.posy,
+        terminado: false,
+        isVisible: false,
+        interacciones: [
+          { 
+            texto: '',
+            rol: 'USUARIO' // Temporal
+          }
+        ],
+        numero: this.nextCommentNumber,
+        llave: this.nextCommentNumber // agrego como key el id del Badge (probemos)
+     }
+    ];
+    //console.log("Current File :", this.currentFile) 
+    //alert("click on "+element.tagName+" at pixel ("+px+","+py+") mouse pos ("+posX+"," + posY+ ") relative to boundingClientRect at ("+left+","+top+") client image size: "+cw+" x "+ch+" natural image size: "+iw+" x "+ih );
   };
 
   onClickEliminarReq = (event: MouseEvent, item: Requerimiento): void => {
