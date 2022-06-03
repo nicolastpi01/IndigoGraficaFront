@@ -48,11 +48,6 @@ export class NuevoComponent implements OnInit {
 
   isVisibleModalComment = false;
 
-  nextCommentNumber = 0;
-
-  
-
-  
   constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, private tipoService: TipoPedidoService, 
     private colorService :ColorService, private _router: Router, private msg: NzMessageService, private posService: PosicionService) {}
 
@@ -399,14 +394,13 @@ export class NuevoComponent implements OnInit {
     event.preventDefault()
     this.currentFile = item;
     this.showModalMiddle();
-    
-  }
+  };
 
   onClickComment = (event: MouseEvent, item: any) => {
     event.preventDefault;
     this.currentFile = item; 
     this.showModalComment();
-  }
+  };
 
   determineMousePosition = (event: MouseEvent) : {left: number, top: number, posx: number, posy: number, px: number, py: number } => {
     const element :HTMLImageElement = event.target as HTMLImageElement
@@ -627,17 +621,10 @@ export class NuevoComponent implements OnInit {
         ...interaccion, texto: value,
       }
     })
-    /*
-     {
-      texto: value,
-      rol: 'USUARIO' // Temporal
-    }];
-    */
-    console.log("Current File :", this.currentFile)
-  }
+  };
 
   onClickEliminarComment = (event: MouseEvent, item: Comentario): void => {
-    console.log("Click eliminar comment deberia eliminar el texto, y scar el Badge")
+    console.log("Click eliminar comment deberia eliminar el texto, y sacar el Badge")
   };
 
   handleCancelMiddle(): void {
@@ -647,10 +634,7 @@ export class NuevoComponent implements OnInit {
   handleCancelComments(): void {
     // Si no guardo los comentarios deberian elimnarse los current comentarios no agregados
     if (this.currentFile) {
-       //console.log("COMENTARIOS: ", this.currentFile.comentarios)
-      let lengthWithKeys : number = this.currentFile?.comentarios.filter((com: Comentario) => com.id === undefined && com.llave !== undefined).length;
       this.currentFile.comentarios = this.currentFile.comentarios.filter((com: Comentario) => com.id !== undefined )
-      this.nextCommentNumber = this.nextCommentNumber - lengthWithKeys
     } 
     this.isVisibleModalComment = false;
   };
@@ -659,7 +643,6 @@ export class NuevoComponent implements OnInit {
     event.preventDefault();
     let position : {left: number, top: number, posx: number, posy: number, px: number, py: number } = this.determineMousePosition(event);
     
-    this.nextCommentNumber = this.nextCommentNumber + 1;
     if (this.currentFile) this.currentFile.comentarios = [...this.currentFile.comentarios,
       {
         x: position.posx, 
@@ -672,8 +655,8 @@ export class NuevoComponent implements OnInit {
             rol: 'USUARIO' // Temporal
           }
         ],
-        numero: this.nextCommentNumber,
-        llave: this.nextCommentNumber // agrego como key el id del Badge (probemos)
+        numero: this.currentFile.comentarios.length === 0 ? 1 : Math.max.apply(null, this.currentFile.comentarios.map((comentario: Comentario) => comentario.numero)) + 1,
+        llave:  this.currentFile.comentarios.length === 0 ? 1 : Math.max.apply(null, this.currentFile.comentarios.map((comentario: Comentario) => comentario.numero)) + 1 
      }
     ];
     //console.log("Current File :", this.currentFile) 
