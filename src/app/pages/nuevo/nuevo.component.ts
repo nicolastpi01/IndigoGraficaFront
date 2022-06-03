@@ -15,7 +15,9 @@ import { Pedido } from 'src/app/interface/pedido';
 import { FileDB } from 'src/app/interface/fileDB';
 import { FileService } from 'src/app/services/file.service';
 import { Requerimiento } from 'src/app/interface/requerimiento';
-import { Comentario } from 'src/app/interface/comentario';
+import { Comentario, Interaccion, Position } from 'src/app/interface/comentario';
+import { valueFunctionProp } from 'ng-zorro-antd/core/util';
+import { PosicionService } from 'src/app/services/posicion.service';
 
 @Component({
   selector: 'app-nuevo',
@@ -51,7 +53,7 @@ export class NuevoComponent implements OnInit {
 
   
   constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, private tipoService: TipoPedidoService, 
-    private colorService :ColorService, private _router: Router, private msg: NzMessageService) {}
+    private colorService :ColorService, private _router: Router, private msg: NzMessageService, private posService: PosicionService) {}
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
@@ -240,7 +242,7 @@ export class NuevoComponent implements OnInit {
       file['preview'] = await this.getBase64(file.originFileObj!);
       this.fileList = fileList.map((nZFile: NzUploadFile) => {
         if(nZFile.response.id === file.response.id) {
-          console.log("Paso por aca")
+          //console.log("Paso por aca")
           return {
             ...nZFile, url: file['preview']
           }
@@ -405,9 +407,7 @@ export class NuevoComponent implements OnInit {
     this.showModalComment();
   }
 
-  onClickFile = (event: MouseEvent) => {
-    // FUNCA !!!!!!
-    event.preventDefault();
+  determineMousePosition = (event: MouseEvent) : {left: number, top: number, posx: number, posy: number, px: number, py: number } => {
     const element :HTMLImageElement = event.target as HTMLImageElement
     const bounds = (event.target as HTMLElement).getBoundingClientRect();
     var left= bounds.left;
@@ -421,23 +421,54 @@ export class NuevoComponent implements OnInit {
     var px= posX/cw*iw
     var py= posY/ch*ih
 
+    return {
+      left: left,
+      top: top,
+      posx: posX,
+      posy: posY,
+      px: px,
+      py: py
+    }
+  }
 
+  badgeUponImageStyle = (comentario: Comentario) => {
+    return {
+      position: 'absolute', 
+      left: comentario.x.toString() + 'px', 
+      top: comentario.y.toString() + 'px'
+    }
+  };
+
+  // Acá, deberia agregar al objeto comentario el color que quiero que muestre, y despues cambiarlo en el OnClick (cambiarlo en todos menos en el que quiero)
+  badgeAddOnBeforeStyle = (comentario: Comentario) => {
+    return {
+      'margin-top': '4px'
+    }
+  };
+
+  onClickFile = (event: MouseEvent) => {
+    
+    event.preventDefault();
+    let position : {left: number, top: number, posx: number, posy: number, px: number, py: number } = this.determineMousePosition(event);
+    
     this.nextCommentNumber = this.nextCommentNumber + 1;
     if (this.currentFile) this.currentFile.comentarios = [...this.currentFile.comentarios,
       {
-        pos: { x: '0', y: '0' },
+        x: position.posx, 
+        y: position.posy,
         terminado: false,
         isVisible: false,
-        texto: '',
+        interacciones: [
+          { 
+            texto: '',
+            rol: 'USUARIO' // Temporal
+          }
+        ],
         numero: this.nextCommentNumber,
-        style: {
-          position: 'absolute', 
-          left: posX.toString() + 'px', 
-          top: posY.toString() + 'px'
-        }
+        llave: this.nextCommentNumber // agrego como key el id del Badge (probemos)
      }
     ];
-    console.log("Current File :", this.currentFile) 
+    //console.log("Current File :", this.currentFile) 
     //alert("click on "+element.tagName+" at pixel ("+px+","+py+") mouse pos ("+posX+"," + posY+ ") relative to boundingClientRect at ("+left+","+top+") client image size: "+cw+" x "+ch+" natural image size: "+iw+" x "+ih );
   };
 
@@ -445,6 +476,12 @@ export class NuevoComponent implements OnInit {
     this.agregarTodosLosRequerimientos();
     this.isVisibleMiddle = false;
   }
+
+  handleOkComments() :void {
+
+    this.agregarTodosLosComentarios();
+    this.isVisibleModalComment = false;
+  };
 
   showModalMiddle(): void {
     this.isVisibleMiddle = true;
@@ -458,9 +495,108 @@ export class NuevoComponent implements OnInit {
     // Deberia mostrar un modal indicando el pedido generado (brevemente)
     this._router.navigateByUrl('/todos')
   };
+
+  /*
+  if (this.currentFile) this.currentFile.comentarios = [...this.currentFile.comentarios,
+      {
+        pos: { x: position.posx, y: position.posy },
+        terminado: false,
+        isVisible: false,
+        interacciones: [
+          { 
+            texto: '',
+            rol: 'USUARIO' // Temporal
+          }
+        ],
+        numero: this.nextCommentNumber,
+        llave: this.nextCommentNumber // agrego como key el id del Badge (probemos)
+     }
+    ];
+  */
+
+  
+  /*
+  agregarPosiciones = async () =>  {
+    if(this.currentFile) {
+      this.currentFile.comentarios.map(async (comentario: Comentario) => {
+        await this.posService.create(comentario.pos).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe( (e: any) => { 
+          let posicion = (e.body as Position)
+          //console.log("Posicion :", posicion)
+          return {
+            ...comentario, pos: {
+              ...comentario.pos, id: posicion.id
+            }
+          };
+        });
+        () => {
+          return this.currentFile?.comentarios
+          //this.msg.error('Hubo un error, no se pudieron agregar los requerimientos!');
+        }
+      });
+      console.log("Estoy aca")
+    }
+    
+  };
+  */
+  
+
+  agregarTodosLosComentarios = () => {
+
+    let currentPedidoCopy = JSON.parse(JSON.stringify(this.currentPedido))
+   
+    currentPedidoCopy = {
+      ...currentPedidoCopy, files: currentPedidoCopy.files.map((file: FileDB) => {
+        if(file.id === this.currentFile?.id) {
+          return this.currentFile
+        }
+        else {
+          return file
+        }
+      }),
+    }
+
+    this.service.update(currentPedidoCopy).
+    pipe(filter(e => e instanceof HttpResponse))
+    .subscribe( (e: any) => { 
+      let pedido = (e.body as Pedido)
+      this.currentPedido = pedido;
+      this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
+        return {
+          ...file, url: this.fileList.find((nZFile: NzUploadFile) => nZFile.response.id === file.id)?.url,
+          //requerimientos: file.requerimientos?.reverse()
+          comentarios: file.comentarios?.reverse()
+        }
+      });
+      let newCurrentFile :FileDB | undefined = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)
+      this.currentFile = newCurrentFile
+
+      this.files = this.files?.map((file: FileDB) => {
+        if(file.id === this.currentFile?.id) {
+          return {
+            ...file, comentarios: file.comentarios?.map((comentario: Comentario) => {
+              return {
+                ...comentario, id: this.currentFile?.comentarios?.find((comentario2: Comentario) => comentario2.id === comentario.id)?.id
+              }
+            })//?.reverse() // USAR EL ORDEN DE LOS REQUERIMIENTOS QUE YA TIENE
+          }
+        }
+        else {
+          return file;
+        }
+      }) 
+      this.msg.success('Se agregaron los requerimientos correctamente!');
+      console.log("CurrentFile :", this.currentFile)
+      console.log("Files :", this.files)
+      console.log("Current Pedido :", this.currentPedido)
+    });
+    () => {
+      this.msg.error('Hubo un error, no se pudieron agregar los requerimientos!');
+    }
+  };
   
   agregarTodosLosRequerimientos = () :void => {
-
     // Para currentFile.requerimientos
     let currentPedidoCopy = JSON.parse(JSON.stringify(this.currentPedido))
 
@@ -474,7 +610,6 @@ export class NuevoComponent implements OnInit {
         }
       }),
     }
-    //console.log("Current Pedido Copy :", currentPedidoCopy)
     this.service.update(currentPedidoCopy).
     pipe(filter(e => e instanceof HttpResponse))
     .subscribe( (e: any) => { 
@@ -496,18 +631,15 @@ export class NuevoComponent implements OnInit {
               return {
                 ...req, id: this.currentFile?.requerimientos?.find((req2: Requerimiento) => req2.id === req.id)?.id
               }
-            })//?.reverse() // USAR EL ORDEN DE LOS REQUERIMIENTOS QUE YA TIENE
+            })
           }
         }
         else {
           return file;
         }
-      }) //this.currentPedido.files; 
+      }) 
       
       this.msg.success('Se agregaron los requerimientos correctamente!');
-      //console.log("CurrentFile :", this.currentFile)
-      //console.log("Files :", this.files)
-      //console.log("Current Pedido :", this.currentPedido)
     });
     () => {
       this.msg.error('Hubo un error, no se pudieron agregar los requerimientos!');
@@ -519,7 +651,17 @@ export class NuevoComponent implements OnInit {
   }
 
   onChangeComment = (value: string, item: Comentario): void => {
-    item.texto = value;
+    item.interacciones = item.interacciones.map((interaccion: Interaccion) => {
+      return {
+        ...interaccion, texto: value,
+      }
+    })
+    /*
+     {
+      texto: value,
+      rol: 'USUARIO' // Temporal
+    }];
+    */
     console.log("Current File :", this.currentFile)
   }
 

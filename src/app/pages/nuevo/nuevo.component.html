@@ -127,7 +127,7 @@
      <ng-template #ifElse>
       <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
         <div nz-col nzSpan="8">
-          <div class="inner-box">
+          <div>
             <nz-upload
               class="upload-currentPedido"
               nzAction="http://localhost:8080/files/upload"
@@ -157,7 +157,7 @@
           </div>
         </div>
         <div nz-col nzSpan="16">
-          <div class="inner-box">
+          <div>
               <nz-list nzGrid>
                 <div nz-row [nzGutter]="16">
                   <div nz-col [nzSpan]="8" *ngFor="let file of files">
@@ -226,27 +226,11 @@
               nzTitle="Agregar comentarios"
               nzCentered
               (nzOnCancel)="handleCancelMiddle()"
-              (nzOnOk)="handleOkMiddle()"
+              (nzOnOk)="handleOkComments()"
             >
               <ng-container *nzModalContent>
-                
-                    <!--button nz-button nzType="primary" [disabled]="disabledAgregarRequerimiento()" (click)="agregarRequerimiento()">Agregar requerimiento</button-->
-                    <!--nz-list class="comment-list" *ngIf="currentFile">
-                      <nz-list-item *ngFor="let item of currentFile.requerimientos">
-                          <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-                            <input type="text" nz-input [ngModel]="item.descripcion" (ngModelChange)="onChangeReq($event, item)" >
-                          </nz-input-group>
-                          <ng-template #suffixIconButton>
-                            <button nz-button nzType="primary" title="eliminar" (click)="onClickEliminarReq($event, item)" nzSearch><i nz-icon nzType="close-circle" nzTheme="outline"></i></button>
-                          </ng-template>
-                      </nz-list-item-->
-                      <!--nz-list-footer>
-                        <button nz-button nzType="primary" [disabled]="currentFile && currentFile.requerimientos && currentFile.requerimientos.length <= 0" (click)="agregarTodosLosRequerimientos()">Aceptar</button>
-                      </nz-list-footer-->  
-                    <!--/nz-list-->
-                  <!--/div-->
                   <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" >
-                    <div nz-col nzSpan="16" class="inner-box2" style="position: relative;" >
+                    <div nz-col nzSpan="16" style="position: relative;" >
                       <img nz-image (click)="onClickFile($event)" nzDisablePreview *ngIf="currentFile && currentFile.url" [nzSrc]="currentFile.url" [ngStyle]="{ width: '1220px', height: '100%', cursor: 'pointer' }">
                       <div *ngIf="currentFile && currentFile.comentarios">
                         <div *ngFor="let item of currentFile.comentarios">
@@ -254,7 +238,7 @@
                           <!--  `/${pedido.id}`    -->
                           <nz-badge
                             [nzCount]="item.numero"
-                            [style]="item.style">
+                            [style]="badgeUponImageStyle(item)">
                           </nz-badge>
                         </div>
                       </div>
@@ -264,12 +248,12 @@
                       <nz-list *ngIf="currentFile && currentFile.comentarios">
                         <nz-list-item *cdkVirtualFor="let item of currentFile.comentarios">
                             <nz-input-group nzSearch [nzAddOnBefore]="addOnBeforeTemplate" [nzAddOnAfter]="suffixIconButton">
-                              <input type="text" nz-input [ngModel]="item.texto" (ngModelChange)="onChangeComment($event, item)" >
+                              <input type="text" nz-input [ngModel]="item.interacciones[0].texto" (ngModelChange)="onChangeComment($event, item)" >
                             </nz-input-group>
                             <ng-template #addOnBeforeTemplate>
                               <nz-badge
                                 [nzCount]="item.numero"
-                                style="margin-top: 4px;">
+                                [style]="badgeAddOnBeforeStyle(item)">
                               </nz-badge>
                             </ng-template>
                             <ng-template #suffixIconButton>
