@@ -17,13 +17,13 @@ export class RegistrarComponent implements OnInit {
   errorMessage = '';
 
   constructor(private authService: AuthService, private tokenStorage: TokenStorageService, private fb: FormBuilder,
-    private notification: NzNotificationService) { }
+    private notification: NzNotificationService) {}
 
   ngOnInit() {
     this.registrarForm = this.fb.group({
       usuario:[null, [Validators.required]],
       password: [null, [Validators.required]],
-      email: [null, [Validators.required]],
+      email: [null, [Validators.email, Validators.required]],
     });
   }
 

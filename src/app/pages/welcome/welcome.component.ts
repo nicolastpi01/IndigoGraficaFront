@@ -19,7 +19,7 @@ export class WelcomeComponent implements OnInit {
     this.usuario = usuarioLogeado.username
     this.roles = usuarioLogeado.roles.join(", ").replace('ROLE_',' ')
     if(this.usuario){
-      this.mensajeBienvenida=`Bienvenido ${this.usuario}. Roles: ${this.roles}`
+      this.mensajeBienvenida=`Bienvenido ${this.usuario}.`
     }
   }
 }
