@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { PedidoService } from '../../services/pedido.service';
 import { PENDIENTEATENCION, tipografias as arrayLetras } from 'src/app/utils/const/constantes';
@@ -15,10 +15,8 @@ import { Pedido } from 'src/app/interface/pedido';
 import { FileDB } from 'src/app/interface/fileDB';
 import { FileService } from 'src/app/services/file.service';
 import { Requerimiento } from 'src/app/interface/requerimiento';
-import { Comentario, Interaccion, Position } from 'src/app/interface/comentario';
-import { valueFunctionProp } from 'ng-zorro-antd/core/util';
+import { Comentario, Interaccion } from 'src/app/interface/comentario';
 import { PosicionService } from 'src/app/services/posicion.service';
-import { ThisReceiver } from '@angular/compiler';
 
 @Component({
   selector: 'app-nuevo',
@@ -85,26 +83,6 @@ export class NuevoComponent implements OnInit {
 
   }
 
-  /*
-  agregarMockComentarios = () :Array<Comentario> =>  {
-    let comentarios :Array<Comentario> = [];
-    var i: number; 
-    for(i=0; i <= 100; i++) { 
-       comentarios.push({
-          pos: { x: '0', y: '0' },
-          terminado: false,
-          isVisible: false,
-          texto: '',
-          numero: 0,
-          style: {
-            position: 'absolute', left: 0, top: 0
-          }
-       }); 
-    }
-    return comentarios;
-  }
-  */
-
   dimensionAsyncValidator = (control: FormControl, dimension: string) =>
     new Observable((observer: Observer<ValidationErrors | null>) => {
       setTimeout(() => {
@@ -160,7 +138,6 @@ export class NuevoComponent implements OnInit {
     });
   }
 
-  // Alta del Form
   onClickAlta(): void {
     if (this.validateForm.valid) {
       this.createPedido()
@@ -187,9 +164,7 @@ export class NuevoComponent implements OnInit {
   }
 
   createPedido = (): void => {
-
     this.loadingAlta = true;
-  
     let form = this.validateForm;
   
     let coloresRet :Color[] = [];
@@ -238,7 +213,6 @@ export class NuevoComponent implements OnInit {
       file['preview'] = await this.getBase64(file.originFileObj!);
       this.fileList = fileList.map((nZFile: NzUploadFile) => {
         if(nZFile.response.id === file.response.id) {
-          //console.log("Paso por aca")
           return {
             ...nZFile, url: file['preview']
           }
@@ -254,12 +228,10 @@ export class NuevoComponent implements OnInit {
         type: file.response.type,
         data: file.response.data,
         requerimientos: file.response.requerimientos,
-        //comentarios: this.agregarMockComentarios(),
         url: file.url || file['preview'],
         comentarios : []
       }
-      //this.currentPedido?.files?.push(newFileDB);
-      
+
       let currentPedidoCopy = JSON.parse(JSON.stringify(this.currentPedido))
       currentPedidoCopy.files = [...currentPedidoCopy.files, newFileDB ]
 
@@ -279,7 +251,7 @@ export class NuevoComponent implements OnInit {
             let currentFileAux: FileDB | undefined = this.currentPedido.files?.find((file: FileDB) => file.id === newFileDB.id);
             if (currentFileAux && this.files) this.files = [...this.files, currentFileAux ] // this.files?.push(currentFileAux); 
             this.currentFile = currentFileAux;
-            if(this.currentFile) this.currentFile.comentarios = [] //this.agregarMockComentarios() // Agrego los comentarios para probar la nueva funcionalidad
+            if(this.currentFile) this.currentFile.comentarios = [] 
             /*
             if(newFile) {
               this.currentFile = {...newFile, url: newFileDB.url }; // ref. al current File
@@ -363,7 +335,6 @@ export class NuevoComponent implements OnInit {
         () => {
             this.msg.error('No pudo eliminarse el File!');
         }
-
     //console.log("FileList: ", this.fileList)
     //console.log("CurrentFile: ", this.currentFile)
     //console.log("CurrentPedido: ", this.currentPedido)
@@ -465,52 +436,6 @@ export class NuevoComponent implements OnInit {
     this._router.navigateByUrl('/todos')
   };
 
-  /*
-  if (this.currentFile) this.currentFile.comentarios = [...this.currentFile.comentarios,
-      {
-        pos: { x: position.posx, y: position.posy },
-        terminado: false,
-        isVisible: false,
-        interacciones: [
-          { 
-            texto: '',
-            rol: 'USUARIO' // Temporal
-          }
-        ],
-        numero: this.nextCommentNumber,
-        llave: this.nextCommentNumber // agrego como key el id del Badge (probemos)
-     }
-    ];
-  */
-
-  
-  /*
-  agregarPosiciones = async () =>  {
-    if(this.currentFile) {
-      this.currentFile.comentarios.map(async (comentario: Comentario) => {
-        await this.posService.create(comentario.pos).
-        pipe(filter(e => e instanceof HttpResponse))
-        .subscribe( (e: any) => { 
-          let posicion = (e.body as Position)
-          //console.log("Posicion :", posicion)
-          return {
-            ...comentario, pos: {
-              ...comentario.pos, id: posicion.id
-            }
-          };
-        });
-        () => {
-          return this.currentFile?.comentarios
-          //this.msg.error('Hubo un error, no se pudieron agregar los requerimientos!');
-        }
-      });
-      console.log("Estoy aca")
-    }
-    
-  };
-  */
-  
-
   agregarTodosLosComentarios = () => {
 
     let currentPedidoCopy = JSON.parse(JSON.stringify(this.currentPedido))
@@ -525,7 +450,6 @@ export class NuevoComponent implements OnInit {
         }
       }),
     }
-
     this.service.update(currentPedidoCopy).
     pipe(filter(e => e instanceof HttpResponse))
     .subscribe( (e: any) => { 
@@ -534,8 +458,7 @@ export class NuevoComponent implements OnInit {
       this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
         return {
           ...file, url: this.fileList.find((nZFile: NzUploadFile) => nZFile.response.id === file.id)?.url,
-          //requerimientos: file.requerimientos?.reverse()
-          comentarios: file.comentarios //?.reverse()
+          comentarios: file.comentarios 
         }
       });
       let newCurrentFile :FileDB | undefined = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)
@@ -562,9 +485,7 @@ export class NuevoComponent implements OnInit {
   };
   
   agregarTodosLosRequerimientos = () :void => {
-    // Para currentFile.requerimientos
     let currentPedidoCopy = JSON.parse(JSON.stringify(this.currentPedido))
-
     currentPedidoCopy = {
       ...currentPedidoCopy, files: currentPedidoCopy.files.map((file: FileDB) => {
         if(file.id === this.currentFile?.id) {
@@ -603,7 +524,6 @@ export class NuevoComponent implements OnInit {
           return file;
         }
       }) 
-      
       this.msg.success('Se agregaron los requerimientos correctamente!');
     });
     () => {
@@ -613,7 +533,7 @@ export class NuevoComponent implements OnInit {
 
   onChangeReq = (value: string, item: Requerimiento): void => {
       item.descripcion = value;
-  }
+  };
 
   onChangeComment = (value: string, item: Comentario): void => {
     item.interacciones = item.interacciones.map((interaccion: Interaccion) => {
@@ -623,16 +543,11 @@ export class NuevoComponent implements OnInit {
     })
   };
 
-  onClickEliminarComment = (event: MouseEvent, item: Comentario): void => {
-    console.log("Click eliminar comment deberia eliminar el texto, y sacar el Badge")
-  };
-
   handleCancelMiddle(): void {
     this.isVisibleMiddle = false;
   };
 
   handleCancelComments(): void {
-    // Si no guardo los comentarios deberian elimnarse los current comentarios no agregados
     if (this.currentFile) {
       this.currentFile.comentarios = this.currentFile.comentarios.filter((com: Comentario) => com.id !== undefined )
     } 
@@ -659,17 +574,51 @@ export class NuevoComponent implements OnInit {
         llave:  this.currentFile.comentarios.length === 0 ? 1 : Math.max.apply(null, this.currentFile.comentarios.map((comentario: Comentario) => comentario.numero)) + 1 
      }
     ];
-    //console.log("Current File :", this.currentFile) 
-    //alert("click on "+element.tagName+" at pixel ("+px+","+py+") mouse pos ("+posX+"," + posY+ ") relative to boundingClientRect at ("+left+","+top+") client image size: "+cw+" x "+ch+" natural image size: "+iw+" x "+ih );
+  };
+
+  onClickEliminarComment = (event: MouseEvent, item: Comentario): void => {
+    event.preventDefault()
+    if(item.id !== undefined) {
+      let url = this.currentFile?.url;
+      let currentFileCopy = JSON.parse(JSON.stringify(this.currentFile))
+      this.fileService.update({
+        ...currentFileCopy, comentarios: currentFileCopy?.comentarios?.filter((comentario: Comentario) => comentario.id !== item.id)
+      }).
+          pipe(filter(e => e instanceof HttpResponse))
+          .subscribe( (e: any) => {
+            let file = (e.body as FileDB)
+            this.currentFile = {...file, url };
+            let indexCurrentFileInFiles = this.files?.findIndex((f: FileDB) => f.id === file.id)
+            this.files = this.files?.map((file: FileDB, index: number) => {
+              if(index === indexCurrentFileInFiles) {
+                return {
+                  ...file, comentarios: file.comentarios?.filter((comentario: Comentario) => comentario.id !== item.id)
+                }
+              }
+              else {
+                return file
+              }
+            })
+            // actualizar la lista de files X
+            // actualizar current File X
+            // Actualizar current Pedido
+            //console.log("Current Pedido:", this.currentPedido) // Hay que eliminar tambien de currentPedido 
+            this.msg.success('Se elimino el comentario correctamente!');
+          }),
+          () => {
+              this.msg.error('Hubo un error, no se pudo eliminar el comentario!');
+          }
+    }
+    else {
+      if(this.currentFile) {
+        this.currentFile.comentarios = this.currentFile?.comentarios?.filter((comentario: Comentario) => comentario.llave !== item.llave)
+      } 
+    }
   };
 
   onClickEliminarReq = (event: MouseEvent, item: Requerimiento): void => {
     event.preventDefault()
     if(item.id !== undefined) {
-      // Si tiene id es porque se guardo, entonces debo llamar al servicio de actualizar Pedido
-      console.log("Estoy eliminando un req que se persistio")
-      // JSON.parse(JSON.stringify(obj1)) deep copy
-      //if(this.currentFile) this.currentFile.requerimientos = this.currentFile?.requerimientos?.filter((req: Requerimiento) => req.id !== item.id)
       let url = this.currentFile?.url;
       let currentFileCopy = JSON.parse(JSON.stringify(this.currentFile))
       this.fileService.update({
@@ -677,11 +626,9 @@ export class NuevoComponent implements OnInit {
       }).
           pipe(filter(e => e instanceof HttpResponse))
           .subscribe( (e: any) => { 
-            //if(this.currentFile) this.currentFile.requerimientos = this.currentFile?.requerimientos?.filter((req: Requerimiento) => req.id !== item.id)
             let file = (e.body as FileDB)
             this.currentFile = {...file, url };
             let indexCurrentFileInFiles = this.files?.findIndex((f: FileDB) => f.id === file.id)
-            // ?.requerimientos?.filter((req: Requerimiento) => req.id !== item.id)
             this.files = this.files?.map((file: FileDB, index: number) => {
               if(index === indexCurrentFileInFiles) {
                 return {
@@ -692,25 +639,6 @@ export class NuevoComponent implements OnInit {
                 return file
               }
             })
-            /*
-            let indexCurrentFileInPedido = this.currentPedido?.files?.findIndex((f: FileDB) => f.id === file.id)
-            if(this.currentPedido) this.currentPedido.files = this.currentPedido?.files?.map((file: FileDB, index: number) => {
-              if(index === indexCurrentFileInPedido) {
-                return {
-                  ...file, requerimientos: file.requerimientos?.filter((req: Requerimiento) => req.id !== item.id)
-                }
-              }
-              else {
-                return file
-              }
-            })
-            */
-            // actualizar la lista de files X
-            // actualizar current File X
-            // Actualizar current Pedido
-            console.log("Current Pedido:", this.currentPedido) // Hay que eliminar tambien de currentPedido
-            console.log("Current Files :", this.files)
-            console.log("Current File :", this.currentFile) 
             this.msg.success('Se elimino el requerimiento correctamente!');
           }),
           () => {
