@@ -1,5 +1,4 @@
 
-<!--*ngIf="currentPedido" -->
 <div class="row">
 <h2 style="float: left" nz-typography>Ingresa tu pedido!</h2>
 <button class="button-delete" nz-button nzType="primary" [nzLoading]="loadingEliminarPedido" (click)="eliminarPedido()" nzDanger>Eliminar <i nz-icon nzType="delete" nzTheme="outline"></i></button>
@@ -123,7 +122,6 @@
   </div>
   </ng-template>
 
-
      <ng-template #ifElse>
       <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
         <div nz-col nzSpan="8">
@@ -150,7 +148,6 @@
               (nzOnCancel)="previewVisible = false"
             >
               <ng-template #modalContent>
-                <!--nzDisablePreview-->
                 <img nz-image *ngIf="previewImage" [nzSrc]="previewImage"  [ngStyle]="{ width: '100%' }" />
               </ng-template>
             </nz-modal>
@@ -162,62 +159,28 @@
                 <div nz-row [nzGutter]="16">
                   <div nz-col [nzSpan]="8" *ngFor="let file of files">
                     <nz-list-item>
-                        <!--nz-card [nzCover]="coverTemplate" [nzActions]="[actionEllipsis]"-->
-                        <nz-card [nzCover]="coverTemplate" [nzActions]="[actionDelete, actionEdit, actionAddComment]">
+                        <nz-card [nzCover]="coverTemplate" [nzActions]="[actionDelete, actionAddComment]">
                             <nz-card-meta
                                 [nzTitle]="file.name"
                                 nzDescription=""
                                 [nzAvatar]="avatarTemplate"
                             ></nz-card-meta>
                               <ng-template #avatarTemplate>
-                                <!--nz-avatar [nzSrc]="file.url"></nz-avatar-->
                               </ng-template>
                               <ng-template #coverTemplate>
-                                <!--nzDisablePreview-->
                                 <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '100%', height: '140px', cursor: 'pointer' }">
                               </ng-template>
                               <ng-template #actionDelete>
                                 <i nz-icon nzType="delete" (click)="onClickDeleteFile($event, file)"></i>
                               </ng-template>
-                              <ng-template #actionEdit>
-                                <i nz-icon nzType="edit" (click)="onClickEditFile($event, file)"></i>
-                              </ng-template>
                               <ng-template #actionAddComment>
                                 <i nz-icon nzType="comment" (click)="onClickComment($event, file)" nzTheme="outline"></i>
                               </ng-template>
-                              <!--ng-template #actionEllipsis>
-                                <i nz-icon nzType="ellipsis"></i>
-                              </ng-template-->
                         </nz-card>
                     </nz-list-item>
                   </div>
                 </div>
             </nz-list>
-            <nz-modal
-              [(nzVisible)]="isVisibleMiddle"
-              [nzBodyStyle]="{ minHeight: '600px' }"
-              nzWidth="800px"
-              nzTitle="Agregar requerimientos"
-              nzCentered
-              (nzOnCancel)="handleCancelMiddle()"
-              (nzOnOk)="handleOkMiddle()"
-            >
-              <ng-container *nzModalContent>
-                <div nz-col>
-                    <button nz-button nzType="primary" [disabled]="disabledAgregarRequerimiento()" (click)="agregarRequerimiento()">Agregar requerimiento</button>
-                    <nz-list class="demo-loadmore-list" *ngIf="currentFile">
-                      <nz-list-item *ngFor="let item of currentFile.requerimientos">
-                          <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-                            <input type="text" nz-input [ngModel]="item.descripcion" (ngModelChange)="onChangeReq($event, item)" >
-                          </nz-input-group>
-                          <ng-template #suffixIconButton>
-                            <button nz-button nzType="primary" title="eliminar" (click)="onClickEliminarReq($event, item)" nzSearch><i nz-icon nzType="close-circle" nzTheme="outline"></i></button>
-                          </ng-template>
-                      </nz-list-item>
-                    </nz-list>
-                </div>
-              </ng-container>
-            </nz-modal>
             
             <nz-modal
               [(nzVisible)]="isVisibleModalComment"
@@ -234,8 +197,6 @@
                       <img nz-image (click)="onClickFile($event)" nzDisablePreview *ngIf="currentFile && currentFile.url" [nzSrc]="currentFile.url" [ngStyle]="{ width: '1220px', height: '100%', cursor: 'pointer' }">
                       <div *ngIf="currentFile && currentFile.comentarios">
                         <div *ngFor="let item of currentFile.comentarios">
-                          <!--nz-badge [nzCount]="item.numero" nzShowZero [nzStyle]="{position: 'absolute', left: item.pos.y, top: item.pos.x }"-->
-                          <!--  `/${pedido.id}`    -->
                           <nz-badge
                             [nzCount]="item.numero"
                             [style]="badgeUponImageStyle(item)">
