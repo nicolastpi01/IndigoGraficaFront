@@ -16,6 +16,7 @@ import { FileDB } from 'src/app/interface/fileDB';
 import { FileService } from 'src/app/services/file.service';
 import { Comentario, Interaccion } from 'src/app/interface/comentario';
 import { PosicionService } from 'src/app/services/posicion.service';
+import { getBase64 } from 'src/app/utils/functions/functions';
 
 @Component({
   selector: 'app-nuevo',
@@ -208,7 +209,7 @@ export class NuevoComponent implements OnInit {
     if (status === 'done') {
       this.msg.success(`${file.name} Agregado el archivo correctamente!`);
 
-      file['preview'] = await this.getBase64(file.originFileObj!);
+      file['preview'] = await getBase64(file.originFileObj!);
       this.fileList = fileList.map((nZFile: NzUploadFile) => {
         if(nZFile.response.id === file.response.id) {
           return {
@@ -259,14 +260,7 @@ export class NuevoComponent implements OnInit {
     }
   };
 
-  getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
-
+ 
   handlePreview = (file: NzUploadFile): void => {
     this.previewImage = file.url || file['preview'];
     this.previewVisible = true;
@@ -453,7 +447,8 @@ export class NuevoComponent implements OnInit {
         interacciones: [
           { 
             texto: '',
-            rol: 'USUARIO' // Temporal
+            rol: 'USUARIO', // Temporal
+            key: 1
           }
         ],
         numero: this.currentFile.comentarios.length === 0 ? 1 : Math.max.apply(null, this.currentFile.comentarios.map((comentario: Comentario) => comentario.numero)) + 1,

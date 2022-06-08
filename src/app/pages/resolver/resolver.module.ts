@@ -15,6 +15,19 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
+import { NzImageModule } from 'ng-zorro-antd/image';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
+import { NzCommentModule } from 'ng-zorro-antd/comment';
+
+
+
+import { OverlayModule } from '@angular/cdk/overlay';
+
 
 @NgModule({
     imports: [
@@ -32,7 +45,16 @@ import { NzCollapseModule } from 'ng-zorro-antd/collapse';
       NzIconModule,
       NzUploadModule,
       NzButtonModule,
-      NzCollapseModule     
+      NzCollapseModule,
+      NzImageModule,
+      NzModalModule,
+      ScrollingModule,
+      NzInputModule,
+      NzTypographyModule,
+      NzSkeletonModule,
+      NzSpaceModule,
+      NzCommentModule,
+      OverlayModule       
     ],
     declarations: [ResolverComponent],
     exports: [ResolverComponent]

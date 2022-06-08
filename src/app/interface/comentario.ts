@@ -23,5 +23,6 @@ export interface Comentario {
   export interface Interaccion {
       id?: string,
       texto: string,
-      rol: string
+      rol: string,
+      key: number
   }
