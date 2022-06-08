@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { PedidoService } from 'src/app/services/pedido.service';
@@ -38,6 +38,7 @@ export class ResolverComponent implements OnInit {
 
 
   time = formatDistance(new Date(), new Date());
+  now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
   content =
     'To be, or not to be, that is a question: Whether it is nobler in the mind to suffer. The slings and arrows of ' +
     'outrageous fortune Or to take arms against a sea of troubles, And by opposing end them? To die: to sleep; ' +
@@ -138,6 +139,11 @@ export class ResolverComponent implements OnInit {
     else {
       return "highlight"
     }
+  };
+
+  onChangeCheck = (event: boolean, comentario: Comentario) => {
+    comentario.terminado = event;
+    //console.log("TARGET :", event)
   };
 
   avatarStyle = (interaccion: Interaccion) => {
@@ -243,11 +249,17 @@ export class ResolverComponent implements OnInit {
   };
   */
 
-  badgeUponImageStyle = (comentario: Comentario) => {
+  badgeUponImagePositionStyle = (comentario: Comentario) => {
     return {
       position: 'absolute', 
       left: comentario.x.toString() + 'px', 
-      top: comentario.y.toString() + 'px'
+      top: comentario.y.toString() + 'px',
+    }; 
+  };
+
+  badgeColorStyle = () : { backgroundColor: string; } => {
+    return {
+      'backgroundColor': '#e95151'
     }
   };
 

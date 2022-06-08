@@ -23,6 +23,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzCommentModule } from 'ng-zorro-antd/comment';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 
 
@@ -54,7 +55,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
       NzSkeletonModule,
       NzSpaceModule,
       NzCommentModule,
-      OverlayModule       
+      OverlayModule,
+      NzCheckboxModule       
     ],
     declarations: [ResolverComponent],
     exports: [ResolverComponent]
