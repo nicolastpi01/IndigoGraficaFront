@@ -9,6 +9,7 @@ import { FileDB } from 'src/app/interface/fileDB';
 import { getBase64 } from 'src/app/utils/functions/functions';
 import { Comentario, Interaccion } from 'src/app/interface/comentario';
 import { formatDistance } from 'date-fns';
+import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 
 @Component({
   selector: 'app-resolver',
@@ -69,6 +70,7 @@ export class ResolverComponent implements OnInit {
   constructor(private route: ActivatedRoute, private service :PedidoService) {}
 
   panels: Array<{active: boolean, name: string, disabled: boolean}> = [];
+  tabs: Array<{ name: string, icon: string, title: string }> = [];
 
   
   
@@ -92,8 +94,21 @@ export class ResolverComponent implements OnInit {
         name: 'Solucion'
       }
     ];
+    this.tabs = [
+      {
+        name: 'Pedido',
+        icon: 'gift',
+        title: 'Info del pedido'
+      },
+      {
+        name: 'Usuario',
+        icon: 'user',
+        title: 'Info del usuario'
+      }
+    ];
   };
 
+  colorear :(descripcion: string) => string | undefined = colorearEstado
   
   onChangeTextArea = (value: string) :void => {
     this.interaccionResponse.texto = value;

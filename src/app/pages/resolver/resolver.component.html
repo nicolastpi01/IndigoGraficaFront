@@ -1,44 +1,82 @@
 
-<!--div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }"></div-->
-<button nz-button class="borrar" nzType="primary" nzDanger>Borrar<i nz-icon nzType="delete" nzTheme="outline"></i></button>
-<br>
-<br>
 <nz-collapse  nzAccordion>
   <nz-collapse-panel *ngFor="let panel of panels" [nzHeader]="panel.name" [nzActive]="panel.active">
     <ng-template [ngIf]="panel.name === 'Datos' " [ngIfElse]="ifElse">
     <div nz-col class="gutter-row">
-      <div class="inner-box">
-          <nz-descriptions nzTitle="Pedido" nzBordered >
-              <nz-descriptions-item nzTitle="Nombre">{{ currentPedido?.nombre }}</nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Billing Mode">Prepaid</nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Automatic Renewal">YES</nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Order Time">2018-04-24 18:00:00</nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Usage Time" [nzSpan]="2">
-                2018-04-24 18:00:00 To 2019-04-24 18:00:00
+      <nz-tabset>
+        <nz-tab *ngFor="let tab of tabs" [nzTitle]="titleTemplate">
+          <ng-template #titleTemplate>
+            <i nz-icon [nzType]="tab.icon"></i>
+            {{ tab.title }}
+          </ng-template>
+          <ng-template [ngIf]="tab.name === 'Pedido' " [ngIfElse]="usuario">
+            <nz-descriptions *ngIf="currentPedido" nzBordered [nzColumn]="3" nzSize="middle">
+              <nz-descriptions-item nzTitle="Formato" [nzSpan]="4">
+                <nz-descriptions [nzColumn]="5" nzBordered>
+                  <nz-descriptions-item nzTitle="Colores" [nzSpan]="6">
+                    <nz-list *ngIf="currentPedido && currentPedido.tipo && currentPedido.colores">
+                      <nz-list-item style="display: inline; padding-left: 3px; padding-right: 3px; border-bottom: 0 none;" *ngFor="let color of currentPedido.colores">
+                        <nz-badge [nzColor]="color.hexCode" [nzText]="color.nombre"></nz-badge>                
+                      </nz-list-item>
+                    </nz-list> 
+                  </nz-descriptions-item> 
+                  <nz-descriptions-item nzTitle="Nombre">Boceto</nz-descriptions-item>
+                  <nz-descriptions-item nzTitle="Alto (px)">40</nz-descriptions-item>
+                  <nz-descriptions-item nzTitle="Ancho (px)">40</nz-descriptions-item>
+                  <nz-descriptions-item nzTitle="Tipografía">Sanz Serif</nz-descriptions-item>
+                     
+                </nz-descriptions>
               </nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Status" [nzSpan]="3">
-                <nz-badge nzStatus="processing" nzText="Running"></nz-badge>
+
+              <nz-descriptions-item nzTitle="Título">Marolio</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Subtítulo">Le pone sabor a tu vida</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Fecha de entrega">2018/04/24</nz-descriptions-item>
+
+              <nz-descriptions-item nzTitle="Cantidad">300</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Alto (px)">40</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Ancho (px)">40</nz-descriptions-item>
+
+              <nz-descriptions-item nzTitle="Estado">
+                <nz-tag *ngIf="currentPedido.state" [nzColor]="colorear(currentPedido.state)">{{currentPedido.state}}</nz-tag>
               </nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Negotiated Amount">$80.00</nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Discount">$20.00</nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Official Receipts">$60.00</nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Config Info">
-                Data disk type: MongoDB
-                <br />
-                Database version: 3.4
-                <br />
-                Package: dds.mongo.mid
-                <br />
-                Storage space: 10 GB
-                <br />
-                Replication_factor:3
-                <br />
-                Region: East China 1
+              <nz-descriptions-item nzTitle="Tipografia">Sanz Serif</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Colores" [nzSpan]="4">
+                <nz-list *ngIf="currentPedido && currentPedido.colores">
+                  <nz-list-item style="display: inline; padding-left: 3px; padding-right: 3px; border-bottom: 0 none;" *ngFor="let color of currentPedido.colores">
+                    <nz-badge [nzColor]="color.hexCode" [nzText]="color.nombre"></nz-badge>                
+                  </nz-list-item>
+                </nz-list>  
+              </nz-descriptions-item>
+
+              <nz-descriptions-item nzTitle="Descripción" [nzSpan]="4">
+                <p
+                  nz-typography
+                  nzEllipsis
+                  nzExpandable
+                  nzCopyable 
+                  [nzCopyTooltips]="null"
+                  [attr.title]="content"
+                  [nzEllipsisRows]="2"
+                  [nzContent]="content">
+                </p>
               </nz-descriptions-item>
             </nz-descriptions>
-      </div>
+          </ng-template>
+          <ng-template #usuario>
+            <nz-descriptions [nzColumn]="3" nzBordered nzSize="middle">
+              <nz-descriptions-item nzTitle="Nombre">Nicolas Matias</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Apellido">Garcia Leguizamon</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Localidad">Av. Falsa 1234</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Nombre usuario">nicolasVick</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Correo">nicolastpi10@gmail.com</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Contacto">15463524242</nz-descriptions-item>    
+            </nz-descriptions>
+          </ng-template>
+        </nz-tab>
+      </nz-tabset>
+      
     </div>
-     </ng-template>
+    </ng-template>
 
      <ng-template #ifElse>
      <ng-template [ngIf]="panel.name === 'Files' " [ngIfElse]="Solucion">

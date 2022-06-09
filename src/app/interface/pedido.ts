@@ -8,14 +8,14 @@ import { Usuario } from "./usuario";
 export class Pedido {
     id?: number;
     propietario?: Usuario | string;
-    cantidad?: number; 
     nombre?: string; 
     nombreExtendido?: string; 
-    tipografia?: string; 
-    tipo?: Tipo; 
+    cantidad?: number;
     alto?: number; 
-    ancho?: number;
+    ancho?: number; 
+    tipografia?: string;
     state?: string; // Estado
+    tipo?: Tipo; 
     descripcion?: string; 
     colores?: Color[]; 
     //boceto?: File;

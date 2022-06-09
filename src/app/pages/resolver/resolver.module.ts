@@ -24,10 +24,8 @@ import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzCommentModule } from 'ng-zorro-antd/comment';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
-
-
-
-import { OverlayModule } from '@angular/cdk/overlay';
+import { NzTagModule } from "ng-zorro-antd/tag";
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
 
 
 @NgModule({
@@ -55,8 +53,9 @@ import { OverlayModule } from '@angular/cdk/overlay';
       NzSkeletonModule,
       NzSpaceModule,
       NzCommentModule,
-      OverlayModule,
-      NzCheckboxModule       
+      NzTagModule, 
+      NzCheckboxModule,
+      NzTabsModule       
     ],
     declarations: [ResolverComponent],
     exports: [ResolverComponent]
