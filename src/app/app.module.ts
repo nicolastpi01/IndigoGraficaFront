@@ -19,6 +19,7 @@ import { authInterceptorProviders } from './helpers/auth.interceptor';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { LoginModule } from './pages/login/login.module';
 import { RegistrarModule } from './pages/registrar/registrar.module';
+import { RouterModule } from '@angular/router';
 
 
 registerLocaleData(es);
@@ -39,7 +40,8 @@ registerLocaleData(es);
     NzNotificationModule,
     LoginModule,
     RegistrarModule,
-    AppRoutingModule, 
+    AppRoutingModule,
+    RouterModule,
 
 // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
 // and returns simulated server responses.
