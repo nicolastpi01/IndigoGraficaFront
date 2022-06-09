@@ -30,6 +30,6 @@ export class TokenStorageService {
   }
 
   public getUser() {
-    return JSON.parse(sessionStorage.getItem(USER_KEY)||'');
+    return JSON.parse(sessionStorage.getItem(USER_KEY)||'{}');
   }
 }
