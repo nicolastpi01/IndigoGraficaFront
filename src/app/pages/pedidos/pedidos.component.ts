@@ -25,7 +25,6 @@ export class PedidosComponent implements OnInit {
 
   ngOnInit() {
     this.getPedidos()
-    //console.log("Pedidos :", this.pedidos)
     this.service.change.subscribe((isOpen: any) => {
       this.isOpen = isOpen;
       this.getPedidos()

@@ -9,7 +9,6 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 export class WelcomeComponent implements OnInit {
 
   usuario=''
-  roles=''
   mensajeBienvenida= 'Bienvenido! Registrate o ingresá para hacer tus pedidos'
 
   constructor(private tokenStorage: TokenStorageService,) { }
@@ -17,7 +16,6 @@ export class WelcomeComponent implements OnInit {
   ngOnInit() {
     const usuarioLogeado = this.tokenStorage.getUser()
     this.usuario = usuarioLogeado.username
-    this.roles = usuarioLogeado.roles.join(", ").replace('ROLE_',' ')
     if(this.usuario){
       this.mensajeBienvenida=`Bienvenido ${this.usuario}.`
     }

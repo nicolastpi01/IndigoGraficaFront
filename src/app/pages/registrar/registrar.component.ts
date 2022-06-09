@@ -27,11 +27,11 @@ export class RegistrarComponent implements OnInit {
     });
   }
 
-  createNotification(type: string, cuerpoError: string): void {
+  createNotification(type: string, titulo: string, cuerpoError: string): void {
     this.notification.create(
       type,
-      'Error al registrarse',
-      cuerpoError + '.'
+      titulo,
+      cuerpoError
     );
   }
 
@@ -43,9 +43,7 @@ export class RegistrarComponent implements OnInit {
         this.reloadPage();
       },
       err => {
-        this.errorMessage = err.error.message;
-        this.createNotification('error', err.status==401?'Usuario o contraseña incorrectos':'')
-        // this.isLoginFailed = true;
+        this.errorMessage = err.error.message
       }
       );
   }
@@ -59,17 +57,15 @@ export class RegistrarComponent implements OnInit {
       }
       this.authService.register(form).subscribe(
         data => {
-          console.log(data);
           this.isSuccessful = true;
           this.isSignUpFailed = false;
           this.ingresar(form)
-          this.createNotification('success', 'Usuario registrado exitosamente.')
+          this.createNotification('success', 'Bienvenido!','Usuario registrado exitosamente.')
       },
       err => {
-        debugger
-        this.errorMessage = err.error.message;
-        this.createNotification('error', err.error.message)
-        this.isSignUpFailed = true;
+        this.errorMessage = err.error.message
+        this.createNotification('error', 'Error al registrarse', err.error.message)
+        this.isSignUpFailed = true
       }
       );
     }else{
