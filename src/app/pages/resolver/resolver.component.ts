@@ -1,12 +1,12 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { PedidoService } from 'src/app/services/pedido.service';
-import { filter, Observable, Observer } from 'rxjs';
+import { filter } from 'rxjs';
 import {  HttpResponse } from '@angular/common/http';
 import { Pedido } from 'src/app/interface/pedido';
 import { FileDB } from 'src/app/interface/fileDB';
-import { getBase64 } from 'src/app/utils/functions/functions';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { Comentario, Interaccion } from 'src/app/interface/comentario';
 import { formatDistance } from 'date-fns';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
@@ -21,21 +21,23 @@ export class ResolverComponent implements OnInit {
 
   currentPedido: Pedido | undefined;
   currentFile: FileDB | undefined;
-  isVisibleModalComment = false;
-  isVisibleModalChat = false;
   currentComment: Comentario | undefined;
   id!: string | null;
-  
-  editorResponse: string | undefined;
   interaccionForResponse: Interaccion | undefined;
-  
   textAreaValue: string | undefined;
+  
+  isVisibleModalComment = false;
+  isVisibleModalChat = false;
   isVisibleModalResponse: boolean = false;
   disabledResponseTextArea: boolean = false;
 
+  panels: Array<{active: boolean, name: string, disabled: boolean}> = [];
+  tabs: Array<{ name: string, icon: string, title: string }> = [];
+
+
+
   time = formatDistance(new Date(), new Date());
   now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
- 
   defaultFileList: NzUploadFile[] = [
     {
       uid: '-1',
@@ -52,11 +54,7 @@ export class ResolverComponent implements OnInit {
   ];
   fileList1 = [...this.defaultFileList];
 
-
-  constructor(private route: ActivatedRoute, private service :PedidoService) {}
-
-  panels: Array<{active: boolean, name: string, disabled: boolean}> = [];
-  tabs: Array<{ name: string, icon: string, title: string }> = [];
+  constructor(private route: ActivatedRoute, private service :PedidoService, private msg: NzMessageService) {}
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id')
@@ -95,7 +93,6 @@ export class ResolverComponent implements OnInit {
   colorear :(descripcion: string) => string | undefined = colorearEstado
   
   onChangeTextArea = (value: string) :void => {
-    //this.interaccionResponse.texto = value;
     this.textAreaValue = value;
   };
 
@@ -116,23 +113,67 @@ export class ResolverComponent implements OnInit {
         ...this.currentComment.interacciones,
         response 
       ];
+
+      if(this.currentFile) {
+        this.currentFile = {
+          ...this.currentFile, comentarios: this.currentFile?.comentarios.map((comentario: Comentario) => {
+            if(comentario.id === this.currentComment?.id && this.currentComment) {
+              return this.currentComment 
+            }
+            else {
+              return comentario
+            }
+          })
+        }
+      };
+
+      this.currentPedido = {
+        ...this.currentPedido, files: this.currentPedido?.files?.map((file: FileDB) => {
+          if(file.id === this.currentFile?.id && this.currentFile) {
+            return this.currentFile 
+          }
+          else {
+            return file
+          }
+        })
+      };
+      
+      this.service.update(this.currentPedido).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe(async (e: any) => {
+            let pedido = (e.body as Pedido)
+            this.currentPedido = pedido;
+            this.currentFile = pedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)
+            if(this.currentFile) {
+              this.currentFile = {
+                ...this.currentFile, url: this.generateUrl(this.currentFile) 
+              }
+            };
+            this.currentComment = this.currentFile?.comentarios.find((comentario: Comentario) => comentario.id === this.currentComment?.id)
+            this.disabledResponseTextArea = true;
+            this.msg.success('Se agrego la respuesta correctamente!');
+        }),
+        () => {
+            this.msg.error('No se pudo agregar la respuesta, vuelva a intentarlo en unos segundos');
+        }
       this.isVisibleModalResponse = false;
     }; 
   };
 
   handleCancelModalResponse = () => {
-    /*
-    if(!this.interaccionResponse.id) {
-      this.interaccionResponse.texto = ''
-      this.disabledResponseTextArea = false
+    let last = this.searchLastInteraccion();
+    if (last?.rol === 'EDITOR') {
+      this.textAreaValue = last?.texto
+      this.disabledResponseTextArea = true;
     }
-    */
+    else {
+      this.textAreaValue = undefined;
+    } 
     this.isVisibleModalResponse = false;
   };
 
   
   sePuedeResponder = (interaccion: Interaccion) => {
-    
     if(this.interaccionForResponse) {
       return this.interaccionForResponse.id === interaccion.id
     }
@@ -144,11 +185,16 @@ export class ResolverComponent implements OnInit {
     }
   };
   
-
   responderInteraccion = (event: Event, interaccion: Interaccion) => {
     event.preventDefault;
     this.interaccionForResponse = interaccion;
     this.isVisibleModalResponse = true;
+    // Si esta al reves deberiamos verificar al principio  
+  };
+
+  tieneRtaCurrentComment = () :boolean => {
+    let last = this.searchLastInteraccion(); 
+    return last?.rol === 'EDITOR'
   };
 
   determineIcon = (interaccion: Interaccion) => {
@@ -162,7 +208,6 @@ export class ResolverComponent implements OnInit {
 
   onChangeCheck = (event: boolean, comentario: Comentario) => {
     comentario.terminado = event;
-    //console.log("TARGET :", event)
   };
 
   avatarStyle = (interaccion: Interaccion) => {
@@ -183,17 +228,20 @@ export class ResolverComponent implements OnInit {
   };
 
   getPedido(): void {
-
     this.service.getPedido(this.id)
     .subscribe((pedido) => { // revisar el any
         //this.currentPedido = e.body as Pedido
         this.currentPedido = pedido;
         this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
           return {
-            ...file, url: 'data:' + file.type + ';base64,' + file.data //this.blodToUrl(file) -> Mejorar este metodo, por ahora lo dejo asi
+            ...file, url: this.generateUrl(file)  //this.blodToUrl(file) -> Mejorar este metodo, por ahora lo dejo asi
           }
         });
     })
+  };
+
+  generateUrl = (file: FileDB) :string => {
+    return 'data:' + file.type + ';base64,' + file.data
   };
 
   onClickComment = (event: MouseEvent, item: FileDB) => {
@@ -205,6 +253,13 @@ export class ResolverComponent implements OnInit {
   onClickChat = (event: MouseEvent, comentario: Comentario) => {
     event.preventDefault;
     this.currentComment = comentario;
+    // if hay response previa entonces pongo en el texto la rta
+    //if(this.tieneRtaCurrentComment() && !this.textAreaValue) {
+    let last = this.searchLastInteraccion(); 
+    if (last?.rol === 'EDITOR') {
+      this.textAreaValue = last?.texto
+      this.disabledResponseTextArea = true;
+    }; 
     this.isVisibleModalChat = true;
   };
 
@@ -217,57 +272,12 @@ export class ResolverComponent implements OnInit {
   };
 
   handleOkChat = () => {
-    
-  };
-
-  onChangeResponse = (value: string) => {
-    this.editorResponse = value;
+    this.isVisibleModalChat = false;
   };
 
   searchLastInteraccion = ():  Interaccion | undefined => {
     return this.currentComment?.interacciones.find((_: Interaccion, index: number) => index+1 === this.currentComment?.interacciones.length)
-  }
-
-
-  /*
-  onClickAddReponse = (event: MouseEvent) => {
-    event.preventDefault;
-    let lastInteraccion = this.searchLastInteraccion();
-    if (this.currentComment && this.editorResponse) {
-      if(lastInteraccion?.rol === 'USUARIO') {
-        this.currentComment.interacciones = [...this.currentComment?.interacciones, {
-          texto: this.editorResponse,
-          rol: 'EDITOR',
-          key: this.currentComment.interacciones.length+1
-        }];
-      }
-      else {
-        this.currentComment.interacciones.pop();
-        this.currentComment.interacciones = [...this.currentComment?.interacciones, {
-          texto: this.editorResponse,
-          rol: 'EDITOR',
-          key: this.currentComment.interacciones.length+1
-        }];
-      }
-      this.editorResponse = '';
-    }; 
-  };
-  */
-
- 
-  searchResponseModel = () => {
-    console.log("Me ejecuto")
-    let lastInteraccion = this.currentComment?.interacciones.find((_: Interaccion, index: number) => index+1 === this.currentComment?.interacciones.length)
-    if(lastInteraccion?.rol === 'USUARIO') {
-      console.log("Salgo por el if")
-      return undefined
-    }
-    else {
-      console.log("Salgo por el else")
-      return lastInteraccion?.texto
-    }
-  };
-  
+  } 
 
   badgeUponImagePositionStyle = (comentario: Comentario) => {
     return {
@@ -284,34 +294,43 @@ export class ResolverComponent implements OnInit {
   };
 
   handleOkResolver = () => {
-
+    if(this.currentPedido) {
+      this.currentPedido = {
+        ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+          if(file.id === this.currentFile?.id && this.currentFile) {
+            return this.currentFile;
+          }
+          else {
+            return file;
+          }
+        })
+      }
+      this.service.update(this.currentPedido).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe(async (e: any) => {
+            let pedido = (e.body as Pedido)
+            this.currentPedido = pedido;
+            
+            this.currentPedido = {
+              ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+                return {
+                  ...file, url: this.generateUrl(file)
+                }
+              }) 
+            };
+            this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)        
+            this.msg.success('Se marcaron los comentarios!');
+        }),
+        () => {
+            this.msg.error('Hubo un error, no se pudieron marcar los comentarios');
+        }
+    };
+    
   };
 
   handleCancelResolver = () => {
+    this.getPedido(); // revisar esto !
     this.isVisibleModalComment = false;
   };
-
-  /*
-  badgeAddOnBeforeStyle = (comentario: Comentario) => {
-    return {
-      'margin-top': '4px'
-    }
-  };
-  */
-
-  /*
-  blodToUrl = async (file: FileDB) => {
-    //var filex = new File([file.data], file.name + "." + file.type);
-    //return await getBase64(filex);
-    console.log("typeof :", typeof(file.data) )
-    console.log("File Data: ", file.data);
-    console.log("Armo: ",'data:' + file.type + ';base64,' + file.data)
-    var blob = new Blob( [ file.data as Blob ], { type: "image/jpeg" } );
-    console.log("Blob :", blob)
-    var urlCreator = window.URL || window.webkitURL;
-    var imageUrl = urlCreator.createObjectURL(blob);
-    console.log("Image Url :", imageUrl)
-  };
-  */
 
 }
