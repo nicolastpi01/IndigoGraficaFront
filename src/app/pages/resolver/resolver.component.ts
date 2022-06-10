@@ -30,10 +30,8 @@ export class ResolverComponent implements OnInit {
   isVisibleModalChat = false;
   isVisibleModalResponse: boolean = false;
   disabledResponseTextArea: boolean = false;
-
   panels: Array<{active: boolean, name: string, disabled: boolean}> = [];
   tabs: Array<{ name: string, icon: string, title: string }> = [];
-
 
 
   time = formatDistance(new Date(), new Date());
@@ -90,8 +88,58 @@ export class ResolverComponent implements OnInit {
     ];
   };
 
+  isDisabledEliminarRespuesta = () => {
+    return !this.textAreaValue && this.tieneRtaCurrentComment()
+  };
+
   eliminarRespuesta = () => {
-    console.log("Elimino la respuesta!")
+    this.currentComment?.interacciones.pop();  
+    if(this.currentFile) {
+      this.currentFile = {
+        ...this.currentFile, comentarios: this.currentFile?.comentarios.map((comentario: Comentario) => {
+          if(comentario.id === this.currentComment?.id && this.currentComment) {
+            return this.currentComment 
+          }
+          else {
+            return comentario
+          }
+        })
+      }
+    };
+    this.currentPedido = {
+      ...this.currentPedido, files: this.currentPedido?.files?.map((file: FileDB) => {
+        if(file.id === this.currentFile?.id && this.currentFile) {
+          return this.currentFile 
+        }
+        else {
+          return file
+        }
+      })
+    };
+    this.service.update(this.currentPedido).
+      pipe(filter(e => e instanceof HttpResponse))
+      .subscribe(async (e: any) => {
+          let pedido = (e.body as Pedido)
+          this.currentPedido = pedido;
+          this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
+            return {
+              ...file, url: this.generateUrl(file)
+            }
+          });
+          this.currentFile = pedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)
+          if(this.currentFile) {
+            this.currentFile = {
+              ...this.currentFile, url: this.generateUrl(this.currentFile) 
+            }
+          };
+          this.currentComment = this.currentFile?.comentarios.find((comentario: Comentario) => comentario.id === this.currentComment?.id)
+          this.textAreaValue = undefined;
+          this.disabledResponseTextArea = false;
+          this.msg.success('Se elimino la respuesta correctamente!');
+      }),
+      () => {
+          this.msg.error('No se pudo eliminare la respuesta, vuelva a intentarlo en unos segundos');
+      }
   };
 
   colorear :(descripcion: string) => string | undefined = colorearEstado
@@ -130,7 +178,6 @@ export class ResolverComponent implements OnInit {
           })
         }
       };
-
       this.currentPedido = {
         ...this.currentPedido, files: this.currentPedido?.files?.map((file: FileDB) => {
           if(file.id === this.currentFile?.id && this.currentFile) {

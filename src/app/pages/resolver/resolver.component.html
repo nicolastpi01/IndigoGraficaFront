@@ -276,7 +276,7 @@
                         </button>
                       </nz-form-item>
                       <nz-form-item>
-                        <button nz-button nzType="default" [disabled]="!textAreaValue" (click)="eliminarRespuesta()">
+                        <button nz-button nzType="default" [disabled]="isDisabledEliminarRespuesta()" (click)="eliminarRespuesta()">
                           Eliminar
                         </button>
                       </nz-form-item>
@@ -284,20 +284,14 @@
                     
                   </nz-comment-content>
                 </nz-comment>
-                
               </ng-container>
-               <!--ng-container *nzModalFooter>
-                <button nz-button nzType="default">Eliminar respuesta</button>
-                <button nz-button nzType="default">Cancelar</button>
-                <button nz-button nzType="primary">Aceptar</button>
-              </ng-container-->
             </nz-modal> 
      </ng-template>
     </ng-template>
 
      <ng-template #Solucion>
       <div nz-col class="gutter-row"  [nzSpan]="6">
-        <div class="inner-box">
+        <div>
             col-6
             <div class="clearfix">
                 <nz-upload
