@@ -25,29 +25,17 @@ export class ResolverComponent implements OnInit {
   isVisibleModalChat = false;
   currentComment: Comentario | undefined;
   id!: string | null;
-  rows: number = 1;
+  
   editorResponse: string | undefined;
   interaccionForResponse: Interaccion | undefined;
-  interaccionResponse: Interaccion = {
-    texto: '',
-    rol: 'EDITOR',
-    key: 9999 // meto frula
-  };
+  
+  textAreaValue: string | undefined;
   isVisibleModalResponse: boolean = false;
   disabledResponseTextArea: boolean = false;
 
-
-
   time = formatDistance(new Date(), new Date());
   now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
-  content =
-    'To be, or not to be, that is a question: Whether it is nobler in the mind to suffer. The slings and arrows of ' +
-    'outrageous fortune Or to take arms against a sea of troubles, And by opposing end them? To die: to sleep; ' +
-    'No more; and by a sleep to say we end The heart-ache and the thousand natural shocks That flesh is heir to, ' +
-    'tis a consummation Devoutly to be wish d. To die, to sleep To sleep- perchance to dream: ay, there s the rub! ' +
-    'For in that sleep of death what dreams may come When we have shuffled off this mortal coil, Must give us pause. ' +
-    'There s the respect That makes calamity of so long life';
-
+ 
   defaultFileList: NzUploadFile[] = [
     {
       uid: '-1',
@@ -62,18 +50,14 @@ export class ResolverComponent implements OnInit {
       status: 'error'
     }
   ];
-
-  
-  data :Array<{title: string}> = [];
   fileList1 = [...this.defaultFileList];
+
 
   constructor(private route: ActivatedRoute, private service :PedidoService) {}
 
   panels: Array<{active: boolean, name: string, disabled: boolean}> = [];
   tabs: Array<{ name: string, icon: string, title: string }> = [];
 
-  
-  
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id')
     this.getPedido();
@@ -111,40 +95,60 @@ export class ResolverComponent implements OnInit {
   colorear :(descripcion: string) => string | undefined = colorearEstado
   
   onChangeTextArea = (value: string) :void => {
-    this.interaccionResponse.texto = value;
+    //this.interaccionResponse.texto = value;
+    this.textAreaValue = value;
   };
 
   handleOkModalResponse = () => {
-    //currentComment.interaccion.left
-    if(this.currentComment) {
-      this.interaccionResponse.key = this.currentComment.interacciones.length
+    if(this.currentComment && this.textAreaValue) {      
+      let lastInteraccion = this.searchLastInteraccion(); // Si esta al reves deberiamos verificar al principio
+
+      if(lastInteraccion?.rol === 'EDITOR') {
+        this.currentComment.interacciones.pop();
+      }
+      let response: Interaccion = {
+        texto: this.textAreaValue,
+        rol: 'EDITOR',
+        key: this.currentComment.interacciones.length // revisar esto
+      };
+
       this.currentComment.interacciones = [
-        this.interaccionResponse,
-        ...this.currentComment.interacciones, 
-      ]
+        ...this.currentComment.interacciones,
+        response 
+      ];
       this.isVisibleModalResponse = false;
-    } 
+    }; 
   };
 
   handleCancelModalResponse = () => {
+    /*
     if(!this.interaccionResponse.id) {
       this.interaccionResponse.texto = ''
       this.disabledResponseTextArea = false
     }
+    */
     this.isVisibleModalResponse = false;
   };
 
+  
   sePuedeResponder = (interaccion: Interaccion) => {
-    // Se puede responder si es la ultima interacción y ademas, es del usuario
-    let lastInteraccion = this.searchLastInteraccion();
-    return lastInteraccion && lastInteraccion.key === interaccion.key && interaccion.rol === 'USUARIO'
+    
+    if(this.interaccionForResponse) {
+      return this.interaccionForResponse.id === interaccion.id
+    }
+    else {
+      let last: Interaccion | undefined = this.searchLastInteraccion();
+      // Se puede responder si es la ultima interacción y ademas, es del usuario
+      //return last && last.id === interaccion.id && interaccion.rol === 'USUARIO'
+      return last && last.key === interaccion.key && interaccion.rol === 'USUARIO'
+    }
   };
+  
 
   responderInteraccion = (event: Event, interaccion: Interaccion) => {
     event.preventDefault;
     this.interaccionForResponse = interaccion;
     this.isVisibleModalResponse = true;
-    // Abre un modal donde comodamente puedo responder a la ultima interacción del usuario.
   };
 
   determineIcon = (interaccion: Interaccion) => {
@@ -192,7 +196,7 @@ export class ResolverComponent implements OnInit {
     })
   };
 
-  onClickComment = (event: MouseEvent, item: any) => {
+  onClickComment = (event: MouseEvent, item: FileDB) => {
     event.preventDefault;
     this.currentFile = item; 
     this.isVisibleModalComment = true;
@@ -248,6 +252,7 @@ export class ResolverComponent implements OnInit {
       this.editorResponse = '';
     }; 
   };
+  */
 
  
   searchResponseModel = () => {
@@ -262,7 +267,7 @@ export class ResolverComponent implements OnInit {
       return lastInteraccion?.texto
     }
   };
-  */
+  
 
   badgeUponImagePositionStyle = (comentario: Comentario) => {
     return {
