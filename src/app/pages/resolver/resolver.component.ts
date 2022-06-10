@@ -90,6 +90,10 @@ export class ResolverComponent implements OnInit {
     ];
   };
 
+  eliminarRespuesta = () => {
+    console.log("Elimino la respuesta!")
+  };
+
   colorear :(descripcion: string) => string | undefined = colorearEstado
   
   onChangeTextArea = (value: string) :void => {
