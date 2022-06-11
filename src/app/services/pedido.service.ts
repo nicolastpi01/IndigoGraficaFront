@@ -68,6 +68,10 @@ export class PedidoService {
     return this.http.get<Pedido[]>(`${this.baseUrl}/pedidos?state=`+ estado) 
   }
 
+  getPedidosPorUsuario() : Observable<Pedido[]> {
+    return this.http.get<Pedido[]>(`${this.baseUrl}/pedidos/porUsuario`) 
+  }
+
   getPedido(id: number | undefined) :Observable<Pedido> {
     return this.http.get<Pedido>(`${this.baseUrl}`+`${this.api}/${id}`);
   }

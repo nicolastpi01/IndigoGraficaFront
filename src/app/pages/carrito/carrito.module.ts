@@ -11,6 +11,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+import { NzLayoutModule } from "ng-zorro-antd/layout";
 
 @NgModule({
     imports: [
@@ -23,8 +24,8 @@ import { NzPaginationModule } from 'ng-zorro-antd/pagination';
       NzFormModule,
       NzButtonModule,
       NzIconModule,
-      NzPaginationModule  
-       
+      NzPaginationModule,
+      NzLayoutModule       
     ],
     declarations: [CarritoComponent],
     exports: [CarritoComponent]

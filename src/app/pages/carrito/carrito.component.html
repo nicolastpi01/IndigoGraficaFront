@@ -1,5 +1,5 @@
-
-<nz-descriptions nzTitle="Editar pedido" nzBordered [nzExtra]="extraTpl" [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+<div *ngIf="pedidos.length>0">
+  <nz-descriptions nzTitle="Editar pedido" nzBordered [nzExtra]="extraTpl" [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
     <nz-descriptions-item nzTitle="Id" >{{ currentPedido.id }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Título" >{{ currentPedido.nombre }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Subtítulo">{{ currentPedido.nombreExtendido }}</nz-descriptions-item>
@@ -11,22 +11,22 @@
     <nz-descriptions-item nzTitle="Tipo"> {{ currentPedido.tipo.nombre }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Estado" [nzSpan]="8"><nz-tag [nzColor]="colorear(currentPedido.state)">{{currentPedido.state}}</nz-tag></nz-descriptions-item>
     <nz-descriptions-item nzTitle="Colores" [nzSpan]="8">
-        <div nz-row  *ngFor="let color of currentPedido.colores">
-          <div nz-col class="gutter-row" [nzSpan]="4"><div class="inner-box"></div>
-            <nz-badge [nzColor]="color.hexCode">{{ color.nombre }}</nz-badge>
-          </div>
-        </div>
-    </nz-descriptions-item>
+      <div nz-row  *ngFor="let color of currentPedido.colores">
+        <div nz-col class="gutter-row" [nzSpan]="4"><div class="inner-box"></div>
+        <nz-badge [nzColor]="color.hexCode">{{ color.nombre }}</nz-badge>
+      </div>
+    </div>
+  </nz-descriptions-item>
     <nz-descriptions-item nzTitle="Descripción" [nzSpan]="8">
-    {{ currentPedido.descripcion }}
+      {{ currentPedido.descripcion }}
     </nz-descriptions-item>
     <nz-descriptions-item 
-        nzTitle="Eliminar" 
-        [nzSpan]="8">
-        <button class="button-delete" nz-button nzType="primary" title="Eliminar" (click)="eliminar()" nzDanger>
-            <i nz-icon nzType="delete" nzTheme="outline"></i>
-        </button>
-    </nz-descriptions-item>
+    nzTitle="Eliminar" 
+    [nzSpan]="8">
+    <button class="button-delete" nz-button nzType="primary" title="Eliminar" (click)="eliminar()" nzDanger>
+      <i nz-icon nzType="delete" nzTheme="outline"></i>
+    </button>
+  </nz-descriptions-item>
 </nz-descriptions>
 <ng-template #extraTpl>
   <button nz-button nzType="primary" (click)="onClickAccion(currentPedido)">{{ AccionText }}<i nz-icon nzType="edit" nzTheme="outline"></i></button>
@@ -35,3 +35,15 @@
 <br>
 <nz-pagination [nzPageIndex]="pageIndex" [nzTotal]="total" [nzPageSize]="1" [nzShowTotal]="totalTemplate" (nzPageIndexChange)="indexChange($event)"></nz-pagination>
 <ng-template #totalTemplate let-total><strong>Total pedidos : {{ total }} </strong></ng-template> 
+</div>
+
+<div *ngIf="!(pedidos.length>0)">
+  <div class="sin-pedidos">
+    <div>
+      <h1 nz-typography>No se encontró ningun pedido</h1>
+    </div>
+    <div >
+      <h2 nz-typography>Para realizar tu pedido ingresá en "Nuevo"</h2>
+    </div>
+  </div>
+</div>
