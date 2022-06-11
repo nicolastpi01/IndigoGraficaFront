@@ -28,7 +28,7 @@ export class CarritoComponent implements OnInit {
   }
 
   getPedidos(): void {
-    this.service.getPedidos(RESERVADO)
+    this.service.getPedidosPorUsuario()
     .subscribe(pedidos => {
        this.pedidos = pedidos
        this.total = pedidos.length

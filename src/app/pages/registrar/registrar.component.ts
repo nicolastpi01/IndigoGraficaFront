@@ -15,6 +15,7 @@ export class RegistrarComponent implements OnInit {
   isSuccessful = false;
   isSignUpFailed = false;
   errorMessage = '';
+  esEncargado = false;
 
   constructor(private authService: AuthService, private tokenStorage: TokenStorageService, private fb: FormBuilder,
     private notification: NzNotificationService) {}
@@ -24,6 +25,7 @@ export class RegistrarComponent implements OnInit {
       usuario:[null, [Validators.required]],
       password: [null, [Validators.required]],
       email: [null, [Validators.email, Validators.required]],
+      esEncargado: [null,]
     });
   }
 
@@ -50,10 +52,12 @@ export class RegistrarComponent implements OnInit {
 
   onSubmit() {
     if (this.registrarForm.valid) {
+      const rolEncargado = this.registrarForm.value.esEncargado? ['ROLE_ENCARGADO'] : null
       const form = {
         'username': this.registrarForm.value.usuario,
         'password': this.registrarForm.value.password,
         'email': this.registrarForm.value.email,
+        'role': rolEncargado
       }
       this.authService.register(form).subscribe(
         data => {
