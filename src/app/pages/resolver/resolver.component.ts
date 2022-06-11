@@ -24,8 +24,7 @@ export class ResolverComponent implements OnInit {
   currentComment: Comentario | undefined;
   id!: string | null;
   interaccionForResponse: Interaccion | undefined;
-  textAreaValue: string | undefined;
-  
+  textAreaValue: string | undefined; 
   isVisibleModalComment = false;
   isVisibleModalChat = false;
   isVisibleModalResponse: boolean = false;
@@ -33,24 +32,10 @@ export class ResolverComponent implements OnInit {
   panels: Array<{active: boolean, name: string, disabled: boolean}> = [];
   tabs: Array<{ name: string, icon: string, title: string }> = [];
 
-
   time = formatDistance(new Date(), new Date());
   now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
-  defaultFileList: NzUploadFile[] = [
-    {
-      uid: '-1',
-      name: 'xxx.png',
-      status: 'done',
-      url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      thumbUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-    },
-    {
-      uid: '-2',
-      name: 'yyy.png',
-      status: 'error'
-    }
-  ];
-  fileList1 = [...this.defaultFileList];
+
+  defaultFileList: NzUploadFile[] = [];
 
   constructor(private route: ActivatedRoute, private service :PedidoService, private msg: NzMessageService) {}
 
@@ -211,6 +196,16 @@ export class ResolverComponent implements OnInit {
     }; 
   };
 
+  toLocalDateString = (date: Date | string) => {
+    if(typeof(date) === 'string') {
+      const date1 = new Date(date);
+      return date1.toLocaleDateString()
+    }
+    else {
+      return date.toLocaleDateString()
+    }
+  };
+
   handleCancelModalResponse = () => {
     let last = this.searchLastInteraccion();
     if (last?.rol === 'EDITOR') {
@@ -281,7 +276,6 @@ export class ResolverComponent implements OnInit {
   getPedido(): void {
     this.service.getPedido(this.id)
     .subscribe((pedido) => { // revisar el any
-        //this.currentPedido = e.body as Pedido
         this.currentPedido = pedido;
         this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
           return {

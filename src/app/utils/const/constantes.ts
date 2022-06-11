@@ -24,9 +24,3 @@ export const tipografias : Array<{ value: string; label: string }>  = [
     { value: "rockwell", label: "Rockwell" },
     
 ]
-
-export const mockPropietario: Usuario = {
-    direccion: "Una avenida",
-    nombre: "Diego Caminos",
-    contacto: "1463532828" 
-}

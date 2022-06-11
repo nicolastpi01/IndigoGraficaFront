@@ -17,6 +17,7 @@ import { FileService } from 'src/app/services/file.service';
 import { Comentario, Interaccion } from 'src/app/interface/comentario';
 import { PosicionService } from 'src/app/services/posicion.service';
 import { getBase64 } from 'src/app/utils/functions/functions';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
 
 @Component({
   selector: 'app-nuevo',
@@ -44,29 +45,35 @@ export class NuevoComponent implements OnInit {
   dateFormat = 'dd/MM/YYYY';
   isVisibleModalComment = false;
 
+  isLoggedIn = false;
+  currentUser: any;
+
   constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, private tipoService: TipoPedidoService, 
-    private colorService :ColorService, private _router: Router, private msg: NzMessageService, private posService: PosicionService) {}
+    private colorService :ColorService, private _router: Router, private msg: NzMessageService, private posService: PosicionService, private tokenService: TokenStorageService) {}
 
   ngOnInit(): void {
-    this.validateForm = this.fb.group({
-      titulo: [null, [Validators.required]],
-      subtitulo: [null, [Validators.required]],
-      cantidad: [null, []], // La cantidad por defecto es uno, y si no esta definido se pone uno en el Pedido
-      alto: [null, [ Validators.min(30)], [(control: FormControl) => this.dimensionAsyncValidator (control, 'ancho') ]],
-      ancho: [null, [ Validators.min(30)], [(control: FormControl) => this.dimensionAsyncValidator (control, 'alto') ]],
-      datePicker: [null, [Validators.required], [this.confirmDateValidator]],
-      tipografia: [null, []],
-      tipo:  [[], [Validators.required]],
-      color: [[], []],
-      comentario: [null, [Validators.maxLength(150) ]],
-      remember: [true]
-    });
-    
-    this.findColores();
-    this.findPedidos();
-
-    this.panels = this.initialPanelState();
-  }
+    this.isLoggedIn = !!this.tokenService.getToken();
+    if (this.isLoggedIn) {
+      this.currentUser = this.tokenService.getUser();
+      this.validateForm = this.fb.group({
+        titulo: [null, [Validators.required]],
+        subtitulo: [null, [Validators.required]],
+        cantidad: [null, []], // La cantidad por defecto es uno, y si no esta definido se pone uno en el Pedido
+        alto: [null, [ Validators.min(30)], [(control: FormControl) => this.dimensionAsyncValidator (control, 'ancho') ]],
+        ancho: [null, [ Validators.min(30)], [(control: FormControl) => this.dimensionAsyncValidator (control, 'alto') ]],
+        datePicker: [null, [Validators.required], [this.confirmDateValidator]],
+        tipografia: [null, []],
+        tipo:  [[], [Validators.required]],
+        color: [[], []],
+        comentario: [null, [Validators.maxLength(150) ]],
+        remember: [true]
+      });
+      this.findColores();
+      this.findPedidos();
+  
+      this.panels = this.initialPanelState();  
+    }
+  };
 
   initialPanelState = () :Array<{active: boolean, name: string, disabled: boolean}> => {
     return [
@@ -172,7 +179,7 @@ export class NuevoComponent implements OnInit {
       let colorRet = this.coloresData.find( (colorData: Color) => colorData.hexCode === colorHexCode)
       if (colorRet) coloresRet.push(colorRet);
     })
-  
+
     let nuevoPedido : Pedido = {
       cantidad: form.value.cantidad ? form.value.cantidad : 1,
       nombre: form.value.titulo,
@@ -182,7 +189,17 @@ export class NuevoComponent implements OnInit {
       ancho: form.value.ancho,
       descripcion: form.value.comentario,
       state: PENDIENTEATENCION,
-      propietario: "Nicolas del Front",
+      propietario: {
+        ubicacion: this.currentUser.ubicacion,
+        apellido: this.currentUser.apellido,
+        nombre: this.currentUser.nombre,
+        contacto: this.currentUser.contacto, 
+        id: this.currentUser.id,
+        username: this.currentUser.username,
+        email: this.currentUser.email
+      },
+      
+      fechaEntrega: form.value.datePicker,
       encargado: null,
       tipo: this.tipoPedidosData.find((tipoPedido: Tipo) => tipoPedido.nombre === form.value.tipo),
       colores: coloresRet

@@ -1,7 +1,11 @@
 
 export interface Usuario {
-    direccion: string,
-    nombre: string,
-    contacto: string // Telefono, mail, etc
-    //perfil: Perfil
+    id?: string,
+    username: string,
+    email: string,
+    contacto: string,
+    nombre: string, 
+    apellido: string,
+    ubicacion: string,
+    
 }

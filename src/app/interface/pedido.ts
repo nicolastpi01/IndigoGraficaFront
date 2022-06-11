@@ -5,9 +5,9 @@ import { Tipo } from "./tipo";
 import { Usuario } from "./usuario";
 
 
-export class Pedido {
+export interface Pedido {
     id?: number;
-    propietario?: Usuario | string;
+    propietario?: Usuario; //| string;
     nombre?: string; 
     nombreExtendido?: string; 
     cantidad?: number;
@@ -15,6 +15,7 @@ export class Pedido {
     ancho?: number; 
     tipografia?: string;
     state?: string; // Estado
+    fechaEntrega?: Date | string;
     tipo?: Tipo; 
     descripcion?: string; 
     colores?: Color[]; 
@@ -22,25 +23,8 @@ export class Pedido {
     //estado!: Estado;
     editor?: Usuario;
     encargado?: Usuario | null;
-    files?:  Array<FileDB> = [];
+    files?:  Array<FileDB>;
 
-    //Pedido() {}
-    
-    /*
-    errores: Error[] = [];
-
-    validar(): Error[] {
-        let errores = [];
-        if (!this.propietario) {
-            errores.push({ campo: 'propietario', mensajeValidacion: 'Debe ingresar propietario' });
-        }
-        return errores;
-    }  
-    
-    errorParaElCampo = (campo: String): Error | undefined => {
-        return this.errores.find((_error) => _error.campo = campo);
-    };
-    */
 }
 
 export interface Error {

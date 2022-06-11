@@ -24,6 +24,10 @@ export class RegistrarComponent implements OnInit {
       usuario:[null, [Validators.required]],
       password: [null, [Validators.required]],
       email: [null, [Validators.required]],
+      nombre: [null, []],
+      apellido: [null, []],
+      ubicacion: [null, []],
+      contacto: [null, []]
     });
   }
 
@@ -56,10 +60,14 @@ export class RegistrarComponent implements OnInit {
         'username': this.registrarForm.value.usuario,
         'password': this.registrarForm.value.password,
         'email': this.registrarForm.value.email,
+        'nombre': this.registrarForm.value.nombre,
+        'apellido': this.registrarForm.value.apellido,
+        'ubicacion': this.registrarForm.value.ubicacion,
+        'contacto': this.registrarForm.value.contacto,
+        
       }
       this.authService.register(form).subscribe(
         data => {
-          console.log(data);
           this.isSuccessful = true;
           this.isSignUpFailed = false;
           this.ingresar(form)
@@ -83,7 +91,7 @@ export class RegistrarComponent implements OnInit {
     }
     
     reloadPage() {
-    window.location.reload();
-  }
+      window.location.reload();
+    }
 
 }
