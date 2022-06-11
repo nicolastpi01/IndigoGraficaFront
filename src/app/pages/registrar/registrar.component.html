@@ -19,10 +19,12 @@
     </nz-form-item>
     <nz-form-item>
       <nz-form-label nzRequired [nzSpan]="5">Email</nz-form-label>
-      <nz-form-control nzHasFeedback nzErrorTip="Por favor ingresa tu email">
-        <nz-input-group>
-          <input type="text" nz-input formControlName="email" placeholder="email" required/>
-        </nz-input-group>
+      <nz-form-control nzHasFeedback [nzErrorTip]="emailErrorTpl">
+        <input type="email" nz-input formControlName="email" placeholder="email" required/>
+        <ng-template #emailErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('email')">El email ingresado no es valido.</ng-container>
+          <ng-container *ngIf="control.hasError('required')">Por favor, ingrese su email.</ng-container>
+        </ng-template>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
@@ -57,11 +59,14 @@
         </nz-input-group>
       </nz-form-control>
     </nz-form-item>
+    <nz-form-item>
+      <label nz-checkbox formControlName="esEncargado">Es encargado?</label>
+    </nz-form-item>
   </nz-content>
   <nz-footer>
     <button
     nz-button class="login-form-button login-form-margin" 
-    (click)="onSubmit()" 
+    (click)="onSubmit()" [disabled]="!registrarForm.valid"
     [nzType]="'primary'">Ingresar 
   </button>
 </nz-footer>

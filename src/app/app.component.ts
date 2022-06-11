@@ -109,7 +109,6 @@ export class AppComponent {
 
   // modal login
   showModalLogin(): void {
-    console.log('modal login show');
     this.isVisibleLogin = true;
   }
 
@@ -122,7 +121,6 @@ export class AppComponent {
   }
 
   showModalRegistrar(): void {
-    console.log('modal login show');
     this.isVisibleRegistrar = true;
   }
 

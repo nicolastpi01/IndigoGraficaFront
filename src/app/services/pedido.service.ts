@@ -72,6 +72,10 @@ export class PedidoService {
     return this.http.get<Pedido>(`${this.baseUrl}`+`${this.api}/${id}`);
   }
 
+  getPedidosPorUsuario() : Observable<Pedido[]> {
+    return this.http.get<Pedido[]>(`${this.baseUrl}/pedidos/porUsuario`) 
+  };
+
   reservar(pedido: Pedido) : Observable<any> {
     
     return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, {...pedido, estado: new Reservado(), editor: this.usuarioLogueado }, this.httpOptions).pipe(

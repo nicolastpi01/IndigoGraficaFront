@@ -15,27 +15,29 @@ export class RegistrarComponent implements OnInit {
   isSuccessful = false;
   isSignUpFailed = false;
   errorMessage = '';
+  esEncargado = false;
 
   constructor(private authService: AuthService, private tokenStorage: TokenStorageService, private fb: FormBuilder,
-    private notification: NzNotificationService) { }
+    private notification: NzNotificationService) {}
 
   ngOnInit() {
     this.registrarForm = this.fb.group({
       usuario:[null, [Validators.required]],
       password: [null, [Validators.required]],
-      email: [null, [Validators.required]],
       nombre: [null, []],
       apellido: [null, []],
       ubicacion: [null, []],
-      contacto: [null, []]
+      contacto: [null, []],
+      email: [null, [Validators.email, Validators.required]],
+      esEncargado: [null,]
     });
   }
 
-  createNotification(type: string, cuerpoError: string): void {
+  createNotification(type: string, titulo: string, cuerpoError: string): void {
     this.notification.create(
       type,
-      'Error al registrarse',
-      cuerpoError + '.'
+      titulo,
+      cuerpoError
     );
   }
 
@@ -47,15 +49,14 @@ export class RegistrarComponent implements OnInit {
         this.reloadPage();
       },
       err => {
-        this.errorMessage = err.error.message;
-        this.createNotification('error', err.status==401?'Usuario o contraseña incorrectos':'')
-        // this.isLoginFailed = true;
+        this.errorMessage = err.error.message
       }
       );
   }
 
   onSubmit() {
     if (this.registrarForm.valid) {
+      const rolEncargado = this.registrarForm.value.esEncargado? ['ROLE_ENCARGADO'] : null
       const form = {
         'username': this.registrarForm.value.usuario,
         'password': this.registrarForm.value.password,
@@ -64,20 +65,19 @@ export class RegistrarComponent implements OnInit {
         'apellido': this.registrarForm.value.apellido,
         'ubicacion': this.registrarForm.value.ubicacion,
         'contacto': this.registrarForm.value.contacto,
-        
+        'role': rolEncargado
       }
       this.authService.register(form).subscribe(
         data => {
           this.isSuccessful = true;
           this.isSignUpFailed = false;
           this.ingresar(form)
-          this.createNotification('success', 'Usuario registrado exitosamente.')
+          this.createNotification('success', 'Bienvenido!','Usuario registrado exitosamente.')
       },
       err => {
-        debugger
-        this.errorMessage = err.error.message;
-        this.createNotification('error', err.error.message)
-        this.isSignUpFailed = true;
+        this.errorMessage = err.error.message
+        this.createNotification('error', 'Error al registrarse', err.error.message)
+        this.isSignUpFailed = true
       }
       );
     }else{
