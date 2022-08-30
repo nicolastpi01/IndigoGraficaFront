@@ -6,6 +6,7 @@ import { PendienteAtencion } from "../objects/pendienteAtencion";
 
 
 export const pedidos: Pedido[] = [
+  /* 
     {
       id: 1,
       cantidad: 2,
@@ -54,5 +55,5 @@ export const pedidos: Pedido[] = [
       descripcion: "Esto es una descripcion mas extensa donde se describen mas caracteristicas del Pedido, asi se es mas preciso",
       estado: new PendienteAtencion()
     },
-    
+    */
   ];

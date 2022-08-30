@@ -1,3 +1,4 @@
+import { Color } from "../interface/color";
 import { Tipo } from "../interface/tipo";
 
 export class Logo implements Tipo {
@@ -5,12 +6,12 @@ export class Logo implements Tipo {
     alto: number;
     ancho: number;
     tipografia: string;
-    colores: string[]
+    colores: Color[]
     constructor() {
       this.nombre = "Logo"
       this.alto = 80
       this.ancho = 80
       this.tipografia = "Sans Serif"
-      this.colores = ["#ffffff","#000000"] 
+      this.colores = [] 
     }
 }
