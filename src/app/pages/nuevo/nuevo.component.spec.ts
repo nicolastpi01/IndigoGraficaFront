@@ -1,58 +1,83 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PedidoService } from 'src/app/services/pedido.service';
 import { NuevoComponent } from './nuevo.component';
 import { FormBuilder } from '@angular/forms';
-import { HttpClient, HttpHandler } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
+let fixture : ComponentFixture<NuevoComponent>;
+let app : NuevoComponent;
+let dbe: any;
 
-TestBed.configureTestingModule({
-  declarations: [ NuevoComponent ],
-  imports: [RouterTestingModule,  HttpClientTestingModule],
-  providers: [
-     { provide: FormBuilder},
-     { provide: PedidoService },
-     { provide: NzMessageService },
-     { provide: Overlay },
+let initialPanelState :Array<{active: boolean, name: string, disabled: boolean}> = [
+    {
+      active: true,
+      name: 'Datos',
+      disabled: false
+    },
+    {
+      active: false,
+      disabled: true,
+      name: 'Archivos'
+    }
   ]
-});
 
-const fixture = TestBed.createComponent(NuevoComponent);
-const comp = fixture.componentInstance;
+describe('NuevoComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [
+        NuevoComponent
+      ],
+      imports: [RouterTestingModule,  HttpClientTestingModule],
+      providers: [
+        { provide: FormBuilder},
+        { provide: PedidoService },
+        { provide: NzMessageService },
+        { provide: Overlay },
+    ]
+    }).compileComponents()
+    fixture = TestBed.createComponent(NuevoComponent)
+    app = fixture.componentInstance
+    fixture.detectChanges()
+    dbe = fixture.debugElement.nativeElement
+  })
+    
+  it("Valida el contenido del texto del boton de alta de Form. por defecto", () => {
+    app.panels = initialPanelState;
+    fixture.detectChanges()
+    const el = dbe.querySelector(`[data-testid="buttonAlta"]`)
+    expect(el.textContent).toBe("Alta ");
+  })
 
-const expectedPanels: Array<{active: boolean, name: string, disabled: boolean}> = [
-  {
-    active: true,
-    name: 'Datos',
-    disabled: false
-  },
-  {
-    active: false,
-    disabled: true,
-    name: 'Archivos'
-  },
+  it("Valida el contenido del texto del boton de alta de Form. cuando esta cargando", () => {
+    app.panels = initialPanelState;
+    app.loadingAlta = true;
+    fixture.detectChanges()
+    const el = dbe.querySelector(`[data-testid="buttonAlta"]`)
+    expect(el.textContent).toBe("Espere... ");
+  })
   
-];
 
-// simulate the parent setting the collapse panel property with that panels
-comp.panels = expectedPanels;
+  it("Verifico que no esta definido el icono de subir un archivo en el acordeon de Mis Pedidos", () => {
+    app.panels = initialPanelState;
+    fixture.detectChanges()
+    const el = dbe.querySelector(`[data-testid="iconUpload"]`)
+    expect(el).toBeNull();
+  })
 
-// trigger initial data binding -> ngOnInit()
-fixture.detectChanges();
+  
+  it("Verifica que el boton de limpiar esta definido en el formulario de Alta Pedido", () => {
+    //const algo = fixture.debugElement.nativeElement.querySelector('#shan')
+    app.panels = initialPanelState;
+    fixture.detectChanges()
+    const el = dbe.querySelector(`[data-testid="buttonClear"]`)
+    expect(el).toBeDefined();
+  })
+  
 
-const altaButton = fixture.nativeElement.querySelector('.login-form-button');
 
-const uploadFile = fixture.nativeElement.querySelector('.upload-currentPedido');
 
-it('Deberia coincidir el texto del boton Alta en el acordeon de arriba', () => {
-  expect(altaButton.textContent).toContain('Alta');
-});
+})
 
-it('Deberia no encontrar el componente para subir un file', () => {
-  expect(uploadFile).toBeNull() 
-});
-
-// Luego agregar un test de Service !!
