@@ -7,14 +7,15 @@
   
   /* Comentario */
   .app-layout {
-   height: 100vh; 
    /*
+   height: 100vh; 
+   */
     overflow: 'hidden';
     margin: '1px 1px';
     padding: 24;
     height: 'calc(105vh - 128px)';
     background: '#f7f8f8';
-    */
+    
   }
   
   .menu-sidebar {

@@ -195,8 +195,8 @@
             >
               <ng-container *nzModalContent>
                   <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" >
-                    <div nz-col nzSpan="16" style="position: relative;" >
-                      <img nz-image (click)="onClickFile($event)" nzDisablePreview *ngIf="currentFile && currentFile.url" [nzSrc]="currentFile.url" [ngStyle]="{ width: '1220px', height: '100%', cursor: 'pointer' }">
+                    <div nz-col  >
+                      <img nz-image (click)="onClickFile($event)" nzDisablePreview *ngIf="currentFile && currentFile.url" [nzSrc]="currentFile.url" [ngStyle]="{ maxWidth: '600px', minHeight: '400px', cursor: 'pointer' }">
                       <div *ngIf="currentFile && currentFile.comentarios">
                         <div *ngFor="let item of currentFile.comentarios">
                           <nz-badge
@@ -206,7 +206,7 @@
                         </div>
                       </div>
                     </div>
-                    <div nz-col nzSpan="8">
+                    <div nz-col nzSpan="12">
                       <cdk-virtual-scroll-viewport itemSize="10" class="demo-infinite-container">
                       <nz-list *ngIf="currentFile && currentFile.comentarios">
                         <nz-list-item *cdkVirtualFor="let item of currentFile.comentarios">
