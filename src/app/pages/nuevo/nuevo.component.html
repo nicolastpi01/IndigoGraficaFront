@@ -9,119 +9,143 @@
 <nz-collapse nzAccordion>
   <nz-collapse-panel *ngFor="let panel of panels" [nzHeader]="panel.name" [nzActive]="panel.active" [nzDisabled]="panel.disabled">
     <ng-template [ngIf]="panel.name === 'Datos' " [ngIfElse]="ifElse">
-    <div nz-row nzJustify="center" nzAlign="top">
-    <div nz-col nzSpan="8">
-        <form nz-form [formGroup]="validateForm" class="login-form">
-          <nz-form-item>
-            <nz-form-label nzRequired [nzSpan]="5">Título</nz-form-label>
-            <nz-form-control nzHasFeedback nzErrorTip="Por favor ingresa un título">
-              <nz-input-group>
-                <input type="text" nz-input formControlName="titulo" placeholder="Titulo" required/>
-              </nz-input-group>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label nzRequired [nzSpan]="5">Subtítulo</nz-form-label>
-            <nz-form-control nzHasFeedback nzErrorTip="Por favor ingrese un subtítulo">
-              <nz-input-group>
-                <input type="text" nz-input formControlName="subtitulo" placeholder="Subtítulo" />
-              </nz-input-group>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-              <nz-form-label [nzSpan]="5">Cantidad</nz-form-label>
-              <nz-form-control nzHasFeedback nzErrorTip="Por favor ingrese una cantidad!">
-                <nz-input-group>
-                  <input type="number" nz-input formControlName="cantidad" placeholder="Cantidad (por defecto 1)"/>
-                </nz-input-group>
-              </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-              <nz-form-label [nzSpan]="5">Alto</nz-form-label>
-              <nz-form-control nzHasFeedback nzValidatingTip="Revisando..." [nzErrorTip]="AltoErrorTpl">
-                  <nz-input-group>
-                    <input type="number" nz-input formControlName="alto" placeholder="Alto (px)"/>
-                  </nz-input-group>
-                  <ng-template #AltoErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('min')">El alto debe ser minimo de 30px</ng-container>
-                    <ng-container *ngIf="control.hasError('differDimension')">Ancho y alto deben tener el mismo tamaño</ng-container>
-                  </ng-template>
-              </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-              <nz-form-label [nzSpan]="5">Ancho</nz-form-label>
-              <nz-form-control nzHasFeedback nzValidatingTip="Revisando..." [nzErrorTip]="AnchoErrorTpl">
-                  <nz-input-group>
-                    <input type="number" nz-input formControlName="ancho" placeholder="Ancho (px)"/>
-                  </nz-input-group>
-                  <ng-template #AnchoErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('min')">El ancho debe ser minimo de 30px</ng-container>
-                    <ng-container *ngIf="control.hasError('differDimension')">Ancho y alto deben tener el mismo tamaño</ng-container>
-                  </ng-template>
-              </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzSpan]="5" nzRequired>Fecha</nz-form-label>
-              <nz-form-control nzHasFeedback nzValidatingTip="Revisando..." [nzErrorTip]="FechaErrorTpl">
-                <nz-date-picker formControlName="datePicker" nzPlaceHolder="Fecha de entrega" [nzFormat]="dateFormat" [ngStyle]="{ width: '100%' }"></nz-date-picker>
-                <ng-template #FechaErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">por favor ingrese una fecha</ng-container>
-                  <ng-container *ngIf="control.hasError('postTodayDate')">La fecha debe ser posterior a hoy</ng-container>
-                </ng-template>
-              </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-              <nz-form-label [nzSpan]="5">Tipografía</nz-form-label>
-              <nz-form-control nzHasFeedback>
-                  <nz-input-group>
-                    <nz-select nzShowSearch nzAllowClear id="tipografia" nzPlaceHolder="Tipografía" formControlName="tipografia" [nzOptions]="tipografias"></nz-select>
-                  </nz-input-group>
-              </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label nzRequired [nzSpan]="5">Tipo</nz-form-label>
-            <nz-form-control nzHasFeedback nzErrorTip="Por favor ingrese un tipo">
-                <nz-input-group>
-                  <nz-select nzShowSearch nzAllowClear id="tipos" nzPlaceHolder="Tipo" formControlName="tipo" [nzOptions]="tiposDePedidos" ></nz-select>
-                </nz-input-group>
-            </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzSpan]="5">Color</nz-form-label>
-          <nz-form-control nzHasFeedback>
+      <form
+        nz-form
+        [nzLayout]="'vertical'"
+        [formGroup]="validateForm"
+      >
+      <div nz-col>
+      <div nz-row >
+        <nz-form-item nz-col nzSpan="6">
+          <nz-form-label nzRequired >Título</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Por favor ingresa un título">
             <nz-input-group>
-              <nz-select nzAllowClear nzPlaceHolder="Colores" nzMode="multiple" formControlName="color" [nzCustomTemplate]="multipleTemplate" [nzOptions]="colores"></nz-select>
-              <ng-template #multipleTemplate let-selected>
-                <div class="ant-select-selection-item-content">
-                  <nz-badge [nzColor]="selected.nzValue"></nz-badge>
-                    {{ selected.nzLabel }}
-                </div>
-              </ng-template>
+              <input type="text" nz-input formControlName="titulo" placeholder="Titulo" required/>
             </nz-input-group>
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzSpan]="5">Descripción</nz-form-label>
-          <nz-form-control nzHasFeedback nzErrorTip="150 caracteres es la máxima cantidad permitida">
+        <nz-form-item nz-col nzSpan="6">
+          <nz-form-label nzRequired >Subtítulo</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Por favor ingrese un subtítulo">
             <nz-input-group>
-              <nz-textarea-count [nzMaxCharacterCount]="150" >
-                <textarea rows="4" placeholder="Descripción" formControlName="comentario" nz-input></textarea>
-              </nz-textarea-count>
+              <input type="text" nz-input formControlName="subtitulo" placeholder="Subtítulo" />
             </nz-input-group>
-        </nz-form-control>
+          </nz-form-control>
         </nz-form-item>
-        <br>  
-        <button 
-          nz-button class="login-form-button login-form-margin" 
-          [nzLoading]="loadingAlta"
-          (click)="onClickAlta()"
-          data-testid="buttonAlta" 
-          [nzType]="'primary'">{{ loadingAlta ? 'Espere...' : 'Alta' }}
-        </button>
-        <button nz-button class="button-clear" data-testid="buttonClear" (click)="resetForm()">Limpiar</button>
+        <nz-form-item nz-col nzSpan="5">
+          <nz-form-label nzRequired>Tipo</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Por favor ingrese un tipo">
+              <nz-input-group>
+                <nz-select nzShowSearch nzAllowClear id="tipos" nzPlaceHolder="Tipo" formControlName="tipo" [nzOptions]="tiposDePedidos" ></nz-select>
+              </nz-input-group>
+          </nz-form-control>
+      </nz-form-item>
+        
+        <nz-form-item nz-col nzSpan="5">
+          <nz-form-label nzRequired>Fecha</nz-form-label>
+            <nz-form-control nzHasFeedback nzValidatingTip="Revisando..." [nzErrorTip]="FechaErrorTpl">
+              <nz-date-picker formControlName="datePicker" nzPlaceHolder="Fecha de entrega" [nzFormat]="dateFormat" [ngStyle]="{ width: '100%' }"></nz-date-picker>
+              <ng-template #FechaErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">por favor ingrese una fecha</ng-container>
+                <ng-container *ngIf="control.hasError('postTodayDate')">La fecha debe ser posterior a hoy</ng-container>
+              </ng-template>
+            </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-row>
+        <nz-form-item nz-col nzSpan="4">
+          <nz-form-label >Cantidad</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Por favor ingrese una cantidad!">
+            <nz-input-group>
+              <input type="number" nz-input formControlName="cantidad" placeholder="Cantidad (por defecto 1)"/>
+            </nz-input-group>
+          </nz-form-control>
+      </nz-form-item>
+        <nz-form-item nz-col nzSpan="4">
+          <nz-form-label>Alto</nz-form-label>
+          <nz-form-control nzHasFeedback nzValidatingTip="Revisando..." [nzErrorTip]="AltoErrorTpl">
+              <nz-input-group>
+                <input type="number" nz-input formControlName="alto" placeholder="Alto (px)"/>
+              </nz-input-group>
+              <ng-template #AltoErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('min')">El alto debe ser minimo de 30px</ng-container>
+                <ng-container *ngIf="control.hasError('differDimension')">Ancho y alto deben tener el mismo tamaño</ng-container>
+              </ng-template>
+          </nz-form-control>
+      </nz-form-item>
+      <nz-form-item nz-col nzSpan="4">
+          <nz-form-label >Ancho</nz-form-label>
+          <nz-form-control nzHasFeedback nzValidatingTip="Revisando..." [nzErrorTip]="AnchoErrorTpl">
+              <nz-input-group>
+                <input type="number" nz-input formControlName="ancho" placeholder="Ancho (px)"/>
+              </nz-input-group>
+              <ng-template #AnchoErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('min')">El ancho debe ser minimo de 30px</ng-container>
+                <ng-container *ngIf="control.hasError('differDimension')">Ancho y alto deben tener el mismo tamaño</ng-container>
+              </ng-template>
+          </nz-form-control>
+      </nz-form-item>
+        
+        <nz-form-item nz-col nzSpan="5">
+          <nz-form-label>Tipografía</nz-form-label>
+          <nz-form-control nzHasFeedback>
+              <nz-input-group>
+                <nz-select nzShowSearch nzAllowClear id="tipografia" nzPlaceHolder="Tipografía" formControlName="tipografia" [nzOptions]="tipografias"></nz-select>
+              </nz-input-group>
+          </nz-form-control>
+      </nz-form-item>
+      
+    <nz-form-item nz-col nzSpan="5">
+      <nz-form-label>Color</nz-form-label>
+      <nz-form-control nzHasFeedback>
+        <nz-input-group>
+          <nz-select nzAllowClear nzPlaceHolder="Colores" nzMode="multiple" formControlName="color" [nzCustomTemplate]="multipleTemplate" [nzOptions]="colores"></nz-select>
+          <ng-template #multipleTemplate let-selected>
+            <div class="ant-select-selection-item-content">
+              <nz-badge [nzColor]="selected.nzValue"></nz-badge>
+                {{ selected.nzLabel }}
+            </div>
+          </ng-template>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-col nzSpan="22">
+      <nz-form-label>Descripción</nz-form-label>
+      <nz-form-control nzHasFeedback nzErrorTip="150 caracteres es la máxima cantidad permitida">
+        <nz-input-group>
+          <nz-textarea-count [nzMaxCharacterCount]="150" >
+            <textarea rows="3" placeholder="Descripción" formControlName="comentario" nz-input></textarea>
+          </nz-textarea-count>
+        </nz-input-group>
+    </nz-form-control>
+    </nz-form-item>
+      </div>
+        
+        <div nz-row>
+          <nz-form-item >
+            <nz-form-control>
+              <button 
+                nz-button 
+                [nzLoading]="loadingAlta"
+                (click)="onClickAlta()"
+                data-testid="buttonAlta" 
+                [nzType]="'primary'">{{ loadingAlta ? 'Espere...' : 'Alta' }}
+              </button>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item >
+            <nz-form-control> 
+              <button 
+                nz-button 
+                data-testid="buttonClear" 
+                (click)="resetForm()">Limpiar
+              </button>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        </div>
       </form>
-    </div>
-  </div>
   </ng-template>
 
      <ng-template #ifElse>

@@ -55,25 +55,16 @@ nz-divider {
 
   /*
 
-  .login-form {
-    max-width: 500px;
-  }
+  
 
-  .login-form-margin {
-    margin-bottom: 16px;
-  }
+  
 
   .login-form-forgot {
     float: right;
   }
   */
 
-  .login-form-button {
-    width: 50%;
-  }
-  .button-clear {
-      width: 50%;
-  }
+  
   
   nz-select {
     min-width: 100%;
@@ -87,6 +78,26 @@ nz-divider {
     justify-content: flex-end; 
     outline: 2px;
     float: right
+  }
+
+  /*
+  .login-form-button {
+    width: 50%;
+  }
+  .button-clear {
+      width: 50%;
+  }
+
+  .login-form-margin {
+    margin-bottom: 16px;
+  }
+  */
+
+  .login-form {
+    border: 1px solid red;
+    /* margin-left: 100px; */
+    
+    
   }
 
  
