@@ -41,8 +41,8 @@ export class PedidosComponent implements OnInit {
   allData: any[] = []
   AccionText: String = "Reservar"
 
-  currentPedido: Pedido | undefined;
-  currentFile: any;
+  currentPedido: Pedido | undefined
+  currentFile: any 
   @HostBinding('class.is-open')
   isOpen = false;
 
@@ -157,7 +157,8 @@ export class PedidosComponent implements OnInit {
       return {
         ...file, url: this.generateUrl(file)  //this.blodToUrl(file) -> Mejorar este metodo, por ahora lo dejo asi
       }
-    })
+    });
+    this.currentFile = this.currentPedido.files? this.currentPedido.files[0] : undefined 
     this.isVisibleFilesModal = true;
     //this.loadingCard = false
   };
