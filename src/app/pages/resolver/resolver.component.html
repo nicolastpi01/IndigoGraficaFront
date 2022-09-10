@@ -33,7 +33,7 @@
               </nz-descriptions-item>
               <nz-descriptions-item nzTitle="Título">{{ currentPedido.nombre ? currentPedido.nombre : '-'}}</nz-descriptions-item>
               <nz-descriptions-item nzTitle="Subtítulo">{{ currentPedido.nombreExtendido ? currentPedido.nombreExtendido : '-'}}</nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Fecha de entrega">{{ currentPedido.fechaEntrega ? toLocalDateString(currentPedido.fechaEntrega) : '-'}}</nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Fecha de entrega">{{ currentPedido.fechaEntrega ? toLocalDateStringFunction(currentPedido.fechaEntrega) : '-'}}</nz-descriptions-item>
               <nz-descriptions-item nzTitle="Cantidad">{{ currentPedido.cantidad ? currentPedido.cantidad : '-'}}</nz-descriptions-item>
               <nz-descriptions-item nzTitle="Alto (px)">{{ currentPedido.alto ? currentPedido.alto : '-'}}</nz-descriptions-item>
               <nz-descriptions-item nzTitle="Ancho (px)">{{ currentPedido.ancho ? currentPedido.ancho : '-'}}</nz-descriptions-item>
@@ -131,7 +131,7 @@
               <ng-container *nzModalContent>
                   <div nz-row  [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" >
                     <div nz-col nzSpan="16" style="position: relative;" >
-                      <img nz-image nzDisablePreview *ngIf="currentFile && currentFile.url" [nzSrc]="currentFile.url" [ngStyle]="{ width: '1220px', height: '100%'}">
+                      <img nz-image nzDisablePreview *ngIf="currentFile && currentFile.url" [nzSrc]="currentFile.url" [ngStyle]="{ maxWidth: '600px', minHeight: '400px'}">
                       <div *ngIf="currentFile && currentFile.comentarios">
                         <div *ngFor="let comentario of currentFile.comentarios">
                           <nz-badge
@@ -150,7 +150,7 @@
                               nz-comment-avatar
                               [textContent]="comentario.numero"
                               nzSize="large"
-                              [style]="badgeColorStyle()"
+                              [style]="badgeColorStyleFunction()"
                             ></nz-avatar>
                             <nz-comment-content>
                             <p

@@ -15,6 +15,15 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzSliderModule } from 'ng-zorro-antd/slider';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzImageModule } from 'ng-zorro-antd/image';
+import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzCommentModule } from 'ng-zorro-antd/comment';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 @NgModule({
     imports: [
@@ -32,7 +41,16 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
       NzBadgeModule,
       NzMessageModule,
       NzSelectModule,
-      ScrollingModule
+      ScrollingModule,
+      NzSpinModule,
+      NzAvatarModule,
+      NzSliderModule,
+      NzModalModule,
+      NzImageModule,
+      NzSkeletonModule,
+      NzDividerModule,
+      NzCommentModule,
+      NzTypographyModule
     ],
     declarations: [PedidosComponent],
     exports: [PedidosComponent]

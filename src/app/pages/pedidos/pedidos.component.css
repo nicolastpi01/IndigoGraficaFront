@@ -1,9 +1,87 @@
 
-.demo-infinite-container {
+  .demo-infinite-container {
     height: 80px;
     min-width: 60px;
     border: 1px solid #e8e8e8;
     border-radius: 4px;
   }
+
+  .grid-config {
+    height: 120px;
+    font-size: 14px;
+    line-height: 120px;
+    background: #0092ff;
+    border-radius: 4px;
+  }
+
+  .grid-Icon {
+    height: 240px;
+    font-size: 14px;
+    line-height: 120px;
+    background: #0092ff;
+    border-radius: 4px;
+  }
+
+  .user-config {
+    height: 120px;
+    font-size: 14px;
+    line-height: 120px;
+    border-radius: 4px;
+  }
+
+  
+
+  .slider {
+    width: 50%;
+  }
+  .slider-container {
+    margin-bottom: 16px;
+  }
+
+  .gutter-example {
+    border-color: #0092ff;
+    border-width: medium;
+    border-radius: 4px;
+  }
+
+
+  .user-icon {
+    font-size: 70px;   
+  }
+
+  .buttonGroup { 
+    display:flex; 
+    justify-content: flex-end; 
+    outline: 2px;
+    
+  }
+
+  .marginah {
+    margin-left: 2rem;
+  }
+
+  .userInfo {
+    /*margin: "60%"; */
+    margin-left: 6rem;
+  }
+
+  .loadmore {
+    text-align: center;
+    margin-top: 12px;
+    height: 32px;
+    line-height: 32px;
+  }
+
+  .border {
+    border-color:red;
+    border-width: 5px;
+    border-style: solid;
+  }
+
+  .spinning{
+    margin-top: 20%;
+  }
+
+  
 
   

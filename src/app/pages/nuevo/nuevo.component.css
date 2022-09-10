@@ -42,6 +42,11 @@ nz-divider {
     width:100px;
   }
 
+  .buttonAlta {
+    outline: 2px;
+    width:100px;
+  }
+
   .requirements-box {
     background: #00ffc8;
     min-height: 100%;
@@ -98,6 +103,12 @@ nz-divider {
     /* margin-left: 100px; */
     
     
+  }
+
+  .formButtonGroup {
+    display:flex; 
+    justify-content: flex-end; 
+    outline: 2px;
   }
 
  

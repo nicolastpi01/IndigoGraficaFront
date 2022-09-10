@@ -1,54 +1,203 @@
-<nz-table #basicTable [nzData]="pedidos">
-    <thead>
-      <tr>
-        <th>Título</th>
-        <th>Subtítulo</th>
-        <th>Cantidad</th>
-        <th>Propietario</th>
-        <th>Colores</th>
-        <th>Alto</th>
-        <th>Ancho</th>
-        <th>Tipografía</th>
-        <th>Tipo</th>
-        <th>Estado</th>
-        <th>Descripción</th>
-        <th>Acción</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let data of basicTable.data">
-        <td>{{data.nombre}}</td>
-        <td>{{data.nombreExtendido}}</td>
-        <td>{{data.cantidad}}</td>
-        <td>{{data.propietario}}</td>
-        <td>
-          <cdk-virtual-scroll-viewport itemSize="4" class="demo-infinite-container">
-            <nz-list>
-              <nz-list-item *cdkVirtualFor="let color of data.colores">
-                <nz-badge [nzColor]="color.hexCode">{{ color.nombre }}</nz-badge>
-                      
-                <!--nz-skeleton *ngIf="!item" [nzAvatar]="true" [nzParagraph]="{ rows: 1 }"></nz-skeleton -->
-                <!--nz-list-item-meta
-                  *ngIf="item"
-                  nzAvatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                  [nzDescription]="item.email"
-                -->
-                  <!--nz-list-item-meta-title>
-                    <a href="https://ng.ant.design">{{ item.name.last }}</a>
-                  </nz-list-item-meta-title-->
-                <!--/nz-list-item-meta-->
+
+<ng-template [ngIf]="loading" [ngIfElse]="ifElse">
+  <nz-spin class="spinning" nzTip="Espere..." ></nz-spin>
+</ng-template>
+<ng-template #ifElse>
+  <nz-list nzGrid>
+  <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+    <div nz-col nzSpan="12" *ngFor="let pedido of pedidos">
+      <nz-list-item>
+
+  <!--nz-card [nzCover]="coverTemplate" [nzActions]="[actionSetting, actionEdit, actionEllipsis]"-->
+  <nz-card>
+    
+    <!--nz-card-meta      
+    ></nz-card-meta-->
+    <div class="gutter-example">
+      <h2 nz-typography style="text-align: center;">Datos del propietario</h2>
+      <!--b>Propietario</b-->
+      <!--div nz-row [nzGutter]="[hGutter, vGutter]"-->
+      <div nz-row>
+        <div nz-col nzSpan="2" class="gutter-row">
+            <i class="user-icon" nz-icon nzType="user" nzTheme="outline"></i><b style="margin-left: 0.5rem;">Usuario</b>
+        </div>
+        <div nz-col nzSpan="20">
+          <div nz-row>
+            <div nz-col class="userInfo" [nzSpan]="us.span" *ngFor="let us of userData">
+              <b>{{us.title}}</b>
+              <p>{{getValueOrNot(us, pedido)}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 nz-typography style="text-align: center;">Datos del pedido</h2>
+      <div nz-row class="marginah">
+          <nz-col [nzSpan]="6">
+              <b>Titulo</b>
+              <p>{{pedido.nombre ? pedido.nombre : "-"}}</p> 
+          </nz-col>
+          <nz-col [nzSpan]="6">
+            <b>Subtitulo</b>
+            <p>{{pedido.nombreExtendido ? pedido.nombreExtendido : "-"}}</p> 
+          </nz-col>
+          <nz-col [nzSpan]="6">
+            <b>Cantidad</b>
+            <p>{{pedido.cantidad ? pedido.cantidad : "-"}}</p> 
+          </nz-col>
+          <nz-col [nzSpan]="6">
+            <b>Fecha entrega</b>
+            <p>{{pedido.fechaEntrega ? toLocalDateStringFunction(pedido.fechaEntrega) : "-"}}</p> 
+          </nz-col>
+          <nz-col [nzSpan]="6">
+            <b>Tipografía</b>
+            <p>{{pedido.tipografia ? pedido.tipografia : "-"}}</p> 
+          </nz-col>
+          <nz-col [nzSpan]="6">
+            <b>Alto</b>
+            <p>{{pedido.alto ? pedido.alto : "-"}}</p> 
+          </nz-col>
+          <nz-col [nzSpan]="6">
+            <b>Ancho</b>
+            <p>{{pedido.ancho ? pedido.ancho : "-"}}</p> 
+          </nz-col>
+          <nz-col [nzSpan]="6">
+            <b>Tipo</b>
+            <p>{{pedido.tipo.nombre}}</p> 
+          </nz-col>
+      </div>
+      <div style="text-align: center;">
+        {{ pedido.showMore ? 'Mostrar menos' : 'Mostrar más' }}
+        <span nz-icon style="cursor: pointer;" nzType="{{ pedido.showMore ? 'up' : 'down' }}" 
+              nzTheme="outline" (click)="onClickShowMore(pedido)">
+        </span>
+      </div>
+      <div nz-row class="marginah">
+        <nz-col [nzSpan]="6" *ngIf="pedido.showMore">
+          <b>Estado</b>
+          <p><nz-tag [nzColor]="colorear(pedido.state)">{{pedido.state}}</nz-tag></p> 
+        </nz-col>
+        <nz-col [nzSpan]="14" *ngIf="pedido.showMore ">
+          <b>Colores</b>
+          <nz-list>
+            <nz-list-item style="display: inline; padding-left: 3px; padding-right: 3px; border-bottom: 0 none;" *ngFor="let color of pedido.colores">
+              <nz-badge [nzColor]="color.hexCode">{{ color.nombre }}</nz-badge>
+            </nz-list-item>
+          </nz-list> 
+        </nz-col>
+        <nz-col *ngIf="pedido.showMore ">
+          <b>Descripción</b>
+          <p>{{ pedido.descripcion ? pedido.descripcion : "-" }}</p> 
+        </nz-col>
+      </div>
+
+      <!--nz-divider></nz-divider-->
+
+      <div nz-row class="buttonGroup" [nzGutter]="16">
+        <div nz-col>
+          <button 
+            nz-button 
+            nzType="default" 
+            (click)="onClickShowFiles(pedido)">Ver archivos
+          </button>
+        </div>
+        <div nz-col>
+          <button 
+            nz-button 
+            nzType="primary" 
+            (click)="onClickAccion(pedido)">Reservar
+          </button>
+        </div>
+      </div>
+  </div>
+  </nz-card>
+</nz-list-item>
+
+  <nz-modal
+    [(nzVisible)]="isVisibleFilesModal"
+    [nzBodyStyle]="{ minHeight: '600px' }"
+    nzWidth="100%"
+    nzTitle="Archivos"
+    nzCentered
+    (nzOnCancel)="onCancelModal()"
+    (nzOnOk)="onCancelModal()"
+  >
+    <ng-container *nzModalContent>
+      <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" >
+        <div nz-col class="gutter-row" [nzSpan]="12">
+              <nz-list nzGrid>
+                  <div nz-row [nzGutter]="16" *ngIf="currentPedido && currentPedido.files">
+                    <div nz-col [nzSpan]="6" *ngFor="let file of currentPedido.files">
+                      <nz-list-item>
+                        <nz-card [nzCover]="coverTemplate" [nzActions]="[actionWatch]">
+                            <nz-card-meta
+                                [nzTitle]="file.name"
+                                nzDescription=""
+                            ></nz-card-meta>
+                              <ng-template #coverTemplate>
+                                <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '100%', height: '140px' }">
+                              </ng-template>
+                              <ng-template #actionWatch>
+                                <i nz-icon nzType="eye" (click)="onClickWatch($event, file)" nzTheme="outline"></i>
+                              </ng-template>              
+                        </nz-card>
+                      </nz-list-item>
+                    </div>
+                  </div>
+              </nz-list>   
+        </div>
+        <div nz-col class="gutter-row" [nzSpan]="12">
+          <img nz-image nzDisablePreview *ngIf="currentFile && currentFile.url" [nzSrc]="currentFile.url" [ngStyle]="{ maxWidth: '600px', minHeight: '400px' }">
+          <div *ngIf="currentFile && currentFile.comentarios">
+            <div *ngFor="let item of currentFile.comentarios">
+              <nz-badge
+                [nzCount]="item.numero"
+                [style]="badgeUponImageStyle(item)">
+              </nz-badge>
+            </div>
+          </div>
+          <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+          <div nz-col [nzSpan]="8">
+            <nz-list *ngIf="currentFile && currentFile.comentarios">
+              <nz-list-item *ngFor="let comentario of currentFile.comentarios">
+                <nz-comment [nzAuthor]="comentario.interacciones[0].rol" [nzDatetime]="now">
+                  <nz-avatar
+                    nz-comment-avatar
+                    [textContent]="comentario.numero"
+                    nzSize="large"
+                    [style]="badgeColorStyleFunction()"
+                  ></nz-avatar>
+                  <nz-comment-content>
+                  <p
+                    nz-typography
+                    nzEllipsis
+                    nzExpandable
+                    nzCopyable 
+                    [nzCopyTooltips]="null"
+                    [attr.title]="comentario.interacciones[0].texto"
+                    [nzEllipsisRows]="1"
+                    [nzContent]="comentario.interacciones[0].texto"
+                  >
+                  </p>
+                  </nz-comment-content>
+                </nz-comment> 
               </nz-list-item>
             </nz-list>
-          </cdk-virtual-scroll-viewport>
-          
-        </td>
-        <td>{{data.alto ? data.alto : "-"}}</td>
-        <td>{{data.ancho ? data.ancho : "-"}}</td>
-        <td>{{data.tipografia}}</td>
-        <td>{{data.tipo && data.tipo.nombre ? data.tipo.nombre : "-"}}</td>
-        <td><nz-tag [nzColor]="colorear(data.state)">{{data.state}}</nz-tag></td>
-        <td>{{data.descripcion}}</td>
-        <td><button nz-button nzType="default" (click)="onClickAccion(data)" [nzLoading]="loading" nzBlock>{{AccionText}}</button></td>
-      </tr>
-    </tbody>
-  </nz-table>
+          </div>
+        </div>
+      </div>
+    </div>
+      
+    </ng-container>
+    </nz-modal>
+    </div>           
+  </div>
+
+  <div class="loadmore" nz-list-load-more>
+    <button nz-button *ngIf="!loadingMore" (click)="onLoadMore()">Cargar más</button>
+  </div>
+</nz-list>
+</ng-template>  
+
+
+
+

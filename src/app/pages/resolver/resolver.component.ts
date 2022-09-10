@@ -10,6 +10,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { Comentario, Interaccion } from 'src/app/interface/comentario';
 import { formatDistance } from 'date-fns';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
+import { badgeColorStyle, toLocalDateString } from 'src/app/utils/functions/functions';
 
 @Component({
   selector: 'app-resolver',
@@ -18,6 +19,11 @@ import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 })
 
 export class ResolverComponent implements OnInit {
+
+  toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString;
+  badgeColorStyleFunction: ()  => {
+    backgroundColor: string;
+} = badgeColorStyle; 
 
   currentPedido: Pedido | undefined;
   currentFile: FileDB | undefined;
@@ -196,15 +202,7 @@ export class ResolverComponent implements OnInit {
     }; 
   };
 
-  toLocalDateString = (date: Date | string) => {
-    if(typeof(date) === 'string') {
-      const date1 = new Date(date);
-      return date1.toLocaleDateString()
-    }
-    else {
-      return date.toLocaleDateString()
-    }
-  };
+  
 
   handleCancelModalResponse = () => {
     let last = this.searchLastInteraccion();
@@ -330,12 +328,6 @@ export class ResolverComponent implements OnInit {
       left: comentario.x.toString() + 'px', 
       top: comentario.y.toString() + 'px',
     }; 
-  };
-
-  badgeColorStyle = () : { backgroundColor: string; } => {
-    return {
-      'backgroundColor': '#e95151'
-    }
   };
 
   handleOkResolver = () => {

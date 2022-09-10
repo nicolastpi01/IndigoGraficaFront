@@ -121,12 +121,16 @@
     </nz-form-control>
     </nz-form-item>
       </div>
-        
-        <div nz-row>
-          <nz-form-item >
+
+
+      <br>
+        <div nz-row class="formButtonGroup" [nzGutter]="16">
+          <nz-col>
+          <nz-form-item>
             <nz-form-control>
               <button 
-                nz-button 
+                nz-button
+                class="buttonAlta" 
                 [nzLoading]="loadingAlta"
                 (click)="onClickAlta()"
                 data-testid="buttonAlta" 
@@ -134,6 +138,8 @@
               </button>
             </nz-form-control>
           </nz-form-item>
+        </nz-col>
+      <nz-col>
           <nz-form-item >
             <nz-form-control> 
               <button 
@@ -143,6 +149,7 @@
               </button>
             </nz-form-control>
           </nz-form-item>
+        </nz-col>
         </div>
         </div>
       </form>
@@ -244,7 +251,7 @@
                               </nz-badge>
                             </ng-template>
                             <ng-template #suffixIconButton>
-                              <button nz-button nzType="primary" title="eliminar" (click)="onClickEliminarComment($event, item)" nzSearch><i nz-icon nzType="close-circle" nzTheme="outline"></i></button>
+                              <button nz-button nzType="primary" (click)="onClickEliminarComment($event, item)" nzSearch><i nz-icon nzType="close-circle" nzTheme="outline"></i></button>
                             </ng-template>
                         </nz-list-item>
                       </nz-list>
