@@ -7,6 +7,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { FileDB } from 'src/app/interface/fileDB';
 import { Comentario } from 'src/app/interface/comentario';
 import { badgeColorStyle, toLocalDateString } from 'src/app/utils/functions/functions';
+import { toArray } from 'ng-zorro-antd/core/util';
 
 interface HeadingData {
   value : string,
@@ -30,6 +31,7 @@ export class PedidosComponent implements OnInit {
 
   count: number = 2;
   index: number = 0;
+  index2: number = 2;
   //array = new Array(this.count);
   loadingMore: boolean = false;
   //loadingCard: boolean = false;
@@ -45,6 +47,8 @@ export class PedidosComponent implements OnInit {
 
   pedidos: Array<any> = []
   allData: Array<any> = []
+  total: number = 0;
+  
 
 
   constructor(private service: PedidoService,  private msg: NzMessageService) { }
@@ -62,11 +66,13 @@ export class PedidosComponent implements OnInit {
     this.service.getPedidos(PENDIENTEATENCION)
     .subscribe(pedidos =>{
       
-      console.log("HOLSAAAA")
-      console.log("Count pedidos :", pedidos.length)
+      //console.log("HOLSAAAA")
+      //console.log("Count pedidos :", pedidos.length)
       this.allData = pedidos
-      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })) //.slice(this.index, this.count); 
-      this.index = this.index + this.count;
+      this.total = pedidos.length
+      //this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })) //.slice(this.index, this.count);
+      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2); 
+      //this.index = this.index + this.count;
       
       this.loading = false
     })
@@ -113,7 +119,7 @@ export class PedidosComponent implements OnInit {
   };
 
   getValueOrNot = (headData: HeadingData, pedido: any) => {
-    let ret = pedido[headData.value]
+    let ret = pedido.propietario[headData.value]
     return ret ? ret : "-"
   };
 
@@ -121,7 +127,8 @@ export class PedidosComponent implements OnInit {
     pedido.showMore = !pedido.showMore
   }
 
-  onLoadMore = () => {
+  onLoadMore = (event: MouseEvent) => {
+    event.preventDefault;
     this.loadingMore = true;
     //this.pedidos = this.pedidos.concat(this.allData.slice(this.index, this.count))
     //console.log("Count: ", this.count)
@@ -134,16 +141,22 @@ export class PedidosComponent implements OnInit {
     //let count = this.count;
     //console.log("var Count: ", this.count)
     //console.log("var Index: ", this.index)
+    
+    let index = this.index + this.count
+    let index2 = this.index2 + this.count
+    
+    let slice = this.allData.slice(index, index2) // revisar esto "!!"!""
+    //console.log("Slice: ", slice)
 
     
-    let slice = this.allData.slice(this.index, this.count) // revisar esto "!!"!""
-    console.log("Slice: ", slice)
-
     //pedidos.slice(this.index, this.count);
     //let slic = this.allData.slice(this.index, this.count);
     //console.log("Slice :", slic)
     //this.pedidos = [...this.pedidos, slic]
     this.pedidos = this.pedidos.concat(slice)
+
+    this.index2 = index2;
+    this.index = index;
     this.loadingMore = false;
     //this.list = this.data.concat([...Array(count)].fill({}).map(() => ({ loading: true, name: {} })));
     //this.http
