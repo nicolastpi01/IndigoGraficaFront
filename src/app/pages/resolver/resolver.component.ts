@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { PedidoService } from 'src/app/services/pedido.service';
-import { filter } from 'rxjs';
+import { filter, last } from 'rxjs';
 import {  HttpResponse } from '@angular/common/http';
 import { Pedido } from 'src/app/interface/pedido';
 import { FileDB } from 'src/app/interface/fileDB';
@@ -11,6 +11,7 @@ import { Comentario, Interaccion } from 'src/app/interface/comentario';
 import { formatDistance } from 'date-fns';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { badgeColorStyle, toLocalDateString } from 'src/app/utils/functions/functions';
+import { ThisReceiver } from '@angular/compiler';
 
 @Component({
   selector: 'app-resolver',
@@ -29,12 +30,12 @@ export class ResolverComponent implements OnInit {
   currentFile: FileDB | undefined;
   currentComment: Comentario | undefined;
   id!: string | null;
-  interaccionForResponse: Interaccion | undefined;
+  //interaccionForResponse: Interaccion | undefined;
+  visibleResponse: boolean = false;
   textAreaValue: string | undefined; 
   isVisibleModalComment = false;
   isVisibleModalChat = false;
-  isVisibleModalResponse: boolean = false;
-  disabledResponseTextArea: boolean = false;
+  
   panels: Array<{active: boolean, name: string, disabled: boolean}> = [];
   tabs: Array<{ name: string, icon: string, title: string }> = [];
 
@@ -84,7 +85,9 @@ export class ResolverComponent implements OnInit {
   };
 
   eliminarRespuesta = () => {
-    this.currentComment?.interacciones.pop();  
+    let last = this.searchLastInteraccion();
+    if(last && last.id && last.rol === 'EDITOR') {
+      this.currentComment?.interacciones.pop();  
     if(this.currentFile) {
       this.currentFile = {
         ...this.currentFile, comentarios: this.currentFile?.comentarios.map((comentario: Comentario) => {
@@ -124,13 +127,18 @@ export class ResolverComponent implements OnInit {
             }
           };
           this.currentComment = this.currentFile?.comentarios.find((comentario: Comentario) => comentario.id === this.currentComment?.id)
-          this.textAreaValue = undefined;
-          this.disabledResponseTextArea = false;
+          this.textAreaValue = undefined; // rep
+          this.visibleResponse = false; // rep
           this.msg.success('Se elimino la respuesta correctamente!');
       }),
       () => {
           this.msg.error('No se pudo eliminare la respuesta, vuelva a intentarlo en unos segundos');
       }
+    }
+    else {
+      this.textAreaValue = undefined; // rep
+      this.visibleResponse = false; // rep
+    }
   };
 
   colorear :(descripcion: string) => string | undefined = colorearEstado
@@ -192,47 +200,54 @@ export class ResolverComponent implements OnInit {
               }
             };
             this.currentComment = this.currentFile?.comentarios.find((comentario: Comentario) => comentario.id === this.currentComment?.id)
-            this.disabledResponseTextArea = true;
             this.msg.success('Se agrego la respuesta correctamente!');
+            this.handleCancelModalResponse()
         }),
         () => {
             this.msg.error('No se pudo agregar la respuesta, vuelva a intentarlo en unos segundos');
         }
-      this.isVisibleModalResponse = false;
     }; 
   };
 
   
 
   handleCancelModalResponse = () => {
+    /*
     let last = this.searchLastInteraccion();
     if (last?.rol === 'EDITOR') {
       this.textAreaValue = last?.texto
-      this.disabledResponseTextArea = true;
     }
     else {
       this.textAreaValue = undefined;
-    } 
-    this.isVisibleModalResponse = false;
+    }
+    */
+    //this.interaccionForResponse = undefined;
+    this.textAreaValue = undefined;
+    this.visibleResponse = false;
+    this.isVisibleModalChat = false;
   };
 
   
-  sePuedeResponder = (interaccion: Interaccion) => {
-    if(this.interaccionForResponse) {
-      return this.interaccionForResponse.id === interaccion.id
-    }
-    else {
+  sePuedeResponder = (interaccion: Interaccion) :boolean => {
       let last: Interaccion | undefined = this.searchLastInteraccion();
-      // Se puede responder si es la ultima interacción y ademas, es del usuario
-      //return last && last.id === interaccion.id && interaccion.rol === 'USUARIO'
-      return last && last.key === interaccion.key && interaccion.rol === 'USUARIO'
-    }
+      let ret :boolean = false
+      if(last) {
+        if(interaccion.key) {
+          ret = interaccion.key === last.key
+        }
+        else {
+          ret = interaccion.id === last.id
+        }
+      }
+      return ret; 
   };
+  
   
   responderInteraccion = (event: Event, interaccion: Interaccion) => {
     event.preventDefault;
-    this.interaccionForResponse = interaccion;
-    this.isVisibleModalResponse = true;
+    //this.interaccionForResponse = interaccion;
+    this.visibleResponse = true;
+    //this.isVisibleModalResponse = true;
     // Si esta al reves deberiamos verificar al principio  
   };
 
@@ -267,10 +282,6 @@ export class ResolverComponent implements OnInit {
     }
   };
 
-  setHabilitarRespuesta = () => {
-    this.disabledResponseTextArea = !this.disabledResponseTextArea;
-  };
-
   getPedido(): void {
     this.service.getPedido(this.id)
     .subscribe((pedido) => { // revisar el any
@@ -301,7 +312,6 @@ export class ResolverComponent implements OnInit {
     let last = this.searchLastInteraccion(); 
     if (last?.rol === 'EDITOR') {
       this.textAreaValue = last?.texto
-      this.disabledResponseTextArea = true;
     }; 
     this.isVisibleModalChat = true;
   };

@@ -30,41 +30,45 @@ export class PedidosComponent implements OnInit {
 
   count: number = 2;
   index: number = 0;
-  array = new Array(this.count);
+  //array = new Array(this.count);
   loadingMore: boolean = false;
   //loadingCard: boolean = false;
   isVisibleFilesModal: boolean = false;
   colorear :(descripcion: string) => string | undefined = colorearEstado
   loadingAccion: boolean = false
   loading: boolean = false
-  pedidos: any[] = []
-  allData: any[] = []
   AccionText: String = "Reservar"
-
   currentPedido: Pedido | undefined
   currentFile: any 
   @HostBinding('class.is-open')
   isOpen = false;
 
+  pedidos: Array<any> = []
+  allData: Array<any> = []
+
+
   constructor(private service: PedidoService,  private msg: NzMessageService) { }
 
   ngOnInit() {
     this.getPedidos()
-    this.service.change.subscribe((isOpen: any) => {
-      this.isOpen = isOpen;
-      this.getPedidos()
-    });
+    //this.service.change.subscribe((isOpen: any) => {
+    //  this.isOpen = isOpen;
+      //this.getPedidos()
+    //});
   }
 
   getPedidos(): void {
     this.loading = true
     this.service.getPedidos(PENDIENTEATENCION)
     .subscribe(pedidos =>{
-      this.loading = false
-      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false }));//pedidos.slice(this.index, this.count);
-      this.index = this.index + this.count
-      console.log("Index :", this.index)
+      
+      console.log("HOLSAAAA")
+      console.log("Count pedidos :", pedidos.length)
       this.allData = pedidos
+      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })) //.slice(this.index, this.count); 
+      this.index = this.index + this.count;
+      
+      this.loading = false
     })
   };
     
@@ -115,25 +119,35 @@ export class PedidosComponent implements OnInit {
   };
 
   
-  reGenerateArray(count: number): void {
-    this.array = new Array(count);
-  }
+  
   
   onClickShowMore(pedido: any) {
     pedido.showMore = !pedido.showMore
   }
 
-  onLoadMore() {
+  onLoadMore = () => {
     this.loadingMore = true;
     //this.pedidos = this.pedidos.concat(this.allData.slice(this.index, this.count))
-    console.log("Count :", this.count)
-    console.log("Index 2 :", this.index)
-    console.log("AllData :", this.allData)
+    //console.log("Count: ", this.count)
+    //console.log("Index 2: ", this.index)
+    //console.log("AllData: ", this.allData)
+
+    
+
+    //let index = this.index;
+    //let count = this.count;
+    //console.log("var Count: ", this.count)
+    //console.log("var Index: ", this.index)
+
+    
+    let slice = this.allData.slice(this.index, this.count) // revisar esto "!!"!""
+    console.log("Slice: ", slice)
 
     //pedidos.slice(this.index, this.count);
     //let slic = this.allData.slice(this.index, this.count);
     //console.log("Slice :", slic)
     //this.pedidos = [...this.pedidos, slic]
+    this.pedidos = this.pedidos.concat(slice)
     this.loadingMore = false;
     //this.list = this.data.concat([...Array(count)].fill({}).map(() => ({ loading: true, name: {} })));
     //this.http

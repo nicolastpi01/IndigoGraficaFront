@@ -238,11 +238,16 @@
                       </div>
                     </div>
                     <div nz-col nzSpan="12">
-                      <cdk-virtual-scroll-viewport itemSize="10" class="demo-infinite-container">
+                      <cdk-virtual-scroll-viewport itemSize="8" class="demo-infinite-container">
                       <nz-list *ngIf="currentFile && currentFile.comentarios">
                         <nz-list-item *cdkVirtualFor="let item of currentFile.comentarios">
                             <nz-input-group nzSearch [nzAddOnBefore]="addOnBeforeTemplate" [nzAddOnAfter]="suffixIconButton">
-                              <input type="text" nz-input [ngModel]="item.interacciones[0].texto" (ngModelChange)="onChangeComment($event, item)" >
+                              <!--ng-template [ngIf]="item.isVisible" [ngIfElse]="withoutFocus">
+                                <input type="text" #someVar autofocus nz-input [ngModel]="item.interacciones[0].texto" (ngModelChange)="onChangeComment($event, item)" >
+                              </ng-template-->
+                              <!--ng-template #withoutFocus-->
+                                <input type="text" #someVar nz-input [ngModel]="item.interacciones[0].texto" (ngModelChange)="onChangeComment($event, item)" >
+                              <!--/ng-template-->            
                             </nz-input-group>
                             <ng-template #addOnBeforeTemplate>
                               <nz-badge

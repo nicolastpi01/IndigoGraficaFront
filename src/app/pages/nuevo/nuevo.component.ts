@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { PedidoService } from '../../services/pedido.service';
 import { PENDIENTEATENCION, tipografias as arrayLetras } from 'src/app/utils/const/constantes';
@@ -48,8 +48,12 @@ export class NuevoComponent implements OnInit {
   isLoggedIn = false;
   currentUser: any;
 
-  constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, private tipoService: TipoPedidoService, 
-    private colorService :ColorService, private _router: Router, private msg: NzMessageService, private posService: PosicionService, private tokenService: TokenStorageService) {}
+  @ViewChild('someVar') el!: ElementRef;
+
+  constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, 
+    private tipoService: TipoPedidoService, private colorService :ColorService, private _router: Router, 
+    private msg: NzMessageService, private posService: PosicionService, private tokenService: TokenStorageService,  
+    private rd: Renderer2) {} // para que se usa rd ?
 
   ngOnInit(): void {
     this.isLoggedIn = !!this.tokenService.getToken();
@@ -367,6 +371,13 @@ export class NuevoComponent implements OnInit {
     }
   };
 
+  /*
+  checkInputStyle = (comentario: Comentario) => {
+    if(comentario.isVisible) return 'autofocus'
+    else return ''
+  };
+  */
+
   // Acá, deberia agregar al objeto comentario el color que quiero que muestre, y despues cambiarlo en el OnClick (cambiarlo en todos menos en el que quiero)
   badgeAddOnBeforeStyle = (comentario: Comentario) => {
     return {
@@ -455,23 +466,44 @@ export class NuevoComponent implements OnInit {
     event.preventDefault();
     let position : {left: number, top: number, posx: number, posy: number, px: number, py: number } = this.determineMousePosition(event);
     
-    if (this.currentFile) this.currentFile.comentarios = [...this.currentFile.comentarios,
-      {
-        x: position.posx, 
-        y: position.posy,
-        terminado: false,
-        isVisible: false,
-        interacciones: [
-          { 
-            texto: '',
-            rol: 'USUARIO', // Temporal
-            key: 1
-          }
-        ],
-        numero: this.currentFile.comentarios.length === 0 ? 1 : Math.max.apply(null, this.currentFile.comentarios.map((comentario: Comentario) => comentario.numero)) + 1,
-        llave:  this.currentFile.comentarios.length === 0 ? 1 : Math.max.apply(null, this.currentFile.comentarios.map((comentario: Comentario) => comentario.numero)) + 1 
-     }
-    ];
+    
+      if (this.currentFile) {
+        //this.currentFile.comentarios = this.currentFile.comentarios.map((comentario: Comentario) => {
+        //  return {
+        //    ...comentario, isVisible : false
+        //  }
+        //});  
+        this.currentFile.comentarios = [...this.currentFile.comentarios,
+        {
+          x: position.posx, 
+          y: position.posy,
+          terminado: false,
+          isVisible: true, // puede usarse para ver si uso el autofocus o no
+          interacciones: [
+            { 
+              texto: '',
+              rol: 'USUARIO', // Temporal
+              key: 1
+            }
+          ],
+          numero: this.currentFile.comentarios.length === 0 ? 1 : Math.max.apply(null, this.currentFile.comentarios.map((comentario: Comentario) => comentario.numero)) + 1,
+          llave:  this.currentFile.comentarios.length === 0 ? 1 : Math.max.apply(null, this.currentFile.comentarios.map((comentario: Comentario) => comentario.numero)) + 1 
+       }
+      ];
+    };
+    this.el.nativeElement.focus();
+  };
+
+  ordenar = (comentarios: Comentario[]) :Comentario[] => {
+    let max = Math.max.apply(null, comentarios.map((comentario: Comentario) => comentario.numero))
+    if(comentarios.length === max) {
+      return comentarios
+    }
+    else {
+      return comentarios.map((comentario: Comentario, index: number) => ({
+        ...comentario, numero: index+1
+      }));
+    }
   };
 
   onClickEliminarComment = (event: MouseEvent, item: Comentario): void => {
@@ -497,6 +529,11 @@ export class NuevoComponent implements OnInit {
                 return file
               }
             })
+
+            // ACÁ ORDENO
+            if(this.currentFile) {
+              this.currentFile.comentarios = this.ordenar(this.currentFile.comentarios)
+            };
             this.msg.success('Se elimino el comentario correctamente!');
           }),
           () => {
@@ -505,7 +542,8 @@ export class NuevoComponent implements OnInit {
     }
     else {
       if(this.currentFile) {
-        this.currentFile.comentarios = this.currentFile?.comentarios?.filter((comentario: Comentario) => comentario.llave !== item.llave)
+        // ACÁ ORDENO
+        this.currentFile.comentarios = this.ordenar(this.currentFile?.comentarios?.filter((comentario: Comentario) => comentario.llave !== item.llave))
       } 
     }
   };
