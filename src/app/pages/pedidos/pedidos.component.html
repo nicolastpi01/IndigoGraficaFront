@@ -3,21 +3,21 @@
   <nz-spin class="spinning" nzTip="Espere..." ></nz-spin>
 </ng-template>
 <ng-template #ifElse>
-  <nz-list nzGrid>
-  <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
-    <div nz-col nzSpan="12" *ngFor="let pedido of pedidos">
-      <nz-list-item>
+  <!--nz-list nzGrid-->
+  <h3 nz-typography style="text-align: center;">Pedidos</h3>
+  <nz-list>
+  <!--div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }"-->
+      <nz-list-item *ngFor="let pedido of pedidos">
 
+  <nz-col [nzSpan]="24">
   <!--nz-card [nzCover]="coverTemplate" [nzActions]="[actionSetting, actionEdit, actionEllipsis]"-->
-  <nz-card>
+        <nz-card class="border">
     
     <!--nz-card-meta      
     ></nz-card-meta-->
-    <div class="gutter-example">
-      <h2 nz-typography style="text-align: center;">Datos del propietario</h2>
-      <!--b>Propietario</b-->
-      <!--div nz-row [nzGutter]="[hGutter, vGutter]"-->
-      <div nz-row>
+      <!--h2 nz-typography style="text-align: center;">Datos del propietario</h2-->
+      
+      <!--div nz-row>
         <div nz-col nzSpan="2" class="gutter-row">
             <i class="user-icon" nz-icon nzType="user" nzTheme="outline"></i><b style="margin-left: 0.5rem;">Usuario</b>
         </div>
@@ -29,54 +29,52 @@
             </div>
           </div>
         </div>
-      </div>
-      <h2 nz-typography style="text-align: center;">Datos del pedido</h2>
-      <div nz-row class="marginah">
-          <nz-col [nzSpan]="6">
+      </div-->
+      
+      <!--h3 nz-typography>Datos del pedido</h3-->
+
+      <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+          <nz-col nzSpan="4">
               <b>Titulo</b>
-              <p>{{pedido.nombre ? pedido.nombre : "-"}}</p> 
+              <p>{{pedido.nombre}}</p> 
           </nz-col>
-          <nz-col [nzSpan]="6">
+          <nz-col nzSpan="4">
             <b>Subtitulo</b>
-            <p>{{pedido.nombreExtendido ? pedido.nombreExtendido : "-"}}</p> 
+            <p>{{pedido.nombreExtendido}}</p> 
           </nz-col>
-          <nz-col [nzSpan]="6">
+          <nz-col nzSpan="4">
             <b>Cantidad</b>
-            <p>{{pedido.cantidad ? pedido.cantidad : "-"}}</p> 
+            <p>{{pedido.cantidad}}</p> 
           </nz-col>
-          <nz-col [nzSpan]="6">
+          <nz-col nzSpan="4">
             <b>Fecha entrega</b>
-            <p>{{pedido.fechaEntrega ? toLocalDateStringFunction(pedido.fechaEntrega) : "-"}}</p> 
+            <p>{{toLocalDateStringFunction(pedido.fechaEntrega)}}</p> 
           </nz-col>
-          <nz-col [nzSpan]="6">
+          <nz-col nzSpan="4">
             <b>Tipografía</b>
-            <p>{{pedido.tipografia ? pedido.tipografia : "-"}}</p> 
+            <p>{{pedido.tipografia}}</p> 
           </nz-col>
-          <nz-col [nzSpan]="6">
+          <nz-col nzSpan="2">
             <b>Alto</b>
-            <p>{{pedido.alto ? pedido.alto : "-"}}</p> 
+            <p>{{pedido.alto}}</p> 
           </nz-col>
-          <nz-col [nzSpan]="6">
+          <nz-col nzSpan="2">
             <b>Ancho</b>
-            <p>{{pedido.ancho ? pedido.ancho : "-"}}</p> 
+            <p>{{pedido.ancho}}</p> 
           </nz-col>
-          <nz-col [nzSpan]="6">
+          <nz-col nzSpan="4">
             <b>Tipo</b>
             <p>{{pedido.tipo.nombre}}</p> 
           </nz-col>
-      </div>
-      <div style="text-align: center;">
-        {{ pedido.showMore ? 'Mostrar menos' : 'Mostrar más' }}
-        <span nz-icon style="cursor: pointer;" nzType="{{ pedido.showMore ? 'up' : 'down' }}" 
-              nzTheme="outline" (click)="onClickShowMore(pedido)">
-        </span>
-      </div>
-      <div nz-row class="marginah">
-        <nz-col [nzSpan]="6" *ngIf="pedido.showMore">
+      
+      
+      <!--div nz-row class="marginah"-->
+        <!--nz-col  *ngIf="pedido.showMore"-->
+        <nz-col nzSpan="4">
           <b>Estado</b>
           <p><nz-tag [nzColor]="colorear(pedido.state)">{{pedido.state}}</nz-tag></p> 
         </nz-col>
-        <nz-col [nzSpan]="14" *ngIf="pedido.showMore ">
+        <nz-col nzSpan="6">
           <b>Colores</b>
           <nz-list>
             <nz-list-item style="display: inline; padding-left: 3px; padding-right: 3px; border-bottom: 0 none;" *ngFor="let color of pedido.colores">
@@ -84,13 +82,38 @@
             </nz-list-item>
           </nz-list> 
         </nz-col>
-        <nz-col *ngIf="pedido.showMore ">
+        <nz-col>
           <b>Descripción</b>
           <p>{{ pedido.descripcion ? pedido.descripcion : "-" }}</p> 
         </nz-col>
       </div>
 
-      <!--nz-divider></nz-divider-->
+      <div style="text-align: center;">
+        {{ pedido.showMore ? 'Ocultar' : 'Info del usuario' }}
+        <span nz-icon style="cursor: pointer;" nzType="{{ pedido.showMore ? 'up' : 'down' }}" 
+              nzTheme="outline" (click)="onClickShowMore(pedido)">
+        </span>
+      </div>
+
+      <div *ngIf="pedido.showMore">
+        <!--nz-divider ></nz-divider-->
+        <!--i class="user-icon" nz-icon nzType="user" nzTheme="outline"></i-->
+        <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+          <!--div nz-col nzSpan="2" class="gutter-row">
+              <i class="user-icon" nz-icon nzType="user" nzTheme="outline"></i><b style="margin-left: 0.5rem;">Usuario</b>
+          </div-->
+          <div nz-col [nzSpan]="us.span" *ngFor="let us of userData">
+            <b>{{us.title}}</b>
+            <p>{{getValueOrNot(us, pedido)}}</p>
+            <!--div nz-row>
+              <div nz-col class="userInfo" [nzSpan]="us.span" *ngFor="let us of userData">
+                <b>{{us.title}}</b>
+                <p>{{getValueOrNot(us, pedido)}}</p>
+              </div>
+            </div-->
+          </div>
+        </div>
+      </div>
 
       <div nz-row class="buttonGroup" [nzGutter]="16">
         <div nz-col>
@@ -108,8 +131,8 @@
           </button>
         </div>
       </div>
-  </div>
   </nz-card>
+</nz-col>
 </nz-list-item>
 
   <nz-modal
@@ -234,8 +257,7 @@
       
   </ng-container>
   </nz-modal>
-  </div>           
-  </div>
+  
 
   <div class="loadmore" nz-list-load-more>
     <button nz-button *ngIf="!loadingMore" (click)="onLoadMore()">Cargar más</button>

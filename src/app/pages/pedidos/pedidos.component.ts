@@ -102,8 +102,7 @@ export class PedidosComponent implements OnInit {
     span: 4,
     title: 'Contacto'
   }
-  ]);
-  
+  ]);  
 
   badgeUponImageStyle = (comentario: Comentario) => {
     return {
@@ -118,9 +117,6 @@ export class PedidosComponent implements OnInit {
     return ret ? ret : "-"
   };
 
-  
-  
-  
   onClickShowMore(pedido: any) {
     pedido.showMore = !pedido.showMore
   }

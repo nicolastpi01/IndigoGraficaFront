@@ -46,7 +46,7 @@
 
 
   .user-icon {
-    font-size: 70px;   
+    font-size: 30px;   
   }
 
   .buttonGroup { 
@@ -73,8 +73,8 @@
   }
 
   .border {
-    border-color:red;
-    border-width: 5px;
+    border-color:rgb(13, 255, 0);
+    border-width: 1.5px;
     border-style: solid;
   }
 
