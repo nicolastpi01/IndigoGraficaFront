@@ -17,6 +17,10 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzImageModule } from 'ng-zorro-antd/image';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 @NgModule({
     imports: [
@@ -36,7 +40,11 @@ import { NzPaginationModule } from 'ng-zorro-antd/pagination';
       NzSelectModule,
       ScrollingModule,
       NzDescriptionsModule,
-      NzPaginationModule 
+      NzPaginationModule,
+      NzSpinModule,
+      NzModalModule,
+      NzImageModule,
+      NzTypographyModule 
     ],
     declarations: [ReservadosComponent],
     exports: [ReservadosComponent]

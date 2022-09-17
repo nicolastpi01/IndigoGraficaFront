@@ -8,13 +8,9 @@ import { FileDB } from 'src/app/interface/fileDB';
 import { Comentario } from 'src/app/interface/comentario';
 import { badgeColorStyle, toLocalDateString } from 'src/app/utils/functions/functions';
 import { toArray } from 'ng-zorro-antd/core/util';
+import { getValueOrNot, HeadingData, userData } from 'src/app/utils/functions/pedidosData/functions';
+import { Router } from '@angular/router';
 
-interface HeadingData {
-  value : string,
-  span: number,
-  title: string,
-  visible?: boolean
-}
 
 @Component({
   selector: 'app-pedidos',
@@ -22,9 +18,10 @@ interface HeadingData {
   styleUrls: ['./pedidos.component.css']
 })
 export class PedidosComponent implements OnInit {
-
+  getValueOrNot : (headData: HeadingData, pedido: any) => any = getValueOrNot
   now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
   toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString
+  userData: HeadingData[] = userData
   badgeColorStyleFunction: ()  => {
     backgroundColor: string;
   } = badgeColorStyle
@@ -32,6 +29,7 @@ export class PedidosComponent implements OnInit {
   count: number = 2;
   index: number = 0;
   index2: number = 2;
+  accionText = 'Reservar'
   //array = new Array(this.count);
   loadingMore: boolean = false;
   //loadingCard: boolean = false;
@@ -51,7 +49,7 @@ export class PedidosComponent implements OnInit {
   
 
 
-  constructor(private service: PedidoService,  private msg: NzMessageService) { }
+  constructor(private service: PedidoService,  private msg: NzMessageService, private _router: Router) { }
 
   ngOnInit() {
     this.getPedidos()
@@ -78,37 +76,7 @@ export class PedidosComponent implements OnInit {
     })
   };
     
-  userData :HeadingData[] = ([{
-    value : 'username',
-    span: 4,
-    title: 'Usuario'
-  },
-  {
-    value : 'email',
-    span: 4,
-    title: 'Correo'
-  },
-  {
-    value : 'nombre',
-    span: 4,
-    title: 'Nombre'
-  },
-  {
-    value : 'apellido',
-    span: 4,
-    title: 'Apellido'
-  },
-  {
-    value : 'ubicacion',
-    span: 4,
-    title: 'Ubicación'
-  },
-  {
-    value : 'contacto',
-    span: 4,
-    title: 'Contacto'
-  }
-  ]);  
+    
 
   badgeUponImageStyle = (comentario: Comentario) => {
     return {
@@ -116,11 +84,6 @@ export class PedidosComponent implements OnInit {
       left: comentario.x.toString() + 'px', 
       top: comentario.y.toString() + 'px'
     }
-  };
-
-  getValueOrNot = (headData: HeadingData, pedido: any) => {
-    let ret = pedido.propietario[headData.value]
-    return ret ? ret : "-"
   };
 
   onClickShowMore(pedido: any) {
@@ -215,7 +178,12 @@ export class PedidosComponent implements OnInit {
     .subscribe((_) => {
        this.msg.success('Reservado exitosamente!');
        this.getPedidos()
-       this.loadingAccion = false 
+       this.loadingAccion = false
+       setTimeout(() => {
+        //console.log("Hola Mundo");
+        this._router.navigateByUrl("/reservados")
+    }, 2000);
+        
     })
   }
 
