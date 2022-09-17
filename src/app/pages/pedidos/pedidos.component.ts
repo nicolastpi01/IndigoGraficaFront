@@ -63,15 +63,11 @@ export class PedidosComponent implements OnInit {
     this.loading = true
     this.service.getPedidos(PENDIENTEATENCION)
     .subscribe(pedidos =>{
-      
-      //console.log("HOLSAAAA")
-      //console.log("Count pedidos :", pedidos.length)
       this.allData = pedidos
       this.total = pedidos.length
-      //this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })) //.slice(this.index, this.count);
-      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2); 
-      //this.index = this.index + this.count;
-      
+      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false }))
+      //this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2); 
+       
       this.loading = false
     })
   };
@@ -90,47 +86,21 @@ export class PedidosComponent implements OnInit {
     pedido.showMore = !pedido.showMore
   }
 
+  /*
   onLoadMore = (event: MouseEvent) => {
     event.preventDefault;
     this.loadingMore = true;
-    //this.pedidos = this.pedidos.concat(this.allData.slice(this.index, this.count))
-    //console.log("Count: ", this.count)
-    //console.log("Index 2: ", this.index)
-    //console.log("AllData: ", this.allData)
-
-    
-
-    //let index = this.index;
-    //let count = this.count;
-    //console.log("var Count: ", this.count)
-    //console.log("var Index: ", this.index)
-    
     let index = this.index + this.count
     let index2 = this.index2 + this.count
     
     let slice = this.allData.slice(index, index2) // revisar esto "!!"!""
-    //console.log("Slice: ", slice)
-
-    
-    //pedidos.slice(this.index, this.count);
-    //let slic = this.allData.slice(this.index, this.count);
-    //console.log("Slice :", slic)
-    //this.pedidos = [...this.pedidos, slic]
     this.pedidos = this.pedidos.concat(slice)
 
     this.index2 = index2;
     this.index = index;
     this.loadingMore = false;
-    //this.list = this.data.concat([...Array(count)].fill({}).map(() => ({ loading: true, name: {} })));
-    //this.http
-    //  .get(fakeDataUrl)
-    //  .pipe(catchError(() => of({ results: [] })))
-    //  .subscribe((res: any) => {
-    //    this.data = this.data.concat(res.results);
-    //    this.list = [...this.data];
-    //    this.loadingMore = false;
-    //  });
   }
+  */
 
   generateUrl = (file: FileDB) :string => {
     return 'data:' + file.type + ';base64,' + file.data

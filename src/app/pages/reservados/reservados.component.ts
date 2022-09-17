@@ -89,13 +89,12 @@ export class ReservadosComponent implements OnInit {
 
       this.allData = pedidos
       this.total = pedidos.length
-      //this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })) //.slice(this.index, this.count);
-      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2); 
-
-       //if(pedidos.length > 0) this.currentPedido = pedidos[0]; 
+      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })) 
+      //this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2); 
     });
   }
 
+  /*
   onLoadMore = (event: MouseEvent) => {
     event.preventDefault;
     this.loadingMore = true;
@@ -109,8 +108,8 @@ export class ReservadosComponent implements OnInit {
     this.index2 = index2;
     this.index = index;
     this.loadingMore = false;
-    
-  }
+  };
+  */
 
   onClickShowMore(pedido: any) {
     pedido.showMore = !pedido.showMore
