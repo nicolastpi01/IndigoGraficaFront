@@ -491,7 +491,7 @@ export class NuevoComponent implements OnInit {
        }
       ];
     };
-    this.el.nativeElement.focus();
+    //this.el.nativeElement.focus();
   };
 
   ordenar = (comentarios: Comentario[]) :Comentario[] => {
