@@ -250,7 +250,7 @@
               <ng-container *nzModalContent>
                   <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" >
                     <div nz-col nzXs="24" nzSm="12">
-                      <img nz-image (click)="onClickFile($event)" nzDisablePreview *ngIf="currentFile && currentFile.url" [nzSrc]="currentFile.url" [ngStyle]="{ maxWidth: '600px', minHeight: '400px', cursor: 'pointer' }">
+                      <img nz-image (click)="onClickFile($event)" nzDisablePreview *ngIf="currentFile && currentFile.url" [nzSrc]="currentFile.url" width="600px" height="400px" [ngStyle]="{  cursor: 'pointer' }">
                       <div *ngIf="currentFile && currentFile.comentarios">
                         <div *ngFor="let item of currentFile.comentarios">
                           <nz-badge
