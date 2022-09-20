@@ -24,10 +24,13 @@ export class ResolverComponent implements OnInit {
   toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString;
   badgeColorStyleFunction: ()  => {
     backgroundColor: string;
-} = badgeColorStyle; 
+} = badgeColorStyle;
+ 
 
   currentPedido: Pedido | undefined;
   currentFile: FileDB | undefined;
+  currentSolution: FileDB | undefined;
+
   currentComment: Comentario | undefined;
   id!: string | null;
   //interaccionForResponse: Interaccion | undefined;
@@ -78,6 +81,10 @@ export class ResolverComponent implements OnInit {
         title: 'Info del usuario'
       }
     ];
+  };
+
+  tieneDimension = () => {
+    return this.currentPedido && this.currentPedido.files && this.currentPedido.files.length > 0
   };
 
   isDisabledEliminarRespuesta = () => {
@@ -302,6 +309,12 @@ export class ResolverComponent implements OnInit {
     event.preventDefault;
     this.currentFile = item; 
     this.isVisibleModalComment = true;
+  };
+
+  onClickAddSolution = (event: MouseEvent, item: FileDB) => {
+    event.preventDefault;
+    this.currentFile = item;
+    this.currentSolution = item;
   };
 
   onClickChat = (event: MouseEvent, comentario: Comentario) => {
