@@ -1,8 +1,8 @@
-.demo-infinite-container {
-  height: 100%;
-  min-width: 100%;
-  /*
-  border: 1px solid #e8e8e8;
+.infinite-container {
+  min-height: 500px;
+  /* 
+  width: 100%; NO USAR ESTA PROPIEDAD 
+  border: 1px solid rebeccapurple;
   border-radius: 4px;
   */
 }
@@ -110,6 +110,12 @@ nz-divider {
     justify-content: flex-end; 
     outline: 2px;
   }
+
+  .border {
+    border-color:rgb(13, 255, 0);
+    border-width: 1.5px;
+    border-style: solid;
+}
 
  
 

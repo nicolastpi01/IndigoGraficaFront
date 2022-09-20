@@ -181,7 +181,6 @@
      <ng-template #ifElse>
       <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
         <div nz-col nzSpan="8">
-          <div >
             <nz-upload
               class="upload-currentPedido"
               nzAction="http://localhost:8080/files/upload"
@@ -204,16 +203,15 @@
               (nzOnCancel)="previewVisible = false"
             >
               <ng-template #modalContent>
-                <img nz-image *ngIf="previewImage" [nzSrc]="previewImage"  [ngStyle]="{ width: '100%' }" />
+                <img nz-image *ngIf="previewImage" [nzSrc]="previewImage" />
               </ng-template>
             </nz-modal>
-          </div>
+          
         </div>
         <div nz-col nzSpan="16">
-          <div>
               <nz-list nzGrid>
                 <div nz-row [nzGutter]="16">
-                  <div nz-col [nzSpan]="8" *ngFor="let file of files">
+                  <div nz-col  nzXs="24" nzSm="8" *ngFor="let file of files">
                     <nz-list-item>
                         <nz-card [nzCover]="coverTemplate" [nzActions]="[actionDelete, actionAddComment]">
                             <nz-card-meta
@@ -237,19 +235,19 @@
                   </div>
                 </div>
             </nz-list>
-            
             <nz-modal
               [(nzVisible)]="isVisibleModalComment"
               [nzBodyStyle]="{ minHeight: '600px' }"
-              nzWidth="100%"
               nzTitle="Agregar comentarios"
+              nzWidth="100%"
               nzCentered
               (nzOnCancel)="handleCancelComments()"
               (nzOnOk)="handleOkComments()"
             >
               <ng-container *nzModalContent>
-                  <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" >
-                    <div nz-col nzXs="24" nzSm="12">
+                  <div nz-row [nzGutter]="[{ xs: 8, sm: 16, md: 24, lg: 32 }, 16]">
+                    <div nz-col nzFlex="display">
+                      <!--img nz-image (click)="onClickFile($event)" nzDisablePreview *ngIf="currentFile && currentFile.url" [nzSrc]="currentFile.url" width="600px" height="400px" [ngStyle]="{  cursor: 'pointer' }"-->
                       <img nz-image (click)="onClickFile($event)" nzDisablePreview *ngIf="currentFile && currentFile.url" [nzSrc]="currentFile.url" width="600px" height="400px" [ngStyle]="{  cursor: 'pointer' }">
                       <div *ngIf="currentFile && currentFile.comentarios">
                         <div *ngFor="let item of currentFile.comentarios">
@@ -260,9 +258,9 @@
                         </div>
                       </div>
                     </div>
-                    
                     <div nz-col nzXs="24" nzSm="12">
-                      <cdk-virtual-scroll-viewport itemSize="8" class="demo-infinite-container">
+                      <b *ngIf="currentFile && currentFile.comentarios">Comentarios</b>
+                      <cdk-virtual-scroll-viewport itemSize="8" class="infinite-container">
                       <nz-list *ngIf="currentFile && currentFile.comentarios">
                         <nz-list-item *cdkVirtualFor="let item of currentFile.comentarios">
                             <nz-input-group nzSearch [nzAddOnBefore]="addOnBeforeTemplate" [nzAddOnAfter]="suffixIconButton">
@@ -270,7 +268,7 @@
                                 <input type="text" #someVar autofocus nz-input [ngModel]="item.interacciones[0].texto" (ngModelChange)="onChangeComment($event, item)" >
                               </ng-template-->
                               <!--ng-template #withoutFocus-->
-                                <input type="text" #someVar nz-input [ngModel]="item.interacciones[0].texto" (ngModelChange)="onChangeComment($event, item)" >
+                                <input type="text" nz-input [ngModel]="item.interacciones[0].texto" (ngModelChange)="onChangeComment($event, item)" >
                               <!--/ng-template-->            
                             </nz-input-group>
                             <ng-template #addOnBeforeTemplate>
@@ -289,7 +287,7 @@
                   </div>
               </ng-container>
             </nz-modal> 
-          </div>
+          
         </div>
       </div>
     </ng-template>
