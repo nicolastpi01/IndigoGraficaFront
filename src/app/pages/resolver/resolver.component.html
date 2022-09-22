@@ -91,7 +91,7 @@
     </ng-template>
 
      <ng-template #ifElse>
-     <ng-template [ngIf]="panel.name === 'Files' " [ngIfElse]="Solucion">
+     <ng-template [ngIf]="panel.name === 'Comentarios' " [ngIfElse]="Resolver">
       <div nz-col class="gutter-row" [nzSpan]="16">
         <div>
             <nz-list nzGrid>
@@ -122,7 +122,7 @@
               [(nzVisible)]="isVisibleModalComment"
               [nzBodyStyle]="{ minHeight: '600px' }"
               nzWidth="100%"
-              nzTitle="Resolver"
+              nzTitle="Responder"
               nzCentered
               (nzOnCancel)="handleCancelResolver()"
               (nzOnOk)="handleOkResolver()"
@@ -304,31 +304,53 @@
      </ng-template>
     </ng-template>
 
-     <ng-template #Solucion>
+     <ng-template #Resolver>
       <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
         <ng-template [ngIf]="currentPedido && currentPedido.files && tieneDimension()" [ngIfElse]="ifElse">
           <div nz-col [nzSpan]="12">
-            <b>Archivos</b>
+            <p style="text-align: center;"><b>Archivos</b></p>
             <nz-list nzGrid>
               <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="currentPedido && currentPedido.files">
                 <div nz-col nzXs="24" nzSm="8" *ngFor="let file of currentPedido.files">
                   <nz-list-item>
-                    <nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddComment, actionAddSolution]">
+                    <!--nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddComment, actionAddSolution]"-->
+                    <nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddSolution]">
                       <nz-card-meta
+                       [nzTitle]="file.name"
+                        nzDescription=""
+                      ></nz-card-meta>
+                      <!--nz-card-meta
                        [nzTitle]="file.name"
                         nzDescription=""
                         [nzAvatar]="avatarTemplate"
                       ></nz-card-meta>
                         <ng-template #avatarTemplate>
-                        </ng-template>
+                        </ng-template-->
                         <ng-template #coverTemplate>
                           <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '100%', height: '140px', cursor: 'pointer' }">
                         </ng-template>
-                        <ng-template #actionAddComment>
+                        <!--ng-template #actionAddComment>
                           <i nz-icon nzType="comment" (click)="onClickComment($event, file)" nzTheme="outline"></i>
-                        </ng-template>
+                        </ng-template-->
                         <ng-template #actionAddSolution>
-                          <i nz-icon nzType="upload" (click)="onClickAddSolution($event, file)" nzTheme="outline"></i>
+                          <!--nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload"-->
+                            <button nzType="default" nz-button (click)="onClickAddSolution($event, file)">
+                              Solución
+                              <!--span nz-icon  nzType="upload" (click)="onClickAddSolution($event, file)" nzTheme="outline"></span-->
+                            </button>
+                          <!--/nz-upload-->
+                          <!--nz-upload
+                            [nzAction]="handleAction"
+                            nzListType="picture-card"
+                            [(nzFileList)]="fileList"
+                            [nzShowButton]="fileList.length < 8"
+                            [nzPreview]="handlePreview"
+                            (nzChange)="handleChange($event)"
+                            *ngIf="currentPedido"
+                          >
+                            <div><i nz-icon nzType="upload" nzTheme="outline"></i></div>
+                          </nz-upload-->
+                          <!--i nz-icon nzType="upload" (click)="onClickAddSolution($event, file)" nzTheme="outline"></i-->
                         </ng-template>
                     </nz-card>
                   </nz-list-item>
@@ -346,23 +368,30 @@
         </ng-template>
         
         <div nz-col nzXs="24" nzSm="12">
-          <b *ngIf="currentSolution">Solución</b>
-          <nz-card *ngIf="currentSolution" [nzCover]="coverTemplate" [nzActions]="[actionAddComment, actionAddSolution]">
-            <nz-card-meta
-             [nzTitle]="currentSolution.name"
+          <p *ngIf="currentSolution || showFallback" style="text-align: center;"><b>Solución</b></p>
+          <!--b>Solución</b-->
+          <!--nz-card *ngIf="currentSolution" [nzCover]="coverTemplate" [nzActions]="[actionAddComment, actionAddSolution]"-->
+          <!--nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddComment, actionAddSolution]"-->
+          <nz-card [nzCover]="coverTemplate" [nzActions]="[actionDeleteSolution, actionAddSolution]">
+            <nz-card-meta             
               nzDescription=""
               [nzAvatar]="avatarTemplate"
             ></nz-card-meta>
               <ng-template #avatarTemplate>
               </ng-template>
               <ng-template #coverTemplate>
-                <img nz-image alt="no cargo imagen" *ngIf="currentSolution && currentSolution.url" [nzSrc]="currentSolution.url" [ngStyle]="{ width: '800', height: '400' }">
+                <ng-template [ngIf]="currentSolution && currentSolution.url" [ngIfElse]="Fallback">
+                  <img nz-image [nzFallback]="fallback" alt="" [nzSrc]="currentSolution.url" width="800" height="400" >
+                </ng-template>
+                <ng-template #Fallback>
+                  <img nz-image *ngIf="showFallback" [nzFallback]="fallback" alt="" nzSrc="error" width="800" height="400" >
+                </ng-template>  
               </ng-template>
-              <ng-template #actionAddComment>
-                <i nz-icon nzType="comment" (click)="onClickComment($event, currentSolution)" nzTheme="outline"></i>
+              <ng-template #actionDeleteSolution>
+                <i nz-icon nzType="delete" *ngIf="showFallback" nzTheme="outline">Eliminar</i>
               </ng-template>
               <ng-template #actionAddSolution>
-                <i nz-icon nzType="upload" (click)="onClickAddSolution($event, currentSolution)" nzTheme="outline"></i>
+                <i nz-icon nzType="upload" *ngIf="showFallback" nzTheme="outline">Subir</i>
               </ng-template>
             </nz-card>
         </div>

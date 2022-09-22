@@ -1,6 +1,7 @@
 import { Color } from "./color";
 import { Estado } from "./estado";
 import { FileDB } from "./fileDB";
+import { Solution } from "./solution";
 import { Tipo } from "./tipo";
 import { Usuario } from "./usuario";
 
@@ -24,6 +25,7 @@ export interface Pedido {
     editor?: Usuario;
     encargado?: Usuario | null;
     files?:  Array<FileDB>;
+    solutions?:  Array<Solution>;
 
 }
 
