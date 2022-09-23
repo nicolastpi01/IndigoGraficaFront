@@ -10,7 +10,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { Comentario, Interaccion } from 'src/app/interface/comentario';
 import { formatDistance } from 'date-fns';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
-import { badgeColorStyle, toLocalDateString } from 'src/app/utils/functions/functions';
+import { badgeColorStyle, getBase64, toLocalDateString } from 'src/app/utils/functions/functions';
 import { ThisReceiver } from '@angular/compiler';
 import { Solution } from 'src/app/interface/solution';
 
@@ -30,13 +30,11 @@ export class ResolverComponent implements OnInit {
 fallback =
 'data:image/png;base64,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';
 
- 
-
   currentPedido: Pedido | undefined;
   currentFile: FileDB | undefined;
-  currentSolution: FileDB | undefined;
+  currentSolution: FileDB | undefined; //string  | undefined; // NzUploadFile | undefined;//
   showFallback: boolean = false;
-  fileList: NzUploadFile[] = [];
+  //fileList: NzUploadFile[] = [];
 
 
   currentComment: Comentario | undefined;
@@ -53,7 +51,7 @@ fallback =
   time = formatDistance(new Date(), new Date());
   now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
 
-  defaultFileList: NzUploadFile[] = [];
+  //defaultFileList: NzUploadFile[] = [];
 
   constructor(private route: ActivatedRoute, private service :PedidoService, private msg: NzMessageService) {}
 
@@ -285,6 +283,68 @@ fallback =
   };
 
   async handleChange({ file, fileList }: NzUploadChangeParam): Promise<void> {
+    if (file.status !== 'uploading') {
+      console.log(file, fileList);
+    }
+    if (file.status === 'done') {
+      file['preview'] = await getBase64(file.originFileObj!);
+
+      let newFileDB: FileDB = {
+        id: file.response.id,
+        name: file.response.name,
+        type: file.response.type,
+        data: file.response.data,
+        url: file.url || file['preview'],
+        comentarios : []
+      }
+
+      this.currentSolution = newFileDB; // No deberia setearse aca, luego de la rta. del server
+      // Despues de la rta del server tengo que generar todas las url para los Files en Solutions
+      // Tengo que setear la currentSolution
+
+      let newSolution: Solution = {
+        idFileToSolution: this.currentFile?.id,
+        file: newFileDB 
+      };
+      // No setear el current Solution mandar una copia o algo asi
+      this.currentPedido = {
+        ...this.currentPedido, solutions : this.currentPedido && this.currentPedido.solutions ? 
+                                            [...this.currentPedido?.solutions, newSolution ] : [ newSolution ]
+      };
+
+      this.service.update(this.currentPedido).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe(async (e: any) => { // revisar el any
+            let pedido = (e.body as Pedido)
+            //let files: FileDB[] | undefined = this.currentPedido?.files; 
+            this.currentPedido = {...pedido, files: this.currentPedido?.files?.map((file: FileDB) => {
+              return {
+                ...file, url: this.generateUrl(file)  //this.blodToUrl(file) -> Mejorar este metodo, por ahora lo dejo asi
+              }
+            })};
+            console.log("El pedido: ", this.currentPedido)
+            //this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
+            //  return {
+            //    ...file, url: await getBase64(file)  
+                //this.fileList.find((nZFile: NzUploadFile) => nZFile.response.id === file.id)?.url
+            //}
+            //});
+
+            //let currentFileAux: FileDB | undefined = this.currentPedido.files?.find((file: FileDB) => file.id === newFileDB.id);
+            //if (currentFileAux && this.files) this.files = [...this.files, currentFileAux ] // this.files?.push(currentFileAux); 
+            //this.currentFile = currentFileAux;
+            //if(this.currentFile) this.currentFile.comentarios = []
+            this.msg.success(`${file.name} file uploaded successfully`); 
+            //this.msg.success('Se actualizo el pedido correctamente!');
+        }),
+        () => {
+            //this.currentPedido?.files?.pop();
+            this.msg.error('Fallo la generación del pedido!');
+        }
+
+    } else if (file.status === 'error') {
+      this.msg.error(`${file.name} file upload failed.`);
+    }
   };
 
   onChangeCheck = (event: boolean, comentario: Comentario) => {
@@ -332,17 +392,28 @@ fallback =
   };
 
   onClickAddSolution = (event: MouseEvent, item: FileDB) => {
-    
+    //this.showFallback = false;
     event.preventDefault;
     this.currentFile = item
+    console.log("Current File: ", item)
+    console.log("Solutions: ", this.currentPedido?.solutions)
     this.currentSolution = this.currentPedido?.solutions?.find((solution: Solution) => solution.idFileToSolution === item.id)?.file
-    if(!this.currentSolution) this.showFallback = true
+    console.log("Current Solution: ", this.currentSolution)
+    
+    if(!this.currentSolution) {
+      this.showFallback = true
+    } 
+    else {
+      this.currentSolution = {
+        ...this.currentSolution, url: this.generateUrl(this.currentSolution)
+      }
+    }
     //console.log("Me ejecute onClickSolution!!")
   };
 
   beforeUpload = (file: NzUploadFile): boolean => {
     console.log("Me ejecute beforeUpload!!")
-    this.fileList = this.fileList.concat(file);
+    //this.fileList = this.fileList.concat(file);
     return false;
   };
 

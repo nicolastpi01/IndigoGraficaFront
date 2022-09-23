@@ -388,10 +388,20 @@
                 </ng-template>  
               </ng-template>
               <ng-template #actionDeleteSolution>
-                <i nz-icon nzType="delete" *ngIf="showFallback" nzTheme="outline">Eliminar</i>
+                <button nz-button *ngIf="showFallback">
+                  <span nz-icon nzType="delete" nzTheme="outline"></span>Eliminar
+                </button>
               </ng-template>
               <ng-template #actionAddSolution>
-                <i nz-icon nzType="upload" *ngIf="showFallback" nzTheme="outline">Subir</i>
+                <nz-upload
+                  nzAction="http://localhost:8080/files/upload"
+                  (nzChange)="handleChange($event)"
+                  *ngIf="showFallback"
+                >
+                  <button nz-button>
+                    <span nz-icon nzType="upload" nzTheme="outline"></span>Subir
+                  </button>
+                </nz-upload>
               </ng-template>
             </nz-card>
         </div>
