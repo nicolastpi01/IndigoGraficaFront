@@ -360,19 +360,19 @@
           </div>
         </ng-template>
         <ng-template #ifElse>
-          <button nz-button>
+          <!--button nz-button>
             <span nz-icon nzType="upload"></span>
             Upload
-          </button>
-          MEJORAR EL UPLOAD
+          </button MEJORAR EL UPLOAD -->
+          
         </ng-template>
         
         <div nz-col nzXs="24" nzSm="12">
-          <p *ngIf="currentSolution || showFallback" style="text-align: center;"><b>Solución</b></p>
+          <p *ngIf="currentSolution || showFallback || !tieneDimension()" style="text-align: center;"><b>Solución</b></p>
           <!--b>Solución</b-->
           <!--nz-card *ngIf="currentSolution" [nzCover]="coverTemplate" [nzActions]="[actionAddComment, actionAddSolution]"-->
           <!--nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddComment, actionAddSolution]"-->
-          <nz-card [nzCover]="coverTemplate" *ngIf="(currentSolution && currentSolution.url) || showFallback" 
+          <nz-card [nzCover]="coverTemplate" *ngIf="(currentSolution && currentSolution.url) || showFallback || !tieneDimension()" 
               [nzActions]="[actionDeleteSolution, actionAddSolution]">
             <nz-card-meta             
               nzDescription=""
@@ -385,7 +385,7 @@
                   <img nz-image [nzFallback]="fallback" alt="" [nzSrc]="currentSolution.url" width="800" height="400" >
                 </ng-template>
                 <ng-template #Fallback>
-                  <img nz-image *ngIf="showFallback" [nzFallback]="fallback" alt="" nzSrc="error" width="800" height="400" >
+                  <img nz-image *ngIf="showFallback || !tieneDimension()" [nzFallback]="fallback" alt="" nzSrc="error" width="800" height="400" >
                 </ng-template>  
               </ng-template>
               <ng-template #actionDeleteSolution>

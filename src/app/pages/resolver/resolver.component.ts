@@ -307,11 +307,19 @@ fallback =
         file: newFileDB 
       };
       // No setear el current Solution mandar una copia o algo asi
-      this.currentPedido = {
-        ...this.currentPedido, solutions : this.currentPedido && this.currentPedido.solutions ? 
-                                            [...this.currentPedido?.solutions, newSolution ] : [ newSolution ]
-      };
-
+      if(this.currentPedido && this.currentPedido.files && this.currentPedido.files.length > 0) {
+        this.currentPedido = {
+          ...this.currentPedido, solutions : this.currentPedido && this.currentPedido.solutions ? 
+          [...this.currentPedido?.solutions.filter((sol: Solution) => sol.idFileToSolution !== newSolution.idFileToSolution), newSolution ] 
+          : [ newSolution ]
+          };
+      }
+      else {
+        this.currentPedido = {
+          ...this.currentPedido, solutions : [ newSolution ]
+          };
+      }
+      
       this.service.update(this.currentPedido).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe(async (e: any) => { // revisar el any
@@ -436,10 +444,10 @@ fallback =
     //this.showFallback = false;
     event.preventDefault;
     this.currentFile = item
-    console.log("Current File: ", item)
-    console.log("Solutions: ", this.currentPedido?.solutions)
+    //console.log("Current File: ", item)
+    //console.log("Solutions: ", this.currentPedido?.solutions)
     this.currentSolution = this.currentPedido?.solutions?.find((solution: Solution) => solution.idFileToSolution === item.id)?.file
-    console.log("Current Solution: ", this.currentSolution)
+    //console.log("Current Solution: ", this.currentSolution)
     
     if(!this.currentSolution) {
       this.showFallback = true
