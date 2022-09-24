@@ -372,7 +372,8 @@
           <!--b>Solución</b-->
           <!--nz-card *ngIf="currentSolution" [nzCover]="coverTemplate" [nzActions]="[actionAddComment, actionAddSolution]"-->
           <!--nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddComment, actionAddSolution]"-->
-          <nz-card [nzCover]="coverTemplate" [nzActions]="[actionDeleteSolution, actionAddSolution]">
+          <nz-card [nzCover]="coverTemplate" *ngIf="(currentSolution && currentSolution.url) || showFallback" 
+              [nzActions]="[actionDeleteSolution, actionAddSolution]">
             <nz-card-meta             
               nzDescription=""
               [nzAvatar]="avatarTemplate"
@@ -388,7 +389,7 @@
                 </ng-template>  
               </ng-template>
               <ng-template #actionDeleteSolution>
-                <button nz-button *ngIf="showFallback">
+                <button nz-button [disabled]="!currentSolution" (click)="onClickDeleteSolution($event)">
                   <span nz-icon nzType="delete" nzTheme="outline"></span>Eliminar
                 </button>
               </ng-template>
@@ -396,7 +397,6 @@
                 <nz-upload
                   nzAction="http://localhost:8080/files/upload"
                   (nzChange)="handleChange($event)"
-                  *ngIf="showFallback"
                 >
                   <button nz-button>
                     <span nz-icon nzType="upload" nzTheme="outline"></span>Subir

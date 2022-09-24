@@ -391,6 +391,33 @@ fallback =
     this.isVisibleModalComment = true;
   };
 
+  onClickDeleteSolution = (event: MouseEvent) => {
+    event.preventDefault;
+    let cp : Pedido | undefined = JSON.parse(JSON.stringify(this.currentPedido))
+    cp = {
+      ...cp, solutions : cp?.solutions?.filter((solution: Solution) => solution.idFileToSolution !== this.currentFile?.id) 
+    }
+    this.service.update(cp).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe(async (e: any) => {
+            let pedido = (e.body as Pedido)
+            this.currentPedido = pedido;
+            this.currentPedido = {
+              ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+                return {
+                  ...file, url: this.generateUrl(file)
+                }
+              }) 
+            };
+            this.msg.success(`Solución ${this.currentSolution?.name} eliminada correctamente!.`);
+            this.showFallback = true;
+            this.currentSolution = undefined        
+        }),
+        () => {
+            this.msg.error(`Hubo un error al intentar eliminar la solución ${this.currentSolution?.name}.`);
+        }
+  };
+
   onClickAddSolution = (event: MouseEvent, item: FileDB) => {
     //this.showFallback = false;
     event.preventDefault;
@@ -408,13 +435,6 @@ fallback =
         ...this.currentSolution, url: this.generateUrl(this.currentSolution)
       }
     }
-    //console.log("Me ejecute onClickSolution!!")
-  };
-
-  beforeUpload = (file: NzUploadFile): boolean => {
-    console.log("Me ejecute beforeUpload!!")
-    //this.fileList = this.fileList.concat(file);
-    return false;
   };
 
   onClickChat = (event: MouseEvent, comentario: Comentario) => {
