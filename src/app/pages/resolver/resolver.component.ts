@@ -369,6 +369,20 @@ fallback =
     }
   };
 
+  cardStyle = (file: FileDB) => {
+    if(this.currentFile?.id === file.id) {
+      return {
+        //'background-color':'#87d068'
+        'border-color': 'rgb(179, 172, 172)',
+        'border-width': '2px',
+        'border-style': 'dashed'
+      }
+    }
+    else {
+      return ''
+    }
+  };
+
   getPedido(): void {
     this.service.getPedido(this.id)
     .subscribe((pedido) => { // revisar el any

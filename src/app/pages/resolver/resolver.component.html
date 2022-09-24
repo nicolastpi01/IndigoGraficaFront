@@ -314,7 +314,7 @@
                 <div nz-col nzXs="24" nzSm="8" *ngFor="let file of currentPedido.files">
                   <nz-list-item>
                     <!--nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddComment, actionAddSolution]"-->
-                    <nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddSolution]">
+                    <nz-card [style]="cardStyle(file)" [nzCover]="coverTemplate" [nzActions]="[actionAddSolution]">
                       <nz-card-meta
                        [nzTitle]="file.name"
                         nzDescription=""

@@ -45,3 +45,9 @@ nz-divider {
     border-radius: 4px;
     
   }
+
+  .border {
+    border-color:rgb(179, 172, 172);
+    border-width: 1.5px;
+    border-style: solid;
+  }
