@@ -420,9 +420,17 @@ fallback =
   onClickDeleteSolution = (event: MouseEvent) => {
     event.preventDefault;
     let cp : Pedido | undefined = JSON.parse(JSON.stringify(this.currentPedido))
-    cp = {
-      ...cp, solutions : cp?.solutions?.filter((solution: Solution) => solution.idFileToSolution !== this.currentFile?.id) 
+    if(this.currentFile) {
+      cp = {
+        ...cp, solutions : cp?.solutions?.filter((solution: Solution) => solution.idFileToSolution !== this.currentFile?.id) 
+      }
     }
+    else {
+      cp = {
+        ...cp, solutions : [] 
+      }
+    }
+    
     this.service.update(cp).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe(async (e: any) => {
