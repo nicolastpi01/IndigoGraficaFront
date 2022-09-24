@@ -395,6 +395,10 @@ fallback =
     this.service.getPedido(this.id)
     .subscribe((pedido) => { // revisar el any
         this.currentPedido = pedido;
+        if(pedido.files === undefined || pedido.files.length === 0) {
+          let file : FileDB | undefined = pedido.solutions ? pedido.solutions[0].file : undefined
+          if(file) this.currentSolution = {...file, url: this.generateUrl(file) }
+        };
         this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
           return {
             ...file, url: this.generateUrl(file)  //this.blodToUrl(file) -> Mejorar este metodo, por ahora lo dejo asi
