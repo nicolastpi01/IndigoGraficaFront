@@ -13,6 +13,7 @@ import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { badgeColorStyle, getBase64, toLocalDateString } from 'src/app/utils/functions/functions';
 import { ThisReceiver } from '@angular/compiler';
 import { Solution } from 'src/app/interface/solution';
+import { Color } from 'src/app/interface/color';
 
 @Component({
   selector: 'app-resolver',
@@ -405,6 +406,12 @@ fallback =
           }
         });
     })
+  };
+
+  pedidoColores = () :Color[]  => {
+    if(this.currentPedido && this.currentPedido.colores) return this.currentPedido.colores
+    if(this.currentPedido && this.currentPedido.tipo && this.currentPedido.tipo.colores) return this.currentPedido.tipo.colores
+    else return [] 
   };
 
   generateUrl = (file: FileDB) :string => {

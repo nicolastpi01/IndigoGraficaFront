@@ -9,80 +9,95 @@
             {{ tab.title }}
           </ng-template>
           <ng-template [ngIf]="tab.name === 'Pedido' " [ngIfElse]="usuario">
-            <nz-descriptions *ngIf="currentPedido" nzBordered [nzColumn]="3" nzSize="middle">
-              <nz-descriptions-item nzTitle="Formato" [nzSpan]="4">
-                <nz-descriptions [nzColumn]="5" nzBordered>
-                  <nz-descriptions-item nzTitle="Colores" [nzSpan]="6" *ngIf="currentPedido && currentPedido.tipo && currentPedido.tipo.colores">
-                    <nz-list>
-                      <nz-list-item style="display: inline; padding-left: 3px; padding-right: 3px; border-bottom: 0 none;" *ngFor="let color of currentPedido.tipo.colores">
-                        <nz-badge [nzColor]="color.hexCode" [nzText]="color.nombre"></nz-badge>                
-                      </nz-list-item>
-                    </nz-list>
-                  </nz-descriptions-item> 
-                  <nz-descriptions-item nzTitle="Nombre">{{currentPedido.tipo && currentPedido.tipo.nombre ? currentPedido.tipo.nombre : '-' }}</nz-descriptions-item>
-                  <nz-descriptions-item nzTitle="Alto (px)">
-                    {{currentPedido.tipo && currentPedido.tipo.alto && !currentPedido.alto ? currentPedido.tipo.alto : '-' }}
-                  </nz-descriptions-item>
-                  <nz-descriptions-item nzTitle="Ancho (px)">
-                    {{currentPedido.tipo && currentPedido.tipo.ancho && !currentPedido.ancho ? currentPedido.tipo.ancho : '-' }}
-                  </nz-descriptions-item>
-                  <nz-descriptions-item nzTitle="Tipografía">
-                    {{currentPedido.tipo && currentPedido.tipo.tipografia && !currentPedido.tipografia ? currentPedido.tipo.tipografia : '-' }}
-                  </nz-descriptions-item>
-                </nz-descriptions>
-              </nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Título">{{ currentPedido.nombre ? currentPedido.nombre : '-'}}</nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Subtítulo">{{ currentPedido.nombreExtendido ? currentPedido.nombreExtendido : '-'}}</nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Fecha de entrega">{{ currentPedido.fechaEntrega ? toLocalDateStringFunction(currentPedido.fechaEntrega) : '-'}}</nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Cantidad">{{ currentPedido.cantidad ? currentPedido.cantidad : '-'}}</nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Alto (px)">{{ currentPedido.alto ? currentPedido.alto : '-'}}</nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Ancho (px)">{{ currentPedido.ancho ? currentPedido.ancho : '-'}}</nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Estado">
-                <nz-tag *ngIf="currentPedido.state" [nzColor]="colorear(currentPedido.state)">{{currentPedido.state}}</nz-tag>
-              </nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Tipografia">{{ currentPedido.tipografia ? currentPedido.tipografia : '-'}}</nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Colores" [nzSpan]="4" *ngIf="currentPedido && currentPedido.colores">
-                <nz-list>
-                  <nz-list-item style="display: inline; padding-left: 3px; padding-right: 3px; border-bottom: 0 none;" *ngFor="let color of currentPedido.colores">
-                    <nz-badge [nzColor]="color.hexCode" [nzText]="color.nombre"></nz-badge>                
-                  </nz-list-item>
-                </nz-list>  
-              </nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Descripción" [nzSpan]="4">
-                <p
-                  nz-typography
-                  nzEllipsis
-                  nzExpandable
-                  nzCopyable 
-                  [nzCopyTooltips]="null"
-                  [attr.title]="currentPedido.descripcion"
-                  [nzEllipsisRows]="2"
-                  [nzContent]="currentPedido.descripcion">
-                </p>
-              </nz-descriptions-item>
-            </nz-descriptions>
+            <div nz-row *ngIf="currentPedido" nzJustify="center" [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
+              <div nz-col >
+                <p class="subTitle">Título :</p>
+                <p>{{currentPedido.nombre ? currentPedido.nombre : '-' }}</p>
+              </div>
+              <div nz-col >
+                <p class="subTitle">SubTítulo :</p>
+                <p>{{currentPedido.nombreExtendido ? currentPedido.nombreExtendido : '-' }}</p>
+              </div>
+              <div nz-col >
+                <p class="subTitle">Tipo :</p>
+                <p>{{ currentPedido.tipo && currentPedido.tipo.nombre ? currentPedido.tipo.nombre : '-'}}</p>
+              </div>
+              <div nz-col >
+                <p class="subTitle">Fecha Entrega :</p>
+                <p>{{ currentPedido.fechaEntrega ? toLocalDateStringFunction(currentPedido.fechaEntrega) : '-'}}</p>
+              </div>
+              <div nz-col >
+                <p class="subTitle">Alto (px) :</p>
+                <p>{{ currentPedido.alto ? currentPedido.alto : (currentPedido.tipo  ? currentPedido.tipo.alto : "-") }}</p>
+              </div>
+              <div nz-col >
+                <p class="subTitle">Ancho (px) :</p>
+                <p>{{ currentPedido.ancho ? currentPedido.ancho : (currentPedido.tipo  ? currentPedido.tipo.ancho : "-") }}</p>
+              </div>
+              <div nz-col >
+                <p class="subTitle">Cantidad :</p>
+                <p>{{ currentPedido.cantidad }}</p>
+              </div>
+              <div nz-col >
+                <p class="subTitle">Tipografía :</p>
+                <p>{{ currentPedido.tipografia ? currentPedido.tipografia : (currentPedido.tipo  ? currentPedido.tipo.tipografia : "-") }}</p>
+              </div>
+              <div nz-col >
+                <p class="subTitle">Estado :</p>
+                <ng-template [ngIf]="currentPedido.state" [ngIfElse]="WithoutState">
+                  <p><nz-tag [nzColor]="colorear(currentPedido.state)">{{currentPedido.state}}</nz-tag></p>
+                </ng-template>
+                <ng-template #WithoutState>
+                  <p>-</p>
+                </ng-template>
+              </div>
+              <div nz-col >
+                <p class="subTitle">Colores :</p>
+                <ng-template 
+                  [ngIf]="(currentPedido.colores && currentPedido.colores.length > 0) || (currentPedido.tipo && currentPedido.tipo.colores)" [ngIfElse]="WithoutColors">
+                  <nz-list>
+                    <nz-list-item style="display: inline; padding-left: 3px; padding-right: 3px; border-bottom: 0 none;" *ngFor="let color of pedidoColores()">
+                      <nz-badge [nzColor]="color.hexCode">{{ color.nombre }}</nz-badge>
+                    </nz-list-item>
+                  </nz-list>
+                </ng-template>
+                <ng-template #WithoutColors>
+                  <p>-</p>
+                </ng-template>
+              </div>
+              <div nz-col >
+                <p class="subTitle">Descripción :</p>
+                <p>{{ currentPedido.descripcion ? currentPedido.descripcion : "-" }}</p>
+              </div>
+          </div>
           </ng-template>
           <ng-template #usuario>
-            <nz-descriptions [nzColumn]="3" nzBordered nzSize="middle" *ngIf="currentPedido">
-              <nz-descriptions-item nzTitle="Nombre">
-                {{ currentPedido.propietario && currentPedido.propietario.nombre ? currentPedido.propietario.nombre : '-'}}
-              </nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Apellido">
-                {{ currentPedido.propietario && currentPedido.propietario.apellido ? currentPedido.propietario.apellido : '-'}}
-              </nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Localidad">
-                {{ currentPedido.propietario && currentPedido.propietario.ubicacion ? currentPedido.propietario.ubicacion : '-'}}
-              </nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Nombre usuario">
-                {{ currentPedido.propietario && currentPedido.propietario.username ? currentPedido.propietario.username : '-'}}
-              </nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Correo">
-                {{ currentPedido.propietario && currentPedido.propietario.email ? currentPedido.propietario.email : '-'}}
-              </nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Contacto">
-                {{ currentPedido.propietario && currentPedido.propietario.contacto ? currentPedido.propietario.contacto : '-'}}
-              </nz-descriptions-item>    
-            </nz-descriptions>
+            <div nz-row *ngIf="currentPedido && currentPedido.propietario" nzJustify="center" [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
+              <div nz-col >
+                <p class="subTitle">Nombre :</p>
+                <p>{{ currentPedido.propietario.nombre }}</p>
+              </div>
+              <div nz-col >
+                <p class="subTitle">Apellido :</p>
+                <p>{{ currentPedido.propietario.apellido }}</p>
+              </div>
+              <div nz-col >
+                <p class="subTitle">Localidad :</p>
+                <p>{{ currentPedido.propietario.ubicacion }}</p>
+              </div>
+              <div nz-col >
+                <p class="subTitle">Nombre de Usuario :</p>
+                <p>{{ currentPedido.propietario.username }}</p>
+              </div>
+              <div nz-col >
+                <p class="subTitle">Correo :</p>
+                <p>{{ currentPedido.propietario.email }}</p>
+              </div>
+              <div nz-col >
+                <p class="subTitle">Contacto :</p>
+                <p>{{ currentPedido.propietario.contacto }}</p>
+              </div>
+          </div>
           </ng-template>
         </nz-tab>
       </nz-tabset>
