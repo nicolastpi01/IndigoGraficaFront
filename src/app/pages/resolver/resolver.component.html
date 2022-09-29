@@ -244,9 +244,10 @@
               <ng-container *nzModalContent>
                 <!--div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } "-->
                 <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
-                  <div nz-col> 
+                  <div nz-col>
+                    <p style="text-align: center;"><b>Comentarios</b></p> 
                     <!--cdk-virtual-scroll-viewport itemSize="10" class="demo-infinite-container"-->
-                    <cdk-virtual-scroll-viewport itemSize="10"  class="demo-infinite-containerRE">
+                    <cdk-virtual-scroll-viewport itemSize="4"  class="demo-infinite-containerRE">
                     <nz-list class="algo" *ngIf="currentComment && currentComment.interacciones">
                       <!--nz-list-item *ngFor="let interaccion of currentComment.interacciones"-->
                       <nz-list-item *cdkVirtualFor="let interaccion of currentComment.interacciones">
@@ -277,8 +278,9 @@
                     </nz-list>
                   </cdk-virtual-scroll-viewport>
                     </div>
-                    <div nz-col>
-                    <nz-comment style="min-width: 25vw;" *ngIf="visibleResponse" nzAuthor="EDITOR" [nzDatetime]="time">
+                    <div nz-col *ngIf="visibleResponse">
+                    <p style="text-align: center;"><b>Respuesta</b></p>
+                    <nz-comment style="min-width: 25vw;" nzAuthor="EDITOR" [nzDatetime]="time">
                       <nz-avatar nz-comment-avatar nzIcon="highlight" style="background-color: #f56a00"></nz-avatar>
                       <nz-comment-content>
                         <nz-form-item>
