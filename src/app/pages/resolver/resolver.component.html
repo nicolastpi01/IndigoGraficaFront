@@ -242,11 +242,14 @@
               (nzOnOk)="handleOkModalResponse()"
               >
               <ng-container *nzModalContent>
-                <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
+                <!--div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } "-->
+                <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
                   <div nz-col> 
                     <!--cdk-virtual-scroll-viewport itemSize="10" class="demo-infinite-container"-->
-                    <nz-list *ngIf="currentComment && currentComment.interacciones">
-                      <nz-list-item *ngFor="let interaccion of currentComment.interacciones">
+                    <cdk-virtual-scroll-viewport itemSize="10"  class="demo-infinite-containerRE">
+                    <nz-list class="algo" *ngIf="currentComment && currentComment.interacciones">
+                      <!--nz-list-item *ngFor="let interaccion of currentComment.interacciones"-->
+                      <nz-list-item *cdkVirtualFor="let interaccion of currentComment.interacciones">
                         <nz-comment [nzAuthor]="interaccion.rol" [nzDatetime]="time">
                           <nz-avatar
                             nz-comment-avatar
@@ -272,7 +275,7 @@
                         </nz-comment>                
                       </nz-list-item>
                     </nz-list>
-                    <!--/cdk-virtual-scroll-viewport-->
+                  </cdk-virtual-scroll-viewport>
                     </div>
                     <div nz-col>
                     <nz-comment style="min-width: 25vw;" *ngIf="visibleResponse" nzAuthor="EDITOR" [nzDatetime]="time">
