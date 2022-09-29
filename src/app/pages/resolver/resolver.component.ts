@@ -101,7 +101,9 @@ fallback =
   eliminarRespuesta = () => {
     let last = this.searchLastInteraccion();
     if(last && last.id && last.rol === 'EDITOR') {
-      this.currentComment?.interacciones.pop();  
+      this.currentComment?.interacciones.pop();
+      if(this.currentComment) this.currentComment.respondido = false;
+        
     if(this.currentFile) {
       this.currentFile = {
         ...this.currentFile, comentarios: this.currentFile?.comentarios.map((comentario: Comentario) => {
@@ -173,6 +175,10 @@ fallback =
         rol: 'EDITOR',
         key: this.currentComment.interacciones.length // revisar esto
       };
+
+      this.currentComment = {
+        ...this.currentComment, respondido: true
+      }
 
       this.currentComment.interacciones = [
         ...this.currentComment.interacciones,
@@ -377,6 +383,16 @@ fallback =
       }
     }
   };
+
+  resolverFilesStyle = (pedido: Pedido) => {
+    if(pedido.files && pedido.files.length > 1) {
+      return "margin-left:10rem;"
+    }
+    else {
+      return "margin-left:3rem;"
+    }
+  };
+  
 
   cardStyle = (file: FileDB) => {
     if(this.currentFile?.id === file.id) {

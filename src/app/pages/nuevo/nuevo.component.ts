@@ -48,7 +48,8 @@ export class NuevoComponent implements OnInit {
   isLoggedIn = false;
   currentUser: any;
 
-  @ViewChild('someVar') el!: ElementRef;
+  //@ViewChild('someVar') el!: ElementRef;
+  //@ViewChild('dummyClick', { static: true }) dummyClickRef: ElementRef | undefined;
 
   constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, 
     private tipoService: TipoPedidoService, private colorService :ColorService, private _router: Router, 
@@ -56,6 +57,7 @@ export class NuevoComponent implements OnInit {
     private rd: Renderer2) {} // para que se usa rd ?
 
   ngOnInit(): void {
+    
     this.isLoggedIn = !!this.tokenService.getToken();
     if (this.isLoggedIn) {
       this.currentUser = this.tokenService.getUser();
@@ -75,7 +77,9 @@ export class NuevoComponent implements OnInit {
       this.findColores();
       this.findPedidos();
   
-      this.panels = this.initialPanelState();  
+      this.panels = this.initialPanelState();
+      //this.dummyClickRef?.nativeElement.click()
+      //this.dummyClickRef?.nativeElement.focus()  
     }
   };
 
@@ -479,6 +483,7 @@ export class NuevoComponent implements OnInit {
           y: position.posy,
           terminado: false,
           isVisible: true, // puede usarse para ver si uso el autofocus o no
+          respondido: false,
           interacciones: [
             { 
               texto: '',
@@ -491,7 +496,7 @@ export class NuevoComponent implements OnInit {
        }
       ];
     };
-    //this.el.nativeElement.focus();
+    //this.el.nativeElement.click()
   };
 
   ordenar = (comentarios: Comentario[]) :Comentario[] => {

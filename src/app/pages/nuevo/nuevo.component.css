@@ -117,6 +117,18 @@ nz-divider {
     border-style: solid;
 }
 
- 
+input:focus {
+  background-color: yellow;
+}
+
+input:active {
+  background-color: DarkBlue;
+  box-shadow: 0 0 0 2px white, 0 0 0 4px DarkBlue;
+}
+
+select:focus {
+  background-color: yellow;
+}
+
 
   

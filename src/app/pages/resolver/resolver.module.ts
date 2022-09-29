@@ -28,7 +28,6 @@ import { NzTagModule } from "ng-zorro-antd/tag";
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 
 
-
 @NgModule({
     imports: [
       ResolverRoutingModule,
@@ -56,7 +55,7 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
       NzCommentModule,
       NzTagModule, 
       NzCheckboxModule,
-      NzTabsModule       
+      NzTabsModule        
     ],
     declarations: [ResolverComponent],
     exports: [ResolverComponent]

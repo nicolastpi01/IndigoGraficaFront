@@ -18,10 +18,11 @@
       >
       <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
         <div nz-col nz-col nzXs="24" nzSm="6">
-          <nz-form-item >
+          <nz-form-item>
             <nz-form-label nzRequired >Título</nz-form-label>
             <nz-form-control nzHasFeedback nzErrorTip="Por favor ingresa un título">
               <nz-input-group>
+                <!--input type="text" #dummyClick nz-input formControlName="titulo" placeholder="Titulo" required/-->
                 <input type="text" nz-input formControlName="titulo" placeholder="Titulo" required/>
               </nz-input-group>
             </nz-form-control>
@@ -91,7 +92,7 @@
         </div>
       <div nz-col nzXs="24" nzSm="4">
         <nz-form-item>
-          <nz-form-label >Ancho</nz-form-label>
+          <nz-form-label>Ancho</nz-form-label>
           <nz-form-control nzHasFeedback nzValidatingTip="Revisando..." [nzErrorTip]="AnchoErrorTpl">
               <nz-input-group>
                 <input type="number" nz-input formControlName="ancho" placeholder="Ancho (px)"/>
