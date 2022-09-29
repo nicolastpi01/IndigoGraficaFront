@@ -41,7 +41,7 @@ fallback =
   currentComment: Comentario | undefined;
   id!: string | null;
   //interaccionForResponse: Interaccion | undefined;
-  visibleResponse: boolean = false;
+  //visibleResponse: boolean = false;
   textAreaValue: string | undefined; 
   isVisibleModalComment = false;
   isVisibleModalChat = false;
@@ -144,7 +144,7 @@ fallback =
           };
           this.currentComment = this.currentFile?.comentarios.find((comentario: Comentario) => comentario.id === this.currentComment?.id)
           this.textAreaValue = undefined; // rep
-          this.visibleResponse = false; // rep
+          //this.visibleResponse = false; // rep
           this.msg.success('Se elimino la respuesta correctamente!');
       }),
       () => {
@@ -153,7 +153,7 @@ fallback =
     }
     else {
       this.textAreaValue = undefined; // rep
-      this.visibleResponse = false; // rep
+      //this.visibleResponse = false; // rep
     }
   };
 
@@ -243,7 +243,7 @@ fallback =
     */
     //this.interaccionForResponse = undefined;
     this.textAreaValue = undefined;
-    this.visibleResponse = false;
+    //this.visibleResponse = false;
     this.isVisibleModalChat = false;
   };
 
@@ -266,7 +266,7 @@ fallback =
   responderInteraccion = (event: Event, interaccion: Interaccion) => {
     event.preventDefault;
     //this.interaccionForResponse = interaccion;
-    this.visibleResponse = true;
+    //this.visibleResponse = true;
     //this.isVisibleModalResponse = true;
     // Si esta al reves deberiamos verificar al principio  
   };
@@ -397,7 +397,6 @@ fallback =
   cardStyle = (file: FileDB) => {
     if(this.currentFile?.id === file.id) {
       return {
-        //'background-color':'#87d068'
         'border-color': 'rgb(179, 172, 172)',
         'border-width': '2px',
         'border-style': 'dashed'
@@ -406,6 +405,30 @@ fallback =
     else {
       return ''
     }
+  };
+
+  itemListStyle = (interaccion: Interaccion) => {
+    let last: Interaccion | undefined = this.searchLastInteraccion();
+      let ret :boolean = false
+      if(last) {
+        if(interaccion.key) {
+          ret = interaccion.key === last.key
+        }
+        else {
+          ret = interaccion.id === last.id
+        }
+      }
+      if(ret && interaccion.rol === 'EDITOR') {
+        return {
+          //'background-color':'#87d068'
+          'border-color': 'rgb(247, 251, 31)',
+          'border-width': '2px',
+          'border-style': 'dashed'
+        } 
+      }
+      else {
+        return ''
+      } 
   };
 
   getPedido(): void {
