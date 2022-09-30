@@ -48,6 +48,9 @@ export class NuevoComponent implements OnInit {
   isLoggedIn = false;
   currentUser: any;
 
+  //@ViewChild(CdkVirtualScrollViewport) viewport: CdkVirtualScrollViewport | undefined;
+  @ViewChild('viewport', { read: ElementRef }) viewport!: ElementRef;
+
   //@ViewChild('someVar') el!: ElementRef;
   //@ViewChild('dummyClick', { static: true }) dummyClickRef: ElementRef | undefined;
 
@@ -495,8 +498,10 @@ export class NuevoComponent implements OnInit {
           llave:  this.currentFile.comentarios.length === 0 ? 1 : Math.max.apply(null, this.currentFile.comentarios.map((comentario: Comentario) => comentario.numero)) + 1 
        }
       ];
+
+      this.viewport.nativeElement.scrollIntoView({block: "end", behavior: "smooth"}); // Funciona parcialmente
+      
     };
-    //this.el.nativeElement.click()
   };
 
   ordenar = (comentarios: Comentario[]) :Comentario[] => {

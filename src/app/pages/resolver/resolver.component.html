@@ -418,9 +418,13 @@
 </nz-collapse>
 <br>
 
-<div nz-row class="buttonGroup" [nzGutter]="16">
-  <div nz-col><button nz-button nzType="default" style="width: 120px;">Salir<i nz-icon nzType="home" nzTheme="outline"></i></button></div>
-  <div nz-col><button nz-button nzType="primary">Resolver<i nz-icon nzType="check" nzTheme="outline"></i></button></div>
+<div nz-row nzJustify="end" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+  <div nz-col>
+    <button nz-button nzType="default" style="width: 120px;">Salir<i nz-icon nzType="home" nzTheme="outline"></i></button>
+  </div>
+  <div nz-col>
+    <button nz-button nzType="primary">Resolver<i nz-icon nzType="check" nzTheme="outline"></i></button>
+  </div>
 </div>
 
 

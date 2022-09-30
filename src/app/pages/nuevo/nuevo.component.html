@@ -261,8 +261,8 @@
                     </div>
                     <div nz-col nzXs="24" nzSm="12">
                       <b *ngIf="currentFile && currentFile.comentarios">Comentarios</b>
-                      <cdk-virtual-scroll-viewport itemSize="8" class="infinite-container">
-                      <nz-list *ngIf="currentFile && currentFile.comentarios">
+                      <cdk-virtual-scroll-viewport  itemSize="8" class="infinite-container">
+                      <nz-list #viewport *ngIf="currentFile && currentFile.comentarios">
                         <nz-list-item *cdkVirtualFor="let item of currentFile.comentarios">
                             <nz-input-group nzSearch [nzAddOnBefore]="addOnBeforeTemplate" [nzAddOnAfter]="suffixIconButton">
                               <!--ng-template [ngIf]="item.isVisible" [ngIfElse]="withoutFocus">
