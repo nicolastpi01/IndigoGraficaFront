@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { PedidoService } from 'src/app/services/pedido.service';
 
 @Component({
   selector: 'app-editar',
@@ -9,10 +10,15 @@ import { ActivatedRoute } from '@angular/router';
 export class EditarComponent implements OnInit {
   id: string | null = null;
 
-  constructor(private route: ActivatedRoute) { }
+  pedido: any;
+
+  constructor(private route: ActivatedRoute, private service: PedidoService) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id')
+    this.service.getPedido(this.id).subscribe(pedido => {
+      this.pedido = pedido
+    })
   }
   
 }
