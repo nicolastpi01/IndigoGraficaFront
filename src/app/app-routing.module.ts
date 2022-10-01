@@ -16,6 +16,7 @@ const routes: Routes = [
   { path: 'pedidos/:id',  loadChildren: () => import('./pages/resolver/resolver.module').then(m => m.ResolverModule), canActivate: [AuthGuard]  },
   { path: 'carrito',  loadChildren: () => import('./pages/carrito/carrito.module').then(m => m.CarritoModule), canActivate: [AuthGuard] },
   { path: 'editar/:id',  loadChildren: () => import('./pages/editar/editar.module').then(m => m.EditarModule), canActivate: [AuthGuard] },
+  { path: 'nuevo/:id', loadChildren: () => import('./pages/nuevo/nuevo.module').then(m => m.NuevoModule), canActivate: [AuthGuard] },
 ];
 
 @NgModule({

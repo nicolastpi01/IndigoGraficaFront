@@ -4,7 +4,7 @@ import { PedidoService } from '../../services/pedido.service';
 import { PENDIENTEATENCION, tipografias as arrayLetras } from 'src/app/utils/const/constantes';
 import { Tipo } from 'src/app/interface/tipo';
 import { Color } from 'src/app/interface/color';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { filter, Observable, Observer } from 'rxjs';
 import {  HttpResponse } from '@angular/common/http';
@@ -44,6 +44,9 @@ export class NuevoComponent implements OnInit {
   loadingEliminarPedido= false;
   dateFormat = 'dd/MM/YYYY';
   isVisibleModalComment = false;
+  esEdicion = false
+  pedidoId?: string
+
 
   isLoggedIn = false;
   currentUser: any;
@@ -53,7 +56,7 @@ export class NuevoComponent implements OnInit {
   constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, 
     private tipoService: TipoPedidoService, private colorService :ColorService, private _router: Router, 
     private msg: NzMessageService, private posService: PosicionService, private tokenService: TokenStorageService,  
-    private rd: Renderer2) {} // para que se usa rd ?
+    private route: ActivatedRoute) {} // para que se usa rd ?
 
   ngOnInit(): void {
     this.isLoggedIn = !!this.tokenService.getToken();
@@ -74,6 +77,7 @@ export class NuevoComponent implements OnInit {
       });
       this.findColores();
       this.findPedidos();
+      this.loadPedidoIfExist()
   
       this.panels = this.initialPanelState();  
     }
@@ -119,6 +123,39 @@ export class NuevoComponent implements OnInit {
       observer.complete();
   });
 
+  loadPedidoIfExist(): void {
+    this.pedidoId = this.route.snapshot.paramMap.get('id')||undefined
+
+    if(this.pedidoId){
+      this.esEdicion = true
+      this.service.getPedido(this.pedidoId).subscribe(pedido => {
+        this.currentPedido = pedido
+        this.panels[1].disabled = false
+        const date = pedido.fechaEntrega as string
+        const newDate = new Date(date)
+        const colores = pedido.colores?.map(c => this.colores.find(color => color.value === c.hexCode)?.value)
+        this.validateForm.setValue({
+          titulo: pedido.nombre,
+          subtitulo: pedido.nombreExtendido,
+          cantidad: 1, // La cantidad por defecto es uno, y si no esta definido se pone uno en el Pedido
+          alto:  50,
+          ancho: 50,
+          datePicker: newDate,
+          tipografia: pedido.tipografia,
+          tipo: this.tiposDePedidos.find(tipoPedido => tipoPedido.value === pedido.tipo?.nombre)?.value,
+          color: colores,
+          comentario: pedido.descripcion,
+          remember: true
+        })
+      })
+    }else{
+      this.esEdicion = false
+      this.pedidoId = undefined
+    }
+  }
+
+  
+
   findColores() :void {
     this.colorService.getAllColores()
     .subscribe((colores :Color[]) => {
@@ -152,18 +189,7 @@ export class NuevoComponent implements OnInit {
   onClickAlta(): void {
     if (this.validateForm.valid) {
       this.createPedido()
-      this.panels = this.panels.map((panel) => {
-        if(panel.name === 'Datos') {
-          return {
-            ...panel, active: false
-          }}
-          else {
-            return {
-              ...panel, active: true, disabled: false,
-            }
-          }
-        })
-
+      this.enableImagePanels()
     } else {
       Object.values(this.validateForm.controls).forEach(control => {
         if (control.invalid) {
@@ -173,6 +199,20 @@ export class NuevoComponent implements OnInit {
       });
     }
   }
+
+  enableImagePanels():void{
+    this.panels = this.panels.map((panel) => {
+      if(panel.name === 'Datos') {
+        return {
+          ...panel, active: false
+        }}
+        else {
+          return {
+            ...panel, active: true, disabled: false,
+          }
+        }
+      })
+  } 
 
   createPedido = (): void => {
     this.loadingAlta = true;
@@ -207,6 +247,10 @@ export class NuevoComponent implements OnInit {
       encargado: null,
       tipo: this.tipoPedidosData.find((tipoPedido: Tipo) => tipoPedido.nombre === form.value.tipo),
       colores: coloresRet
+    }
+
+    if(this.esEdicion){
+      nuevoPedido.id = this.pedidoId
     }
   
     this.service.create(nuevoPedido).

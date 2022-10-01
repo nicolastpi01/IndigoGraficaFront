@@ -43,7 +43,7 @@ export class PedidoService {
     return this.http.request(req);
   }
 
-  eliminar(id: number | undefined) : Observable<HttpEvent<any>> {
+  eliminar(id: string | undefined) : Observable<HttpEvent<any>> {
     const req = new HttpRequest('DELETE', `${this.baseUrl}`+`${this.api}/${id}`)
     return this.http.request(req);
   }

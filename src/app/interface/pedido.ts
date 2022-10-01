@@ -7,7 +7,7 @@ import { Usuario } from "./usuario";
 
 
 export interface Pedido {
-    id?: number;
+    id?: string;
     propietario?: Usuario; //| string;
     nombre?: string; 
     nombreExtendido?: string; 
