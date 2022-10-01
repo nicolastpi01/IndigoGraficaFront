@@ -1,6 +1,7 @@
 
 <div class="row">
-<h2 style="float: left" nz-typography>Ingresa tu pedido!</h2>
+<h2 *ngIf="!esEdicion" style="float: left" nz-typography>Ingresa tu pedido!</h2>
+<h2 *ngIf="esEdicion" style="float: left" nz-typography>Edita tu pedido!</h2>
 <button class="button-delete" data-testid="texto" nz-button nzType="primary" 
   [nzLoading]="loadingEliminarPedido" *ngIf="currentPedido" (click)="eliminarPedido()" nzDanger>Eliminar<i nz-icon nzType="delete" nzTheme="outline"></i>
 </button>
@@ -159,7 +160,7 @@
                 [nzLoading]="loadingAlta"
                 (click)="onClickAlta()"
                 data-testid="buttonAlta" 
-                [nzType]="'primary'">{{ loadingAlta ? 'Espere...' : 'Alta' }}
+                [nzType]="'primary'">{{ loadingAlta ? 'Espere...' : (esEdicion? 'Confirmar' : 'Alta') }}
               </button>
             </nz-form-control>
           </nz-form-item>

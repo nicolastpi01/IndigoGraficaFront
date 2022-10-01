@@ -28,7 +28,7 @@ export class CarritoComponent implements OnInit {
   }
 
   getPedidos(): void {
-    this.service.getPedidosPorUsuario()
+    this.service.getPedidos('Pendiente atencion')
     .subscribe(pedidos => {
        this.pedidos = pedidos
        this.total = pedidos.length
@@ -37,7 +37,7 @@ export class CarritoComponent implements OnInit {
   }
 
   onClickAccion (pedido: Pedido): void {
-    this._router.navigateByUrl('/editar' + `/${pedido.id}`)
+    this._router.navigateByUrl('/nuevo' + `/${pedido.id}`)
   }
 
   eliminar ():void {

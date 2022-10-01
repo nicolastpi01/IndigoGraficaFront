@@ -28,7 +28,10 @@ export class RegistrarComponent implements OnInit {
       apellido: [null, []],
       ubicacion: [null, []],
       contacto: [null, []],
-      email: [null, [Validators.email, Validators.required]],
+      email: [null, Validators.compose([
+        Validators.required,
+        Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
+      ])],
       esEncargado: [null,]
     });
   }
