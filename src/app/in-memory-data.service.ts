@@ -14,7 +14,7 @@ export class InMemoryDataService implements InMemoryDbService {
   createDb() {
     const pedidos = [
       {
-        id: 1,
+        id: '1',
         key: '1',
         cantidad: 2,
         propietario: {
@@ -31,7 +31,7 @@ export class InMemoryDataService implements InMemoryDbService {
         estado: new PendienteAtencion()
       },
       {
-        id:2,
+        id:'2',
         key: '2',
         cantidad: 2,
         propietario: {
@@ -75,9 +75,9 @@ export class InMemoryDataService implements InMemoryDbService {
   // the method below returns the initial number (11).
   // if the heroes array is not empty, the method below returns the highest
   // hero id + 1.
-  genId(pedidos: Pedido[]): number {
-    return pedidos.length > 0 ? Math.max(...pedidos.map(pedido => pedido.id ? pedido.id : 0 )) + 1 : 11;
-  }
+  // genId(pedidos: Pedido[]): number {
+  //   return pedidos.length > 0 ? Math.max(...pedidos.map(pedido => pedido.id ? pedido.id : 0 )) + 1 : 11;
+  // }
   }
   
 
