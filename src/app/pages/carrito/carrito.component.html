@@ -1,4 +1,95 @@
-<div *ngIf="pedidos.length>0">
+
+<div class="carrito">
+  <ng-template [ngIf]="loading" [ngIfElse]="ifElse">
+    <nz-spin class="spinning" nzTip="Espere mientras se cargan los pedidos en el carrito..." ></nz-spin>
+  </ng-template>
+  <ng-template #ifElse>
+    <p style="text-align: center;"><b>Carrito</b></p>
+    <ng-template [ngIf]="pedidos && pedidos.length  > 0" [ngIfElse]="CarritoVacio">
+      <nz-list>
+        <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+          <div nz-col nzSpan="24">
+            <nz-list-item *ngFor="let pedido of pedidos">
+              <nz-card [nzActions]="[actionDelete, actionChat, actionEdit]">
+                  <!--nz-card-meta
+                      nzTitle=""
+                      nzDescription=""
+                      [nzAvatar]="avatarTemplate"
+                  ></nz-card-meta-->
+                    <!--ng-template #avatarTemplate>
+                      <i nz-icon nzType="highlight" class="editorIcon" nzTheme="outline"></i>
+                    </ng-template>
+                    <ng-template #coverTemplate>
+                    </ng-template-->
+                    <i nz-icon nzType="highlight" class="editorIcon" nzTheme="outline"></i>
+      
+                    <ng-template #actionDelete>
+                      <button nzType="default" nz-button>
+                        Eliminar
+                      </button>
+                    </ng-template>
+                    <ng-template #actionChat>
+                      <button nzType="default" nz-button>
+                        Chat
+                      </button>
+                    </ng-template>
+                    <ng-template #actionEdit>
+                      <button nzType="default" nz-button>
+                        Editar
+                      </button>
+                    </ng-template>
+                    <div nz-row [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
+                      <div nz-col>
+                        <p class="subTitle">Id :</p>
+                        <p>{{ pedido.id ? pedido.id : "-" }}</p>
+                      </div>
+                      <div nz-col>
+                        <p class="subTitle">Título :</p>
+                        <p>{{pedido.nombre ? pedido.nombre : '-' }}</p>
+                      </div>
+                      <!--div nz-col>
+                        <p class="subTitle">SubTítulo :</p>
+                        <p>{{pedido.nombreExtendido ? pedido.nombreExtendido : '-' }}</p>
+                      </div-->
+                      <div nz-col>
+                        <p class="subTitle">Tipo :</p>
+                        <p>{{ pedido.tipo && pedido.tipo.nombre ? pedido.tipo.nombre : '-'}}</p>
+                      </div>
+                      <div nz-col >
+                        <p class="subTitle">Fecha Entrega :</p>
+                        <p>{{ pedido.fechaEntrega ? toLocalDateStringFunction(pedido.fechaEntrega) : '-'}}</p>
+                      </div>
+                      <div nz-col>
+                        <p class="subTitle">Estado :</p>
+                        <ng-template [ngIf]="pedido.state" [ngIfElse]="WithoutState">
+                          <p><nz-tag [nzColor]="colorear(pedido.state)">{{pedido.state}}</nz-tag></p>
+                        </ng-template>
+                        <ng-template #WithoutState>
+                          <p>-</p>
+                        </ng-template>
+                      </div>
+                      <div nz-col>
+                        <p class="subTitle">Mas Info :</p>
+                        <span nz-icon nzType="plus" style="margin-left: 18px; cursor:pointer" nzTheme="outline"></span>
+                      </div>
+                  </div>
+
+              </nz-card>
+            </nz-list-item>
+          </div>
+        </div>
+      </nz-list>
+    </ng-template>
+    <ng-template #CarritoVacio>
+      No se encontro ningun pedido en el carrito
+    </ng-template>
+  </ng-template>
+
+</div>
+  
+
+
+<!--div *ngIf="pedidos.length>0">
   <nz-descriptions nzTitle="Editar pedido" nzBordered [nzExtra]="extraTpl" [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
     <nz-descriptions-item nzTitle="Id" >{{ currentPedido.id }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Título" >{{ currentPedido.nombre }}</nz-descriptions-item>
@@ -46,4 +137,4 @@
       <h2 nz-typography>Para realizar tu pedido ingresá en "Nuevo"</h2>
     </div>
   </div>
-</div>
+</div-->

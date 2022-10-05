@@ -12,6 +12,10 @@ import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzLayoutModule } from "ng-zorro-antd/layout";
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzListModule } from "ng-zorro-antd/list";
+import { NzCardModule } from "ng-zorro-antd/card";
+
 
 @NgModule({
     imports: [
@@ -25,7 +29,10 @@ import { NzLayoutModule } from "ng-zorro-antd/layout";
       NzButtonModule,
       NzIconModule,
       NzPaginationModule,
-      NzLayoutModule       
+      NzLayoutModule,
+      NzSpinModule,
+      NzListModule,
+      NzCardModule       
     ],
     declarations: [CarritoComponent],
     exports: [CarritoComponent]

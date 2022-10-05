@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Pedido } from 'src/app/interface/pedido';
 import { PedidoService } from 'src/app/services/pedido.service';
 import { RESERVADO } from 'src/app/utils/const/constantes';
+import { toLocalDateString } from 'src/app/utils/functions/functions';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 
 @Component({
@@ -17,7 +18,10 @@ export class CarritoComponent implements OnInit {
   currentPedido: any;
   pedidos: any[] = [];
 
+  loading: boolean = false;
 
+
+  toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString;
   colorear :(descripcion: string) => string | undefined = colorearEstado
   AccionText: String = "Editar"
 
@@ -28,10 +32,12 @@ export class CarritoComponent implements OnInit {
   }
 
   getPedidos(): void {
+    this.loading = true
     this.service.getPedidos('Pendiente atencion')
     .subscribe(pedidos => {
        this.pedidos = pedidos
        this.total = pedidos.length
+       this.loading = false
        if(pedidos.length > 0) this.currentPedido = pedidos[0]; 
     });
   }
