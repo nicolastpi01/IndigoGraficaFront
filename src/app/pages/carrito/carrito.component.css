@@ -12,3 +12,11 @@ nz-pagination {
     font-size: 30px;   
     color:#f56a00  
 }
+
+.subTitle {
+    font-weight: bold;
+}
+
+.buttonActions {
+    width:150px;
+}

@@ -10,7 +10,7 @@
         <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
           <div nz-col nzSpan="24">
             <nz-list-item *ngFor="let pedido of pedidos">
-              <nz-card [nzActions]="[actionDelete, actionChat, actionEdit]">
+              <nz-card [nzActions]="[actions]">
                   <!--nz-card-meta
                       nzTitle=""
                       nzDescription=""
@@ -23,20 +23,24 @@
                     </ng-template-->
                     <i nz-icon nzType="highlight" class="editorIcon" nzTheme="outline"></i>
       
-                    <ng-template #actionDelete>
-                      <button nzType="default" nz-button>
-                        Eliminar
-                      </button>
-                    </ng-template>
-                    <ng-template #actionChat>
-                      <button nzType="default" nz-button>
-                        Chat
-                      </button>
-                    </ng-template>
-                    <ng-template #actionEdit>
-                      <button nzType="default" nz-button>
-                        Editar
-                      </button>
+                    <ng-template #actions>
+                      <div nz-row nzJustify="center" [nzGutter]="[{ xs: 24, sm: 32, md: 48, lg: 64 }, 8]">
+                        <div nz-col>
+                          <button class="buttonActions" nzType="default" nz-button>
+                            Eliminar
+                          </button>    
+                        </div>
+                        <div nz-col>
+                          <button class="buttonActions" nzType="default" nz-button>
+                            Chat
+                          </button>    
+                        </div>
+                        <div nz-col>
+                          <button class="buttonActions" nzType="default" nz-button>
+                            Editar
+                          </button>    
+                        </div>
+                      </div>
                     </ng-template>
                     <div nz-row [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
                       <div nz-col>
@@ -70,7 +74,7 @@
                       </div>
                       <div nz-col>
                         <p class="subTitle">Mas Info :</p>
-                        <span nz-icon nzType="plus" style="margin-left: 18px; cursor:pointer" nzTheme="outline"></span>
+                        <icon nz-icon nzType="plus" style="margin-left: 18px; cursor:pointer" nzTheme="outline"></icon>
                       </div>
                   </div>
 
