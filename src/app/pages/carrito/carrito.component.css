@@ -8,6 +8,10 @@ nz-pagination {
   
 }
 
+h2 {
+  text-align: center;  
+}
+
 .editorIcon {
     font-size: 30px;   
     color:#f56a00  
@@ -15,8 +19,35 @@ nz-pagination {
 
 .subTitle {
     font-weight: bold;
+    /*text-align: center; */
 }
+
+.border {
+    border-color:rgb(201, 28, 28);
+    border-width: 1.5px;
+    border-style: solid;
+  }
 
 .buttonActions {
     width:150px;
 }
+
+.buttonSearch {
+    width:100px;
+}
+
+.child {
+    /* Center horizontally
+    display: flex;
+    */
+    margin: auto 16%;
+    /*
+    align-items: center;
+    justify-content: center
+    */
+    
+}
+
+.algo :hover {
+    background: #d8dadb;
+  }

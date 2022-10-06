@@ -15,7 +15,13 @@ import { NzLayoutModule } from "ng-zorro-antd/layout";
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzListModule } from "ng-zorro-antd/list";
 import { NzCardModule } from "ng-zorro-antd/card";
-
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { ReactiveFormsModule } from "@angular/forms";
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { NzImageModule } from 'ng-zorro-antd/image';
 
 @NgModule({
     imports: [
@@ -32,7 +38,14 @@ import { NzCardModule } from "ng-zorro-antd/card";
       NzLayoutModule,
       NzSpinModule,
       NzListModule,
-      NzCardModule       
+      NzCardModule,
+      NzCheckboxModule,
+      NzDatePickerModule,
+      ReactiveFormsModule,
+      NzInputModule,
+      NzModalModule,
+      NzTypographyModule,
+      NzImageModule       
     ],
     declarations: [CarritoComponent],
     exports: [CarritoComponent]
