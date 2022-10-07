@@ -1,4 +1,5 @@
 import { Color } from "./color";
+import { Interaccion } from "./comentario";
 import { Estado } from "./estado";
 import { FileDB } from "./fileDB";
 import { Solution } from "./solution";
@@ -25,6 +26,7 @@ export interface Pedido {
     editor?: Usuario;
     encargado?: Usuario | null;
     files?:  Array<FileDB>;
+    interacciones?: Array<Interaccion>, // Interacciones entre usuario y Editor (Es el ida y vuelta) o el chat
     solutions?:  Array<Solution>;
 
 }

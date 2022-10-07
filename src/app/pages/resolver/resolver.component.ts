@@ -10,7 +10,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { Comentario, Interaccion } from 'src/app/interface/comentario';
 import { formatDistance } from 'date-fns';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
-import { badgeColorStyle, getBase64, toLocalDateString } from 'src/app/utils/functions/functions';
+import { badgeColorStyle, getBase64, toLocalDateString, determineIcon, avatarStyle } from 'src/app/utils/functions/functions';
 import { ThisReceiver } from '@angular/compiler';
 import { Solution } from 'src/app/interface/solution';
 import { Color } from 'src/app/interface/color';
@@ -24,6 +24,8 @@ import { Color } from 'src/app/interface/color';
 export class ResolverComponent implements OnInit {
 
   toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString;
+  determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
+  avatarStyle: (interaccion: Interaccion) => { 'background-color': string; } = avatarStyle;
   badgeColorStyleFunction: ()  => {
     backgroundColor: string;
 } = badgeColorStyle;
@@ -276,15 +278,6 @@ fallback =
     return last?.rol === 'EDITOR'
   };
 
-  determineIcon = (interaccion: Interaccion) => {
-    if(interaccion.rol === 'USUARIO') {
-      return "user"
-    }
-    else {
-      return "highlight"
-    }
-  };
-
   handlePreview = (file: NzUploadFile): void => {
     
   };
@@ -371,18 +364,7 @@ fallback =
     return 'http://localhost:8080/files/upload'
   };
 
-  avatarStyle = (interaccion: Interaccion) => {
-    if(interaccion.rol === 'USUARIO') {
-      return {
-        'background-color':'#87d068'
-      }
-    }
-    else {
-      return {
-        'background-color': '#f56a00'
-      }
-    }
-  };
+  
 
   resolverFilesStyle = (pedido: Pedido) => {
     if(pedido.files && pedido.files.length > 1) {

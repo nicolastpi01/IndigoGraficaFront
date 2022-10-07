@@ -1,14 +1,17 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, TemplateRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Color } from 'src/app/interface/color';
+import { Interaccion } from 'src/app/interface/comentario';
 import { FileDB } from 'src/app/interface/fileDB';
 import { Pedido } from 'src/app/interface/pedido';
 import { PedidoService } from 'src/app/services/pedido.service';
 import { RESERVADO } from 'src/app/utils/const/constantes';
-import { toLocalDateString } from 'src/app/utils/functions/functions';
+import { avatarStyle, determineIcon, toLocalDateString } from 'src/app/utils/functions/functions';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
+import { formatDistance } from 'date-fns';
+import { ThisReceiver } from '@angular/compiler';
 
 
 @Component({
@@ -20,7 +23,7 @@ export class CarritoComponent implements OnInit {
 
   pageIndex: number = 1; 
   total: number = 0;
-  currentPedido: any;
+  currentPedido: Pedido | undefined; //any;
   pedidos: any[] = [];
 
   loadingSearch: boolean = false;
@@ -28,6 +31,7 @@ export class CarritoComponent implements OnInit {
   isVisibleModalMoreInfo: boolean = false;
   isVisibleModalChat: boolean = false;
   indeterminate = true;
+  
   allChecked = false;
   checkOptionsOne = [
     { label: 'Apple', value: 'Apple', checked: true },
@@ -40,14 +44,32 @@ export class CarritoComponent implements OnInit {
 
   expandedId: boolean = false;
 
+  userCommentValue: string = '';
+  tabs: Array<{ name: string, icon: string, title: string }> = [];
+
 
   toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString;
+  determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
+  avatarStyle: (interaccion: Interaccion) => { 'background-color': string; } = avatarStyle;
   colorear :(descripcion: string) => string | undefined = colorearEstado
+  time = formatDistance(new Date(), new Date());
   AccionText: String = "Editar"
 
   constructor(private _router: Router, private service: PedidoService, private fb: FormBuilder, private modal: NzModalService) { }
 
   ngOnInit(): void {
+    this.tabs = [
+      {
+        name: 'Info',
+        icon: 'gift',
+        title: 'Datos'
+      },
+      {
+        name: 'archivos',
+        icon: 'file',
+        title: 'Archivos'
+      }
+    ];
     this.getPedidos()
   }
 
@@ -67,6 +89,175 @@ export class CarritoComponent implements OnInit {
        if(pedidos.length > 0) this.currentPedido = pedidos[0]; 
     });
   }
+
+  onChangeUserComment = (value: string) => {
+    this.userCommentValue = value;
+  }
+
+  handleClickEliminarComment = () => {
+    console.log("CLick Eliminar")
+    if(this.currentPedido && this.currentPedido.interacciones) {
+      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido.interacciones))
+      InteraccionesCP.pop()
+      this.currentPedido.interacciones = InteraccionesCP
+      this.userCommentValue = ''
+
+      this.pedidos = this.pedidos.map((pedido: any) => {
+        if(pedido.id === this.currentPedido?.id) { // No modificar directamente los pedidos sino que usar copias
+          return this.currentPedido
+        }
+        else {
+          return pedido
+        }
+      });
+    }
+  }
+
+  estaEditando = () :boolean => {
+    let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido?.interacciones)) 
+      let last: Interaccion | undefined = InteraccionesCP.pop()
+    return this.currentPedido !== undefined && this.currentPedido.interacciones !== undefined 
+    && last !== undefined && last.rol === 'USUARIO'
+  }
+
+  showNoResult = () :string | TemplateRef<void> => {
+    return 'no hay comentarios con el Editor, dejále un comentario!'
+  }
+
+  disabledEliminarComment = () => {
+    let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido?.interacciones)) 
+      // Obtengo el último elem. de la copia de las interacciones
+      let last: Interaccion | undefined = InteraccionesCP.pop() 
+    return (this.currentPedido && this.currentPedido.interacciones && this.currentPedido.interacciones.length === 0)
+    || (this.currentPedido && this.currentPedido.interacciones && last && last.rol === 'EDITOR')
+  };
+
+  itemListStyle = (interaccion: Interaccion) => {
+      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido?.interacciones)) 
+      let last: Interaccion | undefined = InteraccionesCP.pop()
+      let ret :boolean = false
+      if(last) {
+        if(interaccion.key) {
+          ret = interaccion.key === last.key
+        }
+        else {
+          ret = interaccion.id === last.id
+        }
+      }
+      if(ret && interaccion.rol === 'USUARIO') {
+        return {
+          'border-color': 'rgb(247, 251, 31)',
+          'border-width': '2px',
+          'border-style': 'dashed'
+        } 
+      }
+      else {
+        return ''
+      }
+  };
+
+  handleClickAceptar = () => {
+    
+    if(this.currentPedido && this.currentPedido.interacciones && this.userCommentValue !== '') {
+      // Copio las interacciones
+      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido.interacciones)) 
+      // Obtengo el último elem. de la copia de las interacciones
+      let lastInteraccion: Interaccion | undefined = InteraccionesCP.pop() 
+
+      // Si la última interacción es del Usuario, entonces estoy editando, entonces quito la última, 
+      // sino la última interacción es del Editor entonces la dejo
+      if(lastInteraccion?.rol === 'USUARIO') { 
+        this.currentPedido.interacciones.pop();
+      }
+      let response: Interaccion = {
+        texto: this.userCommentValue,
+        rol: 'USUARIO',
+        key: this.currentPedido.interacciones.length // revisar esto
+      };
+      // Agrego la nueva respuesta del Usuario
+      this.currentPedido.interacciones = [ // No modificar directamente las interacciones sino que usar copias
+        ...this.currentPedido.interacciones,
+        response 
+      ];
+      // Agrego de nuevo el CurrentPedido (acabo de modificarlo) a la lista de Pedidos
+      this.pedidos = this.pedidos.map((pedido: any) => {
+        if(pedido.id === this.currentPedido?.id) { // No modificar directamente los pedidos sino que usar copias
+          return this.currentPedido
+        }
+        else {
+          return pedido
+        }
+      });
+    }
+  };
+
+  /*
+  handleOkModalResponse = () => {
+    if(this.currentComment && this.textAreaValue) {      
+      let lastInteraccion = this.searchLastInteraccion(); // Si esta al reves deberiamos verificar al principio
+
+      if(lastInteraccion?.rol === 'EDITOR') {
+        this.currentComment.interacciones.pop();
+      }
+      let response: Interaccion = {
+        texto: this.textAreaValue,
+        rol: 'EDITOR',
+        key: this.currentComment.interacciones.length // revisar esto
+      };
+
+      this.currentComment = {
+        ...this.currentComment, respondido: true
+      }
+
+      this.currentComment.interacciones = [
+        ...this.currentComment.interacciones,
+        response 
+      ];
+
+      if(this.currentFile) {
+        this.currentFile = {
+          ...this.currentFile, comentarios: this.currentFile?.comentarios.map((comentario: Comentario) => {
+            if(comentario.id === this.currentComment?.id && this.currentComment) {
+              return this.currentComment 
+            }
+            else {
+              return comentario
+            }
+          })
+        }
+      };
+      this.currentPedido = {
+        ...this.currentPedido, files: this.currentPedido?.files?.map((file: FileDB) => {
+          if(file.id === this.currentFile?.id && this.currentFile) {
+            return this.currentFile 
+          }
+          else {
+            return file
+          }
+        })
+      };
+      
+      this.service.update(this.currentPedido).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe(async (e: any) => {
+            let pedido = (e.body as Pedido)
+            this.currentPedido = pedido;
+            this.currentFile = pedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)
+            if(this.currentFile) {
+              this.currentFile = {
+                ...this.currentFile, url: this.generateUrl(this.currentFile) 
+              }
+            };
+            this.currentComment = this.currentFile?.comentarios.find((comentario: Comentario) => comentario.id === this.currentComment?.id)
+            this.msg.success('Se agrego la respuesta correctamente!');
+            this.handleCancelModalResponse()
+        }),
+        () => {
+            this.msg.error('No se pudo agregar la respuesta, vuelva a intentarlo en unos segundos');
+        }
+    }; 
+  };
+  */
 
   onClickChat(pedido: Pedido): void {
     this.currentPedido = pedido;
@@ -116,7 +307,7 @@ export class CarritoComponent implements OnInit {
   };
 
   onClickFile(): void {
-    this._router.navigateByUrl('/usuariocomentarios' + `/${this.currentPedido.id}`)
+    this._router.navigateByUrl('/usuariocomentarios' + `/${this.currentPedido?.id}`)
   }
 
   pedidoColores = () :Color[]  => {
@@ -131,18 +322,23 @@ export class CarritoComponent implements OnInit {
     this.isVisibleModalMoreInfo = true   
   }
 
-  showDeleteConfirm(): void {
+  showDeleteConfirm(pedido: any): void {
+
     this.modal.confirm({
-      nzTitle: 'Are you sure delete this task?',
-      nzContent: '<b style="color: red;">Some descriptions</b>',
-      nzOkText: 'Yes',
+      nzTitle: `<b style="color: red;">Eliminar</b>`,
+      nzContent: `Está seguro de querer eliminar el pedido con id: ${pedido.id} ?.`,
+      nzOkText: 'Sí',
       nzOkType: 'primary',
       nzOkDanger: true,
-      nzOnOk: () => console.log('OK'),
+      nzOnOk: () => this.onOkDeleteConfirm(pedido),
       nzCancelText: 'No',
       nzOnCancel: () => console.log('Cancel')
     });
   }
+
+  onOkDeleteConfirm = (pedido: any) => {
+    this.pedidos = this.pedidos.filter((p: any) => p.id !== pedido.id)
+  };
 
   updateSingleChecked(): void {
     if (this.checkOptionsOne.every(item => !item.checked)) {

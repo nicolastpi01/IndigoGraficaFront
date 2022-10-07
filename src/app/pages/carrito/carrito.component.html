@@ -6,6 +6,338 @@
   <ng-template #ifElse>
     <h2 nz-typography>Carrito</h2>
     <ng-template [ngIf]="pedidos && pedidos.length  > 0" [ngIfElse]="CarritoVacio">
+            <nz-list nzBordered>
+              <!--div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+                <div nz-col nzSpan="24"-->
+                  <nz-list-item *ngFor="let pedido of pedidos">
+                    <nz-tabset>
+                      <nz-tab *ngFor="let tab of tabs" [nzTitle]="titleTemplate">
+                        <ng-template #titleTemplate>
+                          <i nz-icon [nzType]="tab.icon"></i>
+                          {{ tab.title }}
+                        </ng-template>
+                        <ng-template [ngIf]="tab.name === 'Info' " [ngIfElse]="files">
+                          <nz-card nzBorderless="true" [nzActions]="[actions]">
+                            <!--nz-card-meta
+                                nzTitle=""
+                                nzDescription=""
+                                [nzAvatar]="avatarTemplate"
+                            ></nz-card-meta-->
+                              <!--ng-template #avatarTemplate>
+                                <i nz-icon nzType="highlight" class="editorIcon" nzTheme="outline"></i>
+                              </ng-template>
+                              <ng-template #coverTemplate>
+                              </ng-template-->
+          
+          
+          
+                              <!--i nz-icon nzType="highlight" class="editorIcon" nzTheme="outline"></i-->
+                
+                              <ng-template #actions>
+                                <div nz-row nzJustify="center" [nzGutter]="[{ xs: 24, sm: 32, md: 48, lg: 64 }, 8]">
+                                  <div nz-col>
+                                    <!--button class="buttonActions" nzType="default" nz-button>
+                                      Eliminar
+                                    </button-->
+                                    <button class="buttonActions" nzType="default" (click)="showDeleteConfirm(pedido)" nz-button>
+                                      Eliminar
+                                    </button>
+                                    <!--button nz-button nzType="dashed" (click)="showDeleteConfirm()">Delete</button-->    
+                                  </div>
+                                  <div nz-col>
+                                    <button class="buttonActions" (click)="onClickChat(pedido)" nzType="default" nz-button>
+                                      Chat
+                                    </button>    
+                                  </div>
+                                  <div nz-col>
+                                    <button class="buttonActions" (click)="onClickEdit(pedido)" nzType="default" nz-button>
+                                      Editar
+                                    </button>    
+                                  </div>
+                                </div>
+                              </ng-template>
+                              <div nz-row [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
+                                <ng-template [ngIf]="pedido.id.lenght < 10 || pedido.expandedId" [ngIfElse]="WithoutExpandedId">
+                                  <div nz-col>
+                                    <p class="subTitle">Id :</p>
+                                    <p>{{ pedido.id ? pedido.id : "-" }}</p>
+                                  </div>
+                                </ng-template>
+                                <ng-template #WithoutExpandedId>
+                                  <div nz-col nzSpan="6">
+                                    <p class="subTitle">Id :</p>
+                                    <p
+                                        nz-typography
+                                        nzEllipsis
+                                        (nzExpandChange)="onExpandedChangedId(pedido)"
+                                        nzExpandable="true" 
+                                        [nzCopyTooltips]="null"
+                                        [attr.title]="pedido.id"
+                                        [nzEllipsisRows]="1"
+                                        [nzContent]="pedido.id"
+                                      >
+                                    </p>
+                                  </div>
+                                </ng-template>
+                                <ng-template [ngIf]="pedido.nombre.lenght < 10 || pedido.expandedTitle" [ngIfElse]="WithoutExpanded">
+                                  <div nz-col>
+                                    <p class="subTitle">Título :</p>
+                                    <p>{{pedido.nombre ? pedido.nombre : '-' }}</p>
+                                  </div>
+                                </ng-template>
+                                <ng-template #WithoutExpanded>
+                                  <div nz-col nzSpan="4">
+                                    <p class="subTitle">Título :</p>
+                                    <p
+                                        nz-typography
+                                        nzEllipsis
+                                        (nzExpandChange)="onExpandedChangeTitle(pedido)"
+                                        nzExpandable="true" 
+                                        [nzCopyTooltips]="null"
+                                        [attr.title]="pedido.nombre"
+                                        [nzEllipsisRows]="1"
+                                        [nzContent]="pedido.nombre"
+                                      >
+                                    </p>
+                                  </div>
+                                </ng-template>
+                                <div nz-col>
+                                  <p class="subTitle">Tipo :</p>
+                                  <p>{{ pedido.tipo && pedido.tipo.nombre ? pedido.tipo.nombre : '-'}}</p>
+                                </div>
+                                <div nz-col >
+                                  <p class="subTitle">Fecha Entrega :</p>
+                                  <p>{{ pedido.fechaEntrega ? toLocalDateStringFunction(pedido.fechaEntrega) : '-'}}</p>
+                                </div>
+                                <div nz-col>
+                                  <p class="subTitle">Estado :</p>
+                                  <ng-template [ngIf]="pedido.state" [ngIfElse]="WithoutState">
+                                    <p><nz-tag [nzColor]="colorear(pedido.state)">{{pedido.state}}</nz-tag></p>
+                                  </ng-template>
+                                  <ng-template #WithoutState>
+                                    <p>-</p>
+                                  </ng-template>
+                                </div>
+                                <div nz-col>
+                                  <p class="subTitle">Mas Info :</p>
+                                  <icon nz-icon nzType="plus" (click)="onClickMoreInfo($event, pedido)" style="margin-left: 18px; cursor:pointer" nzTheme="outline"></icon>
+                                </div>
+                            </div>
+                          </nz-card>
+                        </ng-template>
+                        <ng-template #files>
+
+                          AGREGO LOS FILES...
+                        </ng-template>
+                      </nz-tab>  
+                    </nz-tabset>
+                  </nz-list-item>
+                <!--/div>
+              </div-->
+            </nz-list>
+            <nz-modal
+              [(nzVisible)]="isVisibleModalMoreInfo"
+              [nzBodyStyle]="{ minHeight: '600px' }"
+              nzWidth="50%"
+              nzTitle="Más Info"
+              nzCentered
+              nzOkText="Ok"
+              nzCancelText="Cerrar"
+              (nzOnCancel)="handleCancelMoreInfo()"
+              (nzOnOk)="handleOkMoreInfo()"
+            >
+                    <ng-container *nzModalContent>
+                      <!--div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } "-->
+                      <div nz-row *ngIf="currentPedido" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
+                        <div nz-col class="child" nzSpan="24">
+                          <p class="subTitle">Id :</p>
+                          <p>{{ currentPedido.id ? currentPedido.id : "-" }}</p>
+                        </div>
+                        <div nz-col nzSpan="24">
+                          <!--[nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } "-->
+                          <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
+                            <div nz-col nzSpan="8">
+                              <p class="subTitle">Título :</p>
+                              <p>{{ currentPedido.nombre ? currentPedido.nombre : "-" }}</p>
+                            </div>
+                            <div nz-col nzSpan="8">
+                              <p class="subTitle">SubTítulo :</p>
+                              <p>{{ currentPedido.nombreExtendido ? currentPedido.nombreExtendido : "-" }}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div nz-col nzSpan="24">
+                          <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
+                            <div nz-col nzSpan="8">
+                              <p class="subTitle">Tipo :</p>
+                              <p>{{ currentPedido.tipo && currentPedido.tipo.nombre ? currentPedido.tipo.nombre : '-'}}</p>
+                            </div>
+                            <div nz-col nzSpan="8">
+                              <p class="subTitle">Fecha Entrega :</p>
+                              <p>{{ currentPedido.fechaEntrega ? toLocalDateStringFunction(currentPedido.fechaEntrega) : '-'}}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div nz-col nzSpan="24">
+                          <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
+                            <div nz-col nzSpan="8">
+                              <p class="subTitle">Alto (px) :</p>
+                              <p>{{ currentPedido.alto ? currentPedido.alto : (currentPedido.tipo  ? currentPedido.tipo.alto : "-") }}</p>
+                            </div>
+                            <div nz-col nzSpan="8">
+                              <p class="subTitle">Ancho (px) :</p>
+                              <p>{{ currentPedido.ancho ? currentPedido.ancho : (currentPedido.tipo  ? currentPedido.tipo.ancho : "-") }}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div nz-col nzSpan="24">
+                          <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
+                            <div nz-col nzSpan="8">
+                              <p class="subTitle">Cantidad :</p>
+                              <p>{{ currentPedido.cantidad }}</p>
+                            </div>
+                            <div nz-col nzSpan="8">
+                              <p class="subTitle">Tipografía :</p>
+                              <p>{{ currentPedido.tipografia ? currentPedido.tipografia : (currentPedido.tipo  ? currentPedido.tipo.tipografia : "-") }}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div nz-col nzSpan="24">
+                          <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
+                            <div nz-col nzSpan="8">
+                              <p class="subTitle">Estado :</p>
+                              <ng-template [ngIf]="currentPedido.state" [ngIfElse]="WithoutState">
+                                <p><nz-tag [nzColor]="colorear(currentPedido.state)">{{currentPedido.state}}</nz-tag></p>
+                              </ng-template>
+                              <ng-template #WithoutState>
+                                <p>-</p>
+                              </ng-template>
+                            </div>
+                            <div nz-col nzSpan="8">
+                              <p class="subTitle">Colores :</p>
+                              <ng-template 
+                                [ngIf]="(currentPedido.colores && currentPedido.colores.length > 0) || (currentPedido.tipo && currentPedido.tipo.colores)" [ngIfElse]="WithoutColors">
+                                <nz-list>
+                                  <nz-list-item style="display: inline; padding-left: 3px; padding-right: 3px; border-bottom: 0 none;" *ngFor="let color of pedidoColores()">
+                                    <nz-badge [nzColor]="color.hexCode">{{ color.nombre }}</nz-badge>
+                                  </nz-list-item>
+                                </nz-list>
+                              </ng-template>
+                              <ng-template #WithoutColors>
+                                <p>-</p>
+                              </ng-template>
+                            </div>
+                          </div>
+                        </div>
+                        <div nz-col nzSpan="24">
+                          <p class="subTitle">Descripción :</p>
+                          {{ currentPedido.descripcion ? currentPedido.descripcion : "-" }}
+                        </div>
+                      </div>      
+                    </ng-container>
+                  </nz-modal>
+                  <nz-modal
+                    [(nzVisible)]="isVisibleModalChat"
+                    [nzBodyStyle]="{ minHeight: '600px' }"
+                    nzWidth="50%"
+                    nzTitle="Chat"
+                    nzCentered
+                    nzOkText="Ok"
+                    nzCancelText="Cerrar"
+                    (nzOnCancel)="handleCancelChat()"
+                    (nzOnOk)="handleOkChat()"
+                  >
+                    <ng-container *nzModalContent>
+                      <ng-template [ngIf]="currentPedido && currentPedido.files && tieneDimension()"[ngIfElse]="WithoutFiles">
+                        <nz-list nzGrid>
+                          <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+                            <div nz-col *ngFor="let file of currentPedido.files">
+                              <nz-list-item>
+                                <nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddComment]">
+                                    <nz-card-meta
+                                        [nzTitle]="file.name"
+                                        nzDescription=""
+                                        [nzAvatar]="avatarTemplate"
+                                    ></nz-card-meta>
+                                      <ng-template #avatarTemplate>
+                                      </ng-template>
+                                      <ng-template #coverTemplate>
+                                        <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
+                                      </ng-template>
+                                      <ng-template #actionAddComment>
+                                        <i nz-icon nzType="comment" (click)="onClickFile()" nzTheme="outline"></i>
+                                      </ng-template>
+                                </nz-card>
+                              </nz-list-item>
+                            </div>
+                          </div>
+                        </nz-list>
+                      </ng-template>
+                      <ng-template #WithoutFiles>
+                        <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
+                          <div nz-col>
+                            <p style="text-align: center;"><b>Comentarios</b></p> 
+                            <cdk-virtual-scroll-viewport itemSize="4" class="virtualScroll">
+                            <nz-list class="list" *ngIf="currentPedido && currentPedido.interacciones">
+                              <nz-list-empty [nzNoResult]="showNoResult()" *ngIf="currentPedido.interacciones.length == 0">
+                              </nz-list-empty>
+                              <nz-list-item [style]="itemListStyle(interaccion)" *cdkVirtualFor="let interaccion of currentPedido.interacciones">
+                                <nz-comment [nzAuthor]="interaccion.rol" [nzDatetime]="time">
+                                  <nz-avatar
+                                    nz-comment-avatar
+                                    [nzIcon]="determineIcon(interaccion)"
+                                    [style]="avatarStyle(interaccion)"
+                                  ></nz-avatar>
+                                  <nz-comment-content>
+                                  <p
+                                    nz-typography
+                                    nzEllipsis
+                                    nzExpandable
+                                    nzCopyable 
+                                    [nzCopyTooltips]="null"
+                                    [attr.title]="interaccion.texto"
+                                    [nzEllipsisRows]="2"
+                                    [nzContent]="interaccion.texto"
+                                  >
+                                  </p>
+                                  </nz-comment-content>
+                                </nz-comment>                
+                              </nz-list-item>
+                            </nz-list>
+                          </cdk-virtual-scroll-viewport>
+                          </div>
+                          <div nz-col>
+                            <p style="text-align: center;"><b>Charla con el Editor!</b></p>
+                            <nz-comment style="min-width: 25vw;" nzAuthor="USUARIO" [nzDatetime]="time">
+                              <nz-avatar nz-comment-avatar nzIcon="user" style="background-color: #f56a00"></nz-avatar>
+                              <nz-comment-content>
+                                <nz-form-item>
+                                    <textarea 
+                                      (ngModelChange)="onChangeUserComment($event)" 
+                                      [(ngModel)]="userCommentValue" nz-input rows="5">
+                                    </textarea>
+                                </nz-form-item>
+                                <form nz-form [nzLayout]="'inline'">
+                                  <nz-form-item>
+                                    <button nz-button [disabled]="disabledEliminarComment()" (click)="handleClickEliminarComment()" nzType="default">
+                                      Eliminar
+                                    </button>
+                                  </nz-form-item>
+                                  <nz-form-item>
+                                    <button nz-button (click)="handleClickAceptar()" nzType="default">
+                                      {{ estaEditando() ? 'Editar' : 'Enviar' }}
+                                    </button>
+                                  </nz-form-item>
+                                </form>
+                              </nz-comment-content>
+                            </nz-comment>
+                          </div>
+                        </div>
+                      </ng-template>      
+                    </ng-container>
+                  </nz-modal>
+          </ng-template>
+          
       <!--div nz-row nzJustify="center" [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
         <div nz-col>
           <p class="subTitle">Estado :</p>
@@ -34,321 +366,10 @@
           </button>
         </div>
       </div-->
-      <nz-list nzBordered>
-        <!--div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
-          <div nz-col nzSpan="24"-->
-            <nz-list-item *ngFor="let pedido of pedidos">
-              <nz-card nzBorderless="true" [nzActions]="[actions]">
-                  <!--nz-card-meta
-                      nzTitle=""
-                      nzDescription=""
-                      [nzAvatar]="avatarTemplate"
-                  ></nz-card-meta-->
-                    <!--ng-template #avatarTemplate>
-                      <i nz-icon nzType="highlight" class="editorIcon" nzTheme="outline"></i>
-                    </ng-template>
-                    <ng-template #coverTemplate>
-                    </ng-template-->
-
-
-
-                    <!--i nz-icon nzType="highlight" class="editorIcon" nzTheme="outline"></i-->
       
-                    <ng-template #actions>
-                      <div nz-row nzJustify="center" [nzGutter]="[{ xs: 24, sm: 32, md: 48, lg: 64 }, 8]">
-                        <div nz-col>
-                          <!--button class="buttonActions" nzType="default" nz-button>
-                            Eliminar
-                          </button-->
-                          <button class="buttonActions" nzType="dashed" (click)="showDeleteConfirm()" nz-button>
-                            Eliminar
-                          </button>
-                          <!--button nz-button nzType="dashed" (click)="showDeleteConfirm()">Delete</button-->    
-                        </div>
-                        <div nz-col>
-                          <button class="buttonActions" (click)="onClickChat(pedido)" nzType="default" nz-button>
-                            Chat
-                          </button>    
-                        </div>
-                        <div nz-col>
-                          <button class="buttonActions" (click)="onClickEdit(pedido)" nzType="default" nz-button>
-                            Editar
-                          </button>    
-                        </div>
-                      </div>
-                    </ng-template>
-                    <div nz-row [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
-                      <ng-template [ngIf]="pedido.id.lenght < 10 || pedido.expandedId" [ngIfElse]="WithoutExpandedId">
-                        <div nz-col>
-                          <p class="subTitle">Id :</p>
-                          <p>{{ pedido.id ? pedido.id : "-" }}</p>
-                        </div>
-                      </ng-template>
-                      <ng-template #WithoutExpandedId>
-                        <div nz-col nzSpan="6">
-                          <p class="subTitle">Id :</p>
-                          <p
-                              nz-typography
-                              nzEllipsis
-                              (nzExpandChange)="onExpandedChangedId(pedido)"
-                              nzExpandable="true" 
-                              [nzCopyTooltips]="null"
-                              [attr.title]="pedido.id"
-                              [nzEllipsisRows]="1"
-                              [nzContent]="pedido.id"
-                            >
-                          </p>
-                        </div>
-                      </ng-template>
-                      <ng-template [ngIf]="pedido.nombre.lenght < 10 || pedido.expandedTitle" [ngIfElse]="WithoutExpanded">
-                        <div nz-col>
-                          <p class="subTitle">Título :</p>
-                          <p>{{pedido.nombre ? pedido.nombre : '-' }}</p>
-                        </div>
-                      </ng-template>
-                      <ng-template #WithoutExpanded>
-                        <div nz-col nzSpan="4">
-                          <p class="subTitle">Título :</p>
-                          <p
-                              nz-typography
-                              nzEllipsis
-                              (nzExpandChange)="onExpandedChangeTitle(pedido)"
-                              nzExpandable="true" 
-                              [nzCopyTooltips]="null"
-                              [attr.title]="pedido.nombre"
-                              [nzEllipsisRows]="1"
-                              [nzContent]="pedido.nombre"
-                            >
-                          </p>
-                        </div>
-                      </ng-template>
-                      <div nz-col>
-                        <p class="subTitle">Tipo :</p>
-                        <p>{{ pedido.tipo && pedido.tipo.nombre ? pedido.tipo.nombre : '-'}}</p>
-                      </div>
-                      <div nz-col >
-                        <p class="subTitle">Fecha Entrega :</p>
-                        <p>{{ pedido.fechaEntrega ? toLocalDateStringFunction(pedido.fechaEntrega) : '-'}}</p>
-                      </div>
-                      <div nz-col>
-                        <p class="subTitle">Estado :</p>
-                        <ng-template [ngIf]="pedido.state" [ngIfElse]="WithoutState">
-                          <p><nz-tag [nzColor]="colorear(pedido.state)">{{pedido.state}}</nz-tag></p>
-                        </ng-template>
-                        <ng-template #WithoutState>
-                          <p>-</p>
-                        </ng-template>
-                      </div>
-                      <div nz-col>
-                        <p class="subTitle">Mas Info :</p>
-                        <icon nz-icon nzType="plus" (click)="onClickMoreInfo($event, pedido)" style="margin-left: 18px; cursor:pointer" nzTheme="outline"></icon>
-                      </div>
-                  </div>
-
-              </nz-card>
-            </nz-list-item>
-          <!--/div>
-        </div-->
-      </nz-list>
-      <nz-modal
-        [(nzVisible)]="isVisibleModalMoreInfo"
-        [nzBodyStyle]="{ minHeight: '600px' }"
-        nzWidth="50%"
-        nzTitle="Más Info"
-        nzCentered
-        nzOkText="Ok"
-        nzCancelText="Cancel"
-        (nzOnCancel)="handleCancelMoreInfo()"
-        (nzOnOk)="handleOkMoreInfo()"
-      >
-              <ng-container *nzModalContent>
-                <!--div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } "-->
-                <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
-                  <div nz-col class="child" nzSpan="24">
-                    <p class="subTitle">Id :</p>
-                    <p>{{ currentPedido.id ? currentPedido.id : "-" }}</p>
-                  </div>
-                  <div nz-col nzSpan="24">
-                    <!--[nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } "-->
-                    <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
-                      <div nz-col nzSpan="8">
-                        <p class="subTitle">Título :</p>
-                        <p>{{ currentPedido.nombre ? currentPedido.nombre : "-" }}</p>
-                      </div>
-                      <div nz-col nzSpan="8">
-                        <p class="subTitle">SubTítulo :</p>
-                        <p>{{ currentPedido.nombreExtendido ? currentPedido.nombreExtendido : "-" }}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div nz-col nzSpan="24">
-                    <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
-                      <div nz-col nzSpan="8">
-                        <p class="subTitle">Tipo :</p>
-                        <p>{{ currentPedido.tipo && currentPedido.tipo.nombre ? currentPedido.tipo.nombre : '-'}}</p>
-                      </div>
-                      <div nz-col nzSpan="8">
-                        <p class="subTitle">Fecha Entrega :</p>
-                        <p>{{ currentPedido.fechaEntrega ? toLocalDateStringFunction(currentPedido.fechaEntrega) : '-'}}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div nz-col nzSpan="24">
-                    <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
-                      <div nz-col nzSpan="8">
-                        <p class="subTitle">Alto (px) :</p>
-                        <p>{{ currentPedido.alto ? currentPedido.alto : (currentPedido.tipo  ? currentPedido.tipo.alto : "-") }}</p>
-                      </div>
-                      <div nz-col nzSpan="8">
-                        <p class="subTitle">Ancho (px) :</p>
-                        <p>{{ currentPedido.ancho ? currentPedido.ancho : (currentPedido.tipo  ? currentPedido.tipo.ancho : "-") }}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div nz-col nzSpan="24">
-                    <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
-                      <div nz-col nzSpan="8">
-                        <p class="subTitle">Cantidad :</p>
-                        <p>{{ currentPedido.cantidad }}</p>
-                      </div>
-                      <div nz-col nzSpan="8">
-                        <p class="subTitle">Tipografía :</p>
-                        <p>{{ currentPedido.tipografia ? currentPedido.tipografia : (currentPedido.tipo  ? currentPedido.tipo.tipografia : "-") }}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div nz-col nzSpan="24">
-                    <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
-                      <div nz-col nzSpan="8">
-                        <p class="subTitle">Estado :</p>
-                        <ng-template [ngIf]="currentPedido.state" [ngIfElse]="WithoutState">
-                          <p><nz-tag [nzColor]="colorear(currentPedido.state)">{{currentPedido.state}}</nz-tag></p>
-                        </ng-template>
-                        <ng-template #WithoutState>
-                          <p>-</p>
-                        </ng-template>
-                      </div>
-                      <div nz-col nzSpan="8">
-                        <p class="subTitle">Colores :</p>
-                        <ng-template 
-                          [ngIf]="(currentPedido.colores && currentPedido.colores.length > 0) || (currentPedido.tipo && currentPedido.tipo.colores)" [ngIfElse]="WithoutColors">
-                          <nz-list>
-                            <nz-list-item style="display: inline; padding-left: 3px; padding-right: 3px; border-bottom: 0 none;" *ngFor="let color of pedidoColores()">
-                              <nz-badge [nzColor]="color.hexCode">{{ color.nombre }}</nz-badge>
-                            </nz-list-item>
-                          </nz-list>
-                        </ng-template>
-                        <ng-template #WithoutColors>
-                          <p>-</p>
-                        </ng-template>
-                      </div>
-                    </div>
-                  </div>
-                  <div nz-col nzSpan="24">
-                    <p class="subTitle">Descripción :</p>
-                    {{ currentPedido.descripcion ? currentPedido.descripcion : "-" }}
-                  </div>
-                </div>      
-              </ng-container>
-            </nz-modal>
-            <nz-modal
-              [(nzVisible)]="isVisibleModalChat"
-              [nzBodyStyle]="{ minHeight: '600px' }"
-              nzWidth="50%"
-              nzTitle="Chat"
-              nzCentered
-              nzOkText="Ok"
-              nzCancelText="Cancel"
-              (nzOnCancel)="handleCancelChat()"
-              (nzOnOk)="handleOkChat()"
-            >
-              <ng-container *nzModalContent>
-                <ng-template [ngIf]="currentPedido.files && tieneDimension()"[ngIfElse]="WithoutFiles">
-                  <nz-list nzGrid>
-                    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
-                      <div nz-col *ngFor="let file of currentPedido.files">
-                        <nz-list-item>
-                          <nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddComment]">
-                              <nz-card-meta
-                                  [nzTitle]="file.name"
-                                  nzDescription=""
-                                  [nzAvatar]="avatarTemplate"
-                              ></nz-card-meta>
-                                <ng-template #avatarTemplate>
-                                </ng-template>
-                                <ng-template #coverTemplate>
-                                  <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
-                                </ng-template>
-                                <ng-template #actionAddComment>
-                                  <i nz-icon nzType="comment" (click)="onClickFile()" nzTheme="outline"></i>
-                                </ng-template>
-                          </nz-card>
-                        </nz-list-item>
-                      </div>
-                    </div>
-                  </nz-list>
-                </ng-template>
-                <ng-template #WithoutFiles>
-                  <p>NO TIENE FILES</p>
-                </ng-template>      
-              </ng-container>
-            </nz-modal>
     </ng-template>
     <ng-template #CarritoVacio>
       No se encontro ningun pedido en el carrito
     </ng-template>
-  </ng-template>
-
 </div>
   
-
-
-<!--div *ngIf="pedidos.length>0">
-  <nz-descriptions nzTitle="Editar pedido" nzBordered [nzExtra]="extraTpl" [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
-    <nz-descriptions-item nzTitle="Id" >{{ currentPedido.id }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Título" >{{ currentPedido.nombre }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Subtítulo">{{ currentPedido.nombreExtendido }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Cantidad">{{ currentPedido.cantidad }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Propietario ">{{ currentPedido.propietario }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Alto">{{ currentPedido.alto }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Ancho">{{ currentPedido.ancho }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Tipografia"> {{ currentPedido.tipografia }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Tipo"> {{ currentPedido.tipo.nombre }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Estado" [nzSpan]="8"><nz-tag [nzColor]="colorear(currentPedido.state)">{{currentPedido.state}}</nz-tag></nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Colores" [nzSpan]="8">
-      <div nz-row  *ngFor="let color of currentPedido.colores">
-        <div nz-col class="gutter-row" [nzSpan]="4"><div class="inner-box"></div>
-        <nz-badge [nzColor]="color.hexCode">{{ color.nombre }}</nz-badge>
-      </div>
-    </div>
-  </nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Descripción" [nzSpan]="8">
-      {{ currentPedido.descripcion }}
-    </nz-descriptions-item>
-    <nz-descriptions-item 
-    nzTitle="Eliminar" 
-    [nzSpan]="8">
-    <button class="button-delete" nz-button nzType="primary" title="Eliminar" (click)="eliminar()" nzDanger>
-      <i nz-icon nzType="delete" nzTheme="outline"></i>
-    </button>
-  </nz-descriptions-item>
-</nz-descriptions>
-<ng-template #extraTpl>
-  <button nz-button nzType="primary" (click)="onClickAccion(currentPedido)">{{ AccionText }}<i nz-icon nzType="edit" nzTheme="outline"></i></button>
-</ng-template>
-
-<br>
-<nz-pagination [nzPageIndex]="pageIndex" [nzTotal]="total" [nzPageSize]="1" [nzShowTotal]="totalTemplate" (nzPageIndexChange)="indexChange($event)"></nz-pagination>
-<ng-template #totalTemplate let-total><strong>Total pedidos : {{ total }} </strong></ng-template> 
-</div>
-
-<div *ngIf="!(pedidos.length>0)">
-  <div class="sin-pedidos">
-    <div>
-      <h1 nz-typography>No se encontró ningun pedido</h1>
-    </div>
-    <div >
-      <h2 nz-typography>Para realizar tu pedido ingresá en "Nuevo"</h2>
-    </div>
-  </div>
-</div-->

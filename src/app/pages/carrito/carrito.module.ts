@@ -22,6 +22,10 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzImageModule } from 'ng-zorro-antd/image';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { NzCommentModule } from 'ng-zorro-antd/comment';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
 
 @NgModule({
     imports: [
@@ -45,7 +49,12 @@ import { NzImageModule } from 'ng-zorro-antd/image';
       NzInputModule,
       NzModalModule,
       NzTypographyModule,
-      NzImageModule       
+      NzImageModule,
+      ScrollingModule,
+      NzCommentModule,
+      NzAvatarModule,
+      NzTabsModule
+             
     ],
     declarations: [CarritoComponent],
     exports: [CarritoComponent]
