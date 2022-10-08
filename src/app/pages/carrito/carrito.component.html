@@ -111,27 +111,38 @@
                           </nz-card>
                         </ng-template>
                         <ng-template #files>
-                          <p style="text-align: center;"><b>Archivos cdcdc</b></p>
-                          <nz-list nzGrid>
-                              <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="pedido.files">
-                                <div nz-col *ngFor="let file of pedido.files">
-                                  <nz-list-item>
-                                    <nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddInteraction]">
-                                        <nz-card-meta
-                                            [nzTitle]="file.name"
-                                            nzDescription=""
-                                        ></nz-card-meta>
-                                          <ng-template #coverTemplate>
-                                            <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
-                                          </ng-template>
-                                          <ng-template #actionAddInteraction>
-                                            <i nz-icon nzType="comment" (click)="onClickShowFileComments($event, file)" nzTheme="outline"></i>
-                                          </ng-template>
-                                    </nz-card>
-                                  </nz-list-item>
+                          <ng-template [ngIf]="pedido.files && pedido.files.length" [ngIfElse]="NoFiles">
+                            <p style="text-align: center;"><b>Archivos cdcdc</b></p>
+                            <nz-list nzGrid>
+                                <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="pedido.files">
+                                  <div nz-col *ngFor="let file of pedido.files">
+                                    <nz-list-item>
+                                      <nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddInteraction]">
+                                          <nz-card-meta
+                                              [nzTitle]="file.name"
+                                              nzDescription=""
+                                          ></nz-card-meta>
+                                            <ng-template #coverTemplate>
+                                              <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
+                                            </ng-template>
+                                            <ng-template #actionAddInteraction>
+                                              <i nz-icon nzType="comment" (click)="onClickShowFileComments($event, file)" nzTheme="outline"></i>
+                                            </ng-template>
+                                      </nz-card>
+                                    </nz-list-item>
+                                  </div>
                                 </div>
-                              </div>
-                          </nz-list>
+                            </nz-list>
+                          </ng-template>
+                          <ng-template  #NoFiles>
+                            <!--div class="center"-->
+                              <!--p>No cuenta con archivos para este pedido</p>
+                              <p>Puede editar el pedido para agregarlas</p-->
+                                <div nz-col nzSpan="24">
+                                  <img nz-image alt="" [nzSrc]="fallback" class="border" width="150" height="160" >
+                                </div>
+                            <!--/div-->
+                          </ng-template>
                         </ng-template>
                       </nz-tab>  
                     </nz-tabset>

@@ -23,10 +23,18 @@ h2 {
 }
 
 .border {
-    border-color:rgb(201, 28, 28);
+    border-color:#837d7d;
     border-width: 1.5px;
     border-style: solid;
-  }
+    position: relative;
+    
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    color: green;
+}
 
 .buttonActions {
     width:150px;

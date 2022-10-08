@@ -9,10 +9,10 @@ import { Pedido } from 'src/app/interface/pedido';
 import { PedidoService } from 'src/app/services/pedido.service';
 import { RESERVADO } from 'src/app/utils/const/constantes';
 import { avatarStyle, determineIcon, toLocalDateString, badgeUponImagePositionStyle, badgeColorStyle } from 'src/app/utils/functions/functions';
+import { fallback } from 'src/app/utils/const/constantes';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { formatDistance } from 'date-fns';
 import { ThisReceiver } from '@angular/compiler';
-
 
 @Component({
   selector: 'app-carrito',
@@ -52,6 +52,8 @@ export class CarritoComponent implements OnInit {
 
   userCommentValue: string = '';
   tabs: Array<{ name: string, icon: string, title: string }> = [];
+
+  fallback: string = fallback;
 
 
   toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString;
