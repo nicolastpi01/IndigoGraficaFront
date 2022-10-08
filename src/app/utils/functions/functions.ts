@@ -1,4 +1,4 @@
-import { Interaccion } from "src/app/interface/comentario";
+import { Comentario, Interaccion } from "src/app/interface/comentario";
 
 
  export const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
@@ -16,6 +16,14 @@ import { Interaccion } from "src/app/interface/comentario";
     else {
       return "highlight"
     }
+  };
+
+  export const badgeUponImagePositionStyle = (comentario: Comentario) => {
+    return {
+      position: 'absolute', 
+      left: comentario.x.toString() + 'px', 
+      top: comentario.y.toString() + 'px',
+    }; 
   };
 
   export const avatarStyle = (interaccion: Interaccion) => {

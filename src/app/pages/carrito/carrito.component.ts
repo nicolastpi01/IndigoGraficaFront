@@ -3,12 +3,12 @@ import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Color } from 'src/app/interface/color';
-import { Interaccion } from 'src/app/interface/comentario';
+import { Comentario, Interaccion } from 'src/app/interface/comentario';
 import { FileDB } from 'src/app/interface/fileDB';
 import { Pedido } from 'src/app/interface/pedido';
 import { PedidoService } from 'src/app/services/pedido.service';
 import { RESERVADO } from 'src/app/utils/const/constantes';
-import { avatarStyle, determineIcon, toLocalDateString } from 'src/app/utils/functions/functions';
+import { avatarStyle, determineIcon, toLocalDateString, badgeUponImagePositionStyle, badgeColorStyle } from 'src/app/utils/functions/functions';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { formatDistance } from 'date-fns';
 import { ThisReceiver } from '@angular/compiler';
@@ -23,13 +23,18 @@ export class CarritoComponent implements OnInit {
 
   pageIndex: number = 1; 
   total: number = 0;
-  currentPedido: Pedido | undefined; //any;
   pedidos: any[] = [];
+  currentPedido: Pedido | undefined; 
+  currentFile: FileDB | undefined;
+  currentComment: Comentario | undefined;
+
+  now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
 
   loadingSearch: boolean = false;
   loading: boolean = false;
   isVisibleModalMoreInfo: boolean = false;
   isVisibleModalChat: boolean = false;
+  isVisibleModalFileComments: boolean = false;
   indeterminate = true;
   
   allChecked = false;
@@ -51,7 +56,12 @@ export class CarritoComponent implements OnInit {
   toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString;
   determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
   avatarStyle: (interaccion: Interaccion) => { 'background-color': string; } = avatarStyle;
-  colorear :(descripcion: string) => string | undefined = colorearEstado
+  colorear :(descripcion: string) => string | undefined = colorearEstado;
+  badgeUponImagePositionStyle: (comentario: Comentario) => { position: string; left: string; top: string; } = badgeUponImagePositionStyle;
+  badgeColorStyleFunction: ()  => {
+    backgroundColor: string;
+  } = badgeColorStyle;
+    
   time = formatDistance(new Date(), new Date());
   AccionText: String = "Editar"
 
@@ -81,13 +91,51 @@ export class CarritoComponent implements OnInit {
         return {
           ...pedido, 
           expandedId : false,
-          expandedTitle: false
+          expandedTitle: false,
+          files : pedido.files?.map((file: FileDB) => {
+            return {
+              ...file, url: this.generateUrl(file)
+            }
+          })
         }
        })
        this.total = pedidos.length
        this.loading = false
-       if(pedidos.length > 0) this.currentPedido = pedidos[0]; 
+       //if(pedidos.length > 0) this.currentPedido = pedidos[0]; 
     });
+  }
+
+  onClickTab = () => {
+    //console.log("Click Tab")
+  };
+
+  onClickShowFileComments = (event: MouseEvent, item: FileDB) => {
+    event.preventDefault;
+    this.currentFile = item; 
+    this.isVisibleModalFileComments = true;
+  }
+
+  onClickComment = (event: MouseEvent, comentario: Comentario) => {
+    event.preventDefault;
+    this.currentComment = comentario;
+    let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(comentario.interacciones))
+    let last: Interaccion | undefined =  InteraccionesCP.pop()
+    if (last && last.rol === 'USUARIO') {
+      this.userCommentValue = last.texto
+    };
+    this.isVisibleModalChat = true;    
+  }
+
+  onChangeCheck = (event: boolean, comentario: Comentario) => {
+    comentario.terminado = event;
+  };
+
+  handleCancelResolver = () => {
+    this.isVisibleModalFileComments = false;
+  }
+
+  handleOkResolver = () => {
+    this.isVisibleModalFileComments = false;
   }
 
   onChangeUserComment = (value: string) => {
@@ -261,12 +309,14 @@ export class CarritoComponent implements OnInit {
 
   onClickChat(pedido: Pedido): void {
     this.currentPedido = pedido;
+    /*
     this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
       return {
         ...file, url: this.generateUrl(file)
       }
     });
-    console.log("PEDIDO", pedido)
+    */
+    //console.log("PEDIDO", pedido)
     this.isVisibleModalChat = true;
   }
 
@@ -307,7 +357,8 @@ export class CarritoComponent implements OnInit {
   };
 
   onClickFile(): void {
-    this._router.navigateByUrl('/usuariocomentarios' + `/${this.currentPedido?.id}`)
+    //this._router.navigateByUrl('/usuariocomentarios' + `/${this.currentPedido?.id}`)
+    
   }
 
   pedidoColores = () :Color[]  => {

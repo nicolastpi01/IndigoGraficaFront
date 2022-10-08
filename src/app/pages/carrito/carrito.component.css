@@ -36,6 +36,13 @@ h2 {
     width:100px;
 }
 
+.demo-infinite-container {
+    height: 35vw;
+    width: 40vw;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+}
+
 .virtualScroll {
     height: 35vw;
     width: 18vw;
