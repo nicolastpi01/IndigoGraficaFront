@@ -34,6 +34,7 @@ export class CarritoComponent implements OnInit {
   loading: boolean = false;
   isVisibleModalMoreInfo: boolean = false;
   isVisibleModalChat: boolean = false;
+  isVisibleModalFilesChat: boolean = false;
   isVisibleModalFileComments: boolean = false;
   indeterminate = true;
   
@@ -123,7 +124,9 @@ export class CarritoComponent implements OnInit {
     if (last && last.rol === 'USUARIO') {
       this.userCommentValue = last.texto
     };
-    this.isVisibleModalChat = true;    
+
+    console.log("CURRENT COMMENT :", comentario)
+    this.isVisibleModalFilesChat = true;    
   }
 
   onChangeCheck = (event: boolean, comentario: Comentario) => {
@@ -180,8 +183,8 @@ export class CarritoComponent implements OnInit {
     || (this.currentPedido && this.currentPedido.interacciones && last && last.rol === 'EDITOR')
   };
 
-  itemListStyle = (interaccion: Interaccion) => {
-      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido?.interacciones)) 
+  itemListStyle = (interaccion: Interaccion, item: any) => {
+      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(item.interacciones)) 
       let last: Interaccion | undefined = InteraccionesCP.pop()
       let ret :boolean = false
       if(last) {
@@ -203,6 +206,8 @@ export class CarritoComponent implements OnInit {
         return ''
       }
   };
+
+ 
 
   handleClickAceptar = () => {
     
@@ -334,6 +339,14 @@ export class CarritoComponent implements OnInit {
 
   handleOkChat(): void {
     this.isVisibleModalChat = false;
+  }
+
+  handleCancelFilesChat() : void {
+    this.isVisibleModalFilesChat = false;
+  }
+
+  handleOkFilesChat(): void {
+    this.isVisibleModalFilesChat = false;
   }
 
   handleCancelMoreInfo() : void {

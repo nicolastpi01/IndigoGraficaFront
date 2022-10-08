@@ -353,7 +353,7 @@
                             <nz-list class="list" *ngIf="currentPedido && currentPedido.interacciones">
                               <nz-list-empty [nzNoResult]="showNoResult()" *ngIf="currentPedido.interacciones.length == 0">
                               </nz-list-empty>
-                              <nz-list-item [style]="itemListStyle(interaccion)" *cdkVirtualFor="let interaccion of currentPedido.interacciones">
+                              <nz-list-item [style]="itemListStyle(interaccion, currentPedido)" *cdkVirtualFor="let interaccion of currentPedido.interacciones">
                                 <nz-comment [nzAuthor]="interaccion.rol" [nzDatetime]="time">
                                   <nz-avatar
                                     nz-comment-avatar
@@ -398,6 +398,82 @@
                                   <nz-form-item>
                                     <button nz-button (click)="handleClickAceptar()" nzType="default">
                                       {{ estaEditando() ? 'Editar' : 'Enviar' }}
+                                    </button>
+                                  </nz-form-item>
+                                </form>
+                              </nz-comment-content>
+                            </nz-comment>
+                          </div>
+                        </div>                            
+                    </ng-container>
+                  </nz-modal>
+                  <nz-modal
+                    [(nzVisible)]="isVisibleModalFilesChat"
+                    [nzBodyStyle]="{ minHeight: '600px' }"
+                    nzWidth="50%"
+                    nzTitle="Chat 2"
+                    nzCentered
+                    nzOkText="Ok"
+                    nzCancelText="Cerrar"
+                    (nzOnCancel)="handleCancelFilesChat()"
+                    (nzOnOk)="handleOkFilesChat()"
+                  >
+                    <ng-container *nzModalContent>
+                        <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
+                          <div nz-col>
+                            <p style="text-align: center;"><b>Comentarios</b></p> 
+                            <cdk-virtual-scroll-viewport itemSize="4" class="virtualScroll">
+                            <nz-list class="list" *ngIf="currentComment && currentComment.interacciones">
+                              <nz-list-empty [nzNoResult]="showNoResult()" *ngIf="currentComment.interacciones.length == 0">
+                              </nz-list-empty>
+                              <nz-list-item [style]="itemListStyle(interaccion, currentComment)" *cdkVirtualFor="let interaccion of currentComment.interacciones">
+                                <nz-comment [nzAuthor]="interaccion.rol" [nzDatetime]="time">
+                                  <nz-avatar
+                                    nz-comment-avatar
+                                    [nzIcon]="determineIcon(interaccion)"
+                                    [style]="avatarStyle(interaccion)"
+                                  ></nz-avatar>
+                                  <nz-comment-content>
+                                  <p
+                                    nz-typography
+                                    nzEllipsis
+                                    nzExpandable
+                                    nzCopyable 
+                                    [nzCopyTooltips]="null"
+                                    [attr.title]="interaccion.texto"
+                                    [nzEllipsisRows]="2"
+                                    [nzContent]="interaccion.texto"
+                                  >
+                                  </p>
+                                  </nz-comment-content>
+                                </nz-comment>                
+                              </nz-list-item>
+                            </nz-list>
+                          </cdk-virtual-scroll-viewport>
+                          </div>
+                          <div nz-col>
+                            <p style="text-align: center;"><b>Charla con el Editor!</b></p>
+                            <nz-comment style="min-width: 25vw;" nzAuthor="USUARIO" [nzDatetime]="time">
+                              <nz-avatar nz-comment-avatar nzIcon="user" style="background-color: #87d068"></nz-avatar>
+                              <nz-comment-content>
+                                <nz-form-item>
+                                    <textarea 
+                                      (ngModelChange)="onChangeUserComment($event)" 
+                                      [(ngModel)]="userCommentValue" nz-input rows="5">
+                                    </textarea>
+                                </nz-form-item>
+                                <form nz-form [nzLayout]="'inline'">
+                                  <nz-form-item>
+                                    <!--button nz-button [disabled]="disabledEliminarComment()" (click)="handleClickEliminarComment()" nzType="default">
+                                      Eliminar
+                                    </button-->
+                                    <button nz-button (click)="handleClickEliminarComment()" nzType="default">
+                                      Eliminar
+                                    </button>
+                                  </nz-form-item>
+                                  <nz-form-item>
+                                    <button nz-button (click)="handleClickAceptar()" nzType="default">
+                                      acEptar
                                     </button>
                                   </nz-form-item>
                                 </form>
