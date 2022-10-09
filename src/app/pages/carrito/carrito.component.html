@@ -178,7 +178,7 @@
                       <cdk-virtual-scroll-viewport itemSize="10" class="demo-infinite-container">
                       <nz-list class="algo" *ngIf="currentFile && currentFile.comentarios">
                         <nz-list-item  *cdkVirtualFor="let comentario of currentFile.comentarios">
-                          <nz-comment [nzAuthor]="comentario.interacciones[0].rol" [nzDatetime]="now">
+                          <nz-comment [nzAuthor]="comentario.interacciones[0].rol" [nzDatetime]="toFullDate(comentario.creationDate)">
                             <nz-avatar
                               nz-comment-avatar
                               [textContent]="comentario.numero"

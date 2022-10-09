@@ -8,7 +8,7 @@ import { FileDB } from 'src/app/interface/fileDB';
 import { Pedido } from 'src/app/interface/pedido';
 import { PedidoService } from 'src/app/services/pedido.service';
 import { RESERVADO } from 'src/app/utils/const/constantes';
-import { avatarStyle, determineIcon, toLocalDateString, badgeUponImagePositionStyle, badgeColorStyle } from 'src/app/utils/functions/functions';
+import { avatarStyle, determineIcon, toLocalDateString, badgeUponImagePositionStyle, badgeColorStyle, toFullDate } from 'src/app/utils/functions/functions';
 import { fallback } from 'src/app/utils/const/constantes';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { formatDistance } from 'date-fns';
@@ -27,8 +27,6 @@ export class CarritoComponent implements OnInit {
   currentPedido: Pedido | undefined; 
   currentFile: FileDB | undefined;
   currentComment: Comentario | undefined;
-
-  now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
 
   loadingSearch: boolean = false;
   loading: boolean = false;
@@ -55,7 +53,7 @@ export class CarritoComponent implements OnInit {
 
   fallback: string = fallback;
 
-
+  toFullDate : (date: Date | any) => string = toFullDate;
   toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString;
   determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
   avatarStyle: (interaccion: Interaccion) => { 'background-color': string; } = avatarStyle;

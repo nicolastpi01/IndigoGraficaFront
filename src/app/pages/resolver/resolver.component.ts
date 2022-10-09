@@ -33,7 +33,7 @@ export class ResolverComponent implements OnInit {
   badgeColorStyleFunction: ()  => {
     backgroundColor: string;
   } = badgeColorStyle;
-  fullDate : (date: Date) => string = toFullDate;
+  fullDate : (date: Date | any) => string = toFullDate;
 
 
   currentPedido: Pedido | undefined;
