@@ -18,6 +18,10 @@ import { Comentario, Interaccion } from "src/app/interface/comentario";
     }
   };
 
+  export const toFullDate = (date: Date) => {
+    return date.toLocaleDateString() + ' - ' + date.toLocaleTimeString()
+  };
+
   export const badgeUponImagePositionStyle = (comentario: Comentario) => {
     return {
       position: 'absolute', 

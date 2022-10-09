@@ -112,7 +112,7 @@
                         </ng-template>
                         <ng-template #files>
                           <ng-template [ngIf]="pedido.files && pedido.files.length" [ngIfElse]="NoFiles">
-                            <p style="text-align: center;"><b>Archivos cdcdc</b></p>
+                            <p style="text-align: center;"><b>Archivos</b></p>
                             <nz-list nzGrid>
                                 <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="pedido.files">
                                   <div nz-col *ngFor="let file of pedido.files">
@@ -402,13 +402,13 @@
                                 </nz-form-item>
                                 <form nz-form [nzLayout]="'inline'">
                                   <nz-form-item>
-                                    <button nz-button [disabled]="disabledEliminarComment()" (click)="handleClickEliminarComment()" nzType="default">
+                                    <button nz-button [disabled]="disabledInteractionDeletedButton(currentPedido)" (click)="handleClickEliminarComment()" nzType="default">
                                       Eliminar
                                     </button>
                                   </nz-form-item>
                                   <nz-form-item>
                                     <button nz-button (click)="handleClickAceptar()" nzType="default">
-                                      {{ estaEditando() ? 'Editar' : 'Enviar' }}
+                                      {{ isEditing(currentPedido) ? 'Editar' : 'Enviar' }}
                                     </button>
                                   </nz-form-item>
                                 </form>
@@ -475,16 +475,13 @@
                                 </nz-form-item>
                                 <form nz-form [nzLayout]="'inline'">
                                   <nz-form-item>
-                                    <!--button nz-button [disabled]="disabledEliminarComment()" (click)="handleClickEliminarComment()" nzType="default">
-                                      Eliminar
-                                    </button-->
-                                    <button nz-button (click)="handleClickEliminarComment()" nzType="default">
+                                    <button nz-button [disabled]="disabledInteractionDeletedButton(currentComment)" (click)="deleteInteractionForAFileWithComments()" nzType="default">
                                       Eliminar
                                     </button>
                                   </nz-form-item>
                                   <nz-form-item>
-                                    <button nz-button (click)="handleClickAceptar()" nzType="default">
-                                      acEptar
+                                    <button nz-button (click)="handleClickSendInteractionButton()" nzType="default">
+                                      {{ isEditing(currentComment) ? 'Editar' : 'Enviar' }}
                                     </button>
                                   </nz-form-item>
                                 </form>

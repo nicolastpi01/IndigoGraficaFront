@@ -10,7 +10,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { Comentario, Interaccion } from 'src/app/interface/comentario';
 import { formatDistance } from 'date-fns';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
-import { badgeColorStyle, getBase64, toLocalDateString, determineIcon, avatarStyle, badgeUponImagePositionStyle } from 'src/app/utils/functions/functions';
+import { badgeColorStyle, getBase64, toLocalDateString, determineIcon, 
+  avatarStyle, badgeUponImagePositionStyle, toFullDate } from 'src/app/utils/functions/functions';
 import { ThisReceiver } from '@angular/compiler';
 import { Solution } from 'src/app/interface/solution';
 import { Color } from 'src/app/interface/color';
@@ -32,7 +33,7 @@ export class ResolverComponent implements OnInit {
   badgeColorStyleFunction: ()  => {
     backgroundColor: string;
   } = badgeColorStyle;
-
+  fullDate : (date: Date) => string = toFullDate;
 
 
   currentPedido: Pedido | undefined;
@@ -55,6 +56,8 @@ export class ResolverComponent implements OnInit {
 
   time = formatDistance(new Date(), new Date());
   now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
+
+  
 
   //defaultFileList: NzUploadFile[] = [];
 

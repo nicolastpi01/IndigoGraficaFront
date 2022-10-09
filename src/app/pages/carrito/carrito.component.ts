@@ -126,8 +126,6 @@ export class CarritoComponent implements OnInit {
     if (last && last.rol === 'USUARIO') {
       this.userCommentValue = last.texto
     };
-
-    console.log("CURRENT COMMENT :", comentario)
     this.isVisibleModalFilesChat = true;    
   }
 
@@ -148,7 +146,6 @@ export class CarritoComponent implements OnInit {
   }
 
   handleClickEliminarComment = () => {
-    console.log("CLick Eliminar")
     if(this.currentPedido && this.currentPedido.interacciones) {
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido.interacciones))
       InteraccionesCP.pop()
@@ -166,10 +163,34 @@ export class CarritoComponent implements OnInit {
     }
   }
 
-  estaEditando = () :boolean => {
-    let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido?.interacciones)) 
+  deleteInteractionForAFileWithComments = () => {
+    if(this.currentComment && this.currentComment.interacciones) {
+      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentComment.interacciones))
+      InteraccionesCP.pop()
+      // Esto se puede hacer una vez se llame al servicio
+      this.currentComment = {
+        ...this.currentComment, interacciones: InteraccionesCP 
+      }
+      this.userCommentValue = ''
+      // Actualizar Current File
+      // Actualizar Current Pedido
+      // Actualizar Pedidos
+    }
+  };
+
+  disabledInteractionDeletedButton = (algoConInteracciones: any) => {
+    let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(algoConInteracciones?.interacciones)) 
+      // Obtengo el último elem. de la copia de las interacciones
+      let last: Interaccion | undefined = InteraccionesCP.pop() 
+    return (algoConInteracciones && algoConInteracciones.interacciones && algoConInteracciones.interacciones.length === 0)
+    || (algoConInteracciones && algoConInteracciones.interacciones && last && last.rol === 'EDITOR')
+    
+  };
+
+  isEditing = (algoConInteracciones: any) :boolean => {
+    let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(algoConInteracciones?.interacciones)) 
       let last: Interaccion | undefined = InteraccionesCP.pop()
-    return this.currentPedido !== undefined && this.currentPedido.interacciones !== undefined 
+    return algoConInteracciones !== undefined && algoConInteracciones.interacciones !== undefined 
     && last !== undefined && last.rol === 'USUARIO'
   }
 
@@ -177,6 +198,7 @@ export class CarritoComponent implements OnInit {
     return 'no hay comentarios con el Editor, dejále un comentario!'
   }
 
+  /*
   disabledEliminarComment = () => {
     let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido?.interacciones)) 
       // Obtengo el último elem. de la copia de las interacciones
@@ -184,6 +206,7 @@ export class CarritoComponent implements OnInit {
     return (this.currentPedido && this.currentPedido.interacciones && this.currentPedido.interacciones.length === 0)
     || (this.currentPedido && this.currentPedido.interacciones && last && last.rol === 'EDITOR')
   };
+  */
 
   itemListStyle = (interaccion: Interaccion, item: any) => {
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(item.interacciones)) 
@@ -209,6 +232,58 @@ export class CarritoComponent implements OnInit {
       }
   };
 
+  handleClickSendInteractionButton = () => {
+    
+    if(this.currentComment && this.currentComment.interacciones && this.userCommentValue !== '') {
+      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentComment.interacciones)) 
+      let lastInteraccion: Interaccion | undefined = InteraccionesCP.pop() 
+
+      if(lastInteraccion?.rol === 'USUARIO') this.currentComment.interacciones.pop();
+      
+      let response: Interaccion = {
+        texto: this.userCommentValue,
+        rol: 'USUARIO',
+        key: this.currentComment.interacciones.length 
+      };
+
+      this.currentComment = {
+        ...this.currentComment, interacciones: [...this.currentComment.interacciones, response] 
+      }
+      if(this.currentFile) {
+        this.currentFile = {
+          ...this.currentFile, comentarios: this.currentFile.comentarios.map((comentario: Comentario) => {
+            if(this.currentComment && comentario.id === this.currentComment.id) {
+              return this.currentComment
+            }
+            else {
+              return comentario
+            }
+          })
+        }
+      };
+      if(this.currentPedido) {
+        this.currentPedido = {
+          ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+            if(this.currentFile && file.id === this.currentFile.id) {
+              return this.currentFile
+            }
+            else {
+              return file
+            }
+          })
+        }
+      };
+      this.pedidos = this.pedidos.map((pedido: any) => {
+        if(pedido.id === this.currentPedido?.id) { 
+          return this.currentPedido
+        }
+        else {
+          return pedido
+        }
+      });
+    }
+  };
+
  
 
   handleClickAceptar = () => {
@@ -230,10 +305,14 @@ export class CarritoComponent implements OnInit {
         key: this.currentPedido.interacciones.length // revisar esto
       };
       // Agrego la nueva respuesta del Usuario
+      //this.currentPedido = {
+      //  ...this.currentPedido, interacciones : [...this.currentPedido.interacciones, response]
+      //}
       this.currentPedido.interacciones = [ // No modificar directamente las interacciones sino que usar copias
         ...this.currentPedido.interacciones,
         response 
       ];
+
       // Agrego de nuevo el CurrentPedido (acabo de modificarlo) a la lista de Pedidos
       this.pedidos = this.pedidos.map((pedido: any) => {
         if(pedido.id === this.currentPedido?.id) { // No modificar directamente los pedidos sino que usar copias
@@ -246,86 +325,16 @@ export class CarritoComponent implements OnInit {
     }
   };
 
-  /*
-  handleOkModalResponse = () => {
-    if(this.currentComment && this.textAreaValue) {      
-      let lastInteraccion = this.searchLastInteraccion(); // Si esta al reves deberiamos verificar al principio
-
-      if(lastInteraccion?.rol === 'EDITOR') {
-        this.currentComment.interacciones.pop();
-      }
-      let response: Interaccion = {
-        texto: this.textAreaValue,
-        rol: 'EDITOR',
-        key: this.currentComment.interacciones.length // revisar esto
-      };
-
-      this.currentComment = {
-        ...this.currentComment, respondido: true
-      }
-
-      this.currentComment.interacciones = [
-        ...this.currentComment.interacciones,
-        response 
-      ];
-
-      if(this.currentFile) {
-        this.currentFile = {
-          ...this.currentFile, comentarios: this.currentFile?.comentarios.map((comentario: Comentario) => {
-            if(comentario.id === this.currentComment?.id && this.currentComment) {
-              return this.currentComment 
-            }
-            else {
-              return comentario
-            }
-          })
-        }
-      };
-      this.currentPedido = {
-        ...this.currentPedido, files: this.currentPedido?.files?.map((file: FileDB) => {
-          if(file.id === this.currentFile?.id && this.currentFile) {
-            return this.currentFile 
-          }
-          else {
-            return file
-          }
-        })
-      };
-      
-      this.service.update(this.currentPedido).
-        pipe(filter(e => e instanceof HttpResponse))
-        .subscribe(async (e: any) => {
-            let pedido = (e.body as Pedido)
-            this.currentPedido = pedido;
-            this.currentFile = pedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)
-            if(this.currentFile) {
-              this.currentFile = {
-                ...this.currentFile, url: this.generateUrl(this.currentFile) 
-              }
-            };
-            this.currentComment = this.currentFile?.comentarios.find((comentario: Comentario) => comentario.id === this.currentComment?.id)
-            this.msg.success('Se agrego la respuesta correctamente!');
-            this.handleCancelModalResponse()
-        }),
-        () => {
-            this.msg.error('No se pudo agregar la respuesta, vuelva a intentarlo en unos segundos');
-        }
-    }; 
-  };
-  */
-
   onClickChat(pedido: Pedido): void {
     this.currentPedido = pedido;
-    /*
-    this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
-      return {
-        ...file, url: this.generateUrl(file)
-      }
-    });
-    */
-    //console.log("PEDIDO", pedido)
+    let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(pedido.interacciones)) 
+    let last: Interaccion | undefined = InteraccionesCP.pop() 
+    if(last?.rol === 'USUARIO') {
+      let lastInteraction : Interaccion | undefined =  pedido.interacciones?.pop() 
+      if(lastInteraction) this.userCommentValue = lastInteraction.texto;  
+    }
     this.isVisibleModalChat = true;
-  }
+  };
 
   generateUrl = (file: FileDB) :string => {
     return 'data:' + file.type + ';base64,' + file.data
@@ -336,18 +345,22 @@ export class CarritoComponent implements OnInit {
   };
 
   handleCancelChat() : void {
+    this.userCommentValue = ''
     this.isVisibleModalChat = false;
   }
 
   handleOkChat(): void {
+    this.userCommentValue = ''
     this.isVisibleModalChat = false;
   }
 
   handleCancelFilesChat() : void {
+    this.userCommentValue = ''
     this.isVisibleModalFilesChat = false;
   }
 
   handleOkFilesChat(): void {
+    this.userCommentValue = ''
     this.isVisibleModalFilesChat = false;
   }
 

@@ -531,6 +531,7 @@ export class NuevoComponent implements OnInit {
           terminado: false,
           isVisible: true, // puede usarse para ver si uso el autofocus o no
           respondido: false,
+          creationDate: new Date(), 
           interacciones: [
             { 
               texto: '',
