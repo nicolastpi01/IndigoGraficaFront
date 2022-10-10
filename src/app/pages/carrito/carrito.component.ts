@@ -151,18 +151,36 @@ export class CarritoComponent implements OnInit {
     if(this.currentPedido && this.currentPedido.interacciones) {
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido.interacciones))
       InteraccionesCP.pop()
-      this.currentPedido.interacciones = InteraccionesCP
-
-      this.pedidos = this.pedidos.map((pedido: any) => {
-        if(pedido.id === this.currentPedido?.id) { // No modificar directamente los pedidos sino que usar copias
-          return this.currentPedido
-        }
-        else {
-          return pedido
-        }
-      });
+      let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
+      pedidoCp.interacciones = InteraccionesCP
+      this.service.update(pedidoCp).
+          pipe(filter(e => e instanceof HttpResponse))
+          .subscribe(async (e: any) => {
+              let pedido = (e.body as Pedido)
+              this.currentPedido = pedido;
+              this.userCommentValue = ''    
+              this.currentPedido = {
+                ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+                  return {
+                    ...file, url: this.generateUrl(file)
+                  }
+                }) 
+              };
+              this.pedidos = this.pedidos.map((pedido: any) => {
+                if(pedido.id === this.currentPedido?.id) { 
+                  return this.currentPedido
+                }
+                else {
+                  return pedido
+                }
+              });
+              this.msg.success('Se elimino el comentario correctamente!');
+          }),
+          () => {
+              this.msg.error('Hubo un error, no se pudo eliminar el comentario!');
+          }
     }
-  }
+  };
 
   deleteInteractionForAFileWithComments = () => {
     if(this.currentComment && this.currentComment.interacciones) {
@@ -179,30 +197,17 @@ export class CarritoComponent implements OnInit {
     }
   };
 
+  // desabilito el botón de eliminar si no hay interacciones, o bien si la última interacción es del Editor
   disabledInteractionDeletedButton = (algoConInteracciones: any) => {
     let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(algoConInteracciones?.interacciones)) 
-      // Obtengo el último elem. de la copia de las interacciones
-      let last: Interaccion | undefined = InteraccionesCP.pop() 
-    return (algoConInteracciones && algoConInteracciones.interacciones && algoConInteracciones.interacciones.length === 0)
-    || (algoConInteracciones && algoConInteracciones.interacciones && last && last.rol === 'EDITOR')
-    
+    let last: Interaccion | undefined = InteraccionesCP.pop() 
+    return (algoConInteracciones && algoConInteracciones.interacciones && algoConInteracciones.interacciones.length === 0) // No hay interacciones
+    || (algoConInteracciones && algoConInteracciones.interacciones && last && last.rol === 'EDITOR') // o bién, la última interacción es del editor  
   };
-
-  
 
   showNoResult = () :string | TemplateRef<void> => {
     return 'no hay comentarios con el Editor, dejále un comentario!'
   }
-
-  /*
-  disabledEliminarComment = () => {
-    let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido?.interacciones)) 
-      // Obtengo el último elem. de la copia de las interacciones
-      let last: Interaccion | undefined = InteraccionesCP.pop() 
-    return (this.currentPedido && this.currentPedido.interacciones && this.currentPedido.interacciones.length === 0)
-    || (this.currentPedido && this.currentPedido.interacciones && last && last.rol === 'EDITOR')
-  };
-  */
 
   itemListStyle = (interaccion: Interaccion, item: any) => {
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(item.interacciones)) 
@@ -324,7 +329,7 @@ export class CarritoComponent implements OnInit {
                   return pedido
                 }
               });
-              this.msg.success('Se agrego el comentario corrctamente!');
+              this.msg.success('Se agrego el comentario correctamente!');
           }),
           () => {
               this.msg.error('Hubo un error, no enviar el comentario!');
