@@ -13,6 +13,9 @@ import { fallback } from 'src/app/utils/const/constantes';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { formatDistance } from 'date-fns';
 import { ThisReceiver } from '@angular/compiler';
+import { HttpResponse } from '@angular/common/http';
+import { filter } from 'rxjs';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-carrito',
@@ -66,7 +69,8 @@ export class CarritoComponent implements OnInit {
   time = formatDistance(new Date(), new Date());
   AccionText: String = "Editar"
 
-  constructor(private _router: Router, private service: PedidoService, private fb: FormBuilder, private modal: NzModalService) { }
+  constructor(private _router: Router, private service: PedidoService, 
+    private fb: FormBuilder, private modal: NzModalService, private msg: NzMessageService) { }
 
   ngOnInit(): void {
     this.tabs = [
@@ -148,7 +152,6 @@ export class CarritoComponent implements OnInit {
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido.interacciones))
       InteraccionesCP.pop()
       this.currentPedido.interacciones = InteraccionesCP
-      this.userCommentValue = ''
 
       this.pedidos = this.pedidos.map((pedido: any) => {
         if(pedido.id === this.currentPedido?.id) { // No modificar directamente los pedidos sino que usar copias
@@ -413,8 +416,18 @@ export class CarritoComponent implements OnInit {
     });
   }
 
-  onOkDeleteConfirm = (pedido: any) => {
-    this.pedidos = this.pedidos.filter((p: any) => p.id !== pedido.id)
+  onOkDeleteConfirm = (pedido: Pedido) => {
+      this.service.eliminar(pedido.id).
+      pipe(filter(e => e instanceof HttpResponse))
+      .subscribe( (e: any) => {
+        this.pedidos = this.pedidos.filter((p: any) => p.id !== pedido.id)
+        this.total = this.pedidos.length
+        this.msg.success(e.body.message);
+      }),
+      (e: any) => {
+          // Ojo, no esta catcheando el error 
+          this.msg.error(e.body.message);
+      }
   };
 
   updateSingleChecked(): void {
