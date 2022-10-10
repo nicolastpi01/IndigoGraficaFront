@@ -188,12 +188,7 @@ export class CarritoComponent implements OnInit {
     
   };
 
-  isEditing = (algoConInteracciones: any) :boolean => {
-    let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(algoConInteracciones?.interacciones)) 
-      let last: Interaccion | undefined = InteraccionesCP.pop()
-    return algoConInteracciones !== undefined && algoConInteracciones.interacciones !== undefined 
-    && last !== undefined && last.rol === 'USUARIO'
-  }
+  
 
   showNoResult = () :string | TemplateRef<void> => {
     return 'no hay comentarios con el Editor, dejále un comentario!'
@@ -285,53 +280,72 @@ export class CarritoComponent implements OnInit {
     }
   };
 
- 
-
   handleClickAceptar = () => {
     
     if(this.currentPedido && this.currentPedido.interacciones && this.userCommentValue !== '') {
       // Copio las interacciones
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido.interacciones)) 
       // Obtengo el último elem. de la copia de las interacciones
-      let lastInteraccion: Interaccion | undefined = InteraccionesCP.pop() 
-
+      let lastInteraccion: Interaccion | undefined = InteraccionesCP.pop()
+      // Copio el current Pedido
+      let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
       // Si la última interacción es del Usuario, entonces estoy editando, entonces quito la última, 
       // sino la última interacción es del Editor entonces la dejo
-      if(lastInteraccion?.rol === 'USUARIO') { 
-        this.currentPedido.interacciones.pop();
+      if(pedidoCp.interacciones) {
+        if(lastInteraccion?.rol === 'USUARIO') { 
+          pedidoCp.interacciones.pop(); // Modifico la copia del CurrentPedido, no el original
+        }
+        let response: Interaccion = {
+          texto: this.userCommentValue,
+          rol: 'USUARIO',
+          key: pedidoCp.interacciones.length
+        };
+        pedidoCp.interacciones = [ // Mando al server la copia del CurrentPedido
+          ...pedidoCp.interacciones,
+          response 
+        ];
+        this.service.update(pedidoCp).
+          pipe(filter(e => e instanceof HttpResponse))
+          .subscribe(async (e: any) => {
+              let pedido = (e.body as Pedido)
+              this.currentPedido = pedido;    
+              this.currentPedido = {
+                ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+                  return {
+                    ...file, url: this.generateUrl(file)
+                  }
+                }) 
+              };
+              this.pedidos = this.pedidos.map((pedido: any) => {  // Vuelvo a poner el pedido recién modificado en la lista de pedidos
+                if(pedido.id === this.currentPedido?.id) { 
+                  return this.currentPedido
+                }
+                else {
+                  return pedido
+                }
+              });
+              this.msg.success('Se agrego el comentario corrctamente!');
+          }),
+          () => {
+              this.msg.error('Hubo un error, no enviar el comentario!');
+          }
       }
-      let response: Interaccion = {
-        texto: this.userCommentValue,
-        rol: 'USUARIO',
-        key: this.currentPedido.interacciones.length // revisar esto
-      };
-      // Agrego la nueva respuesta del Usuario
-      //this.currentPedido = {
-      //  ...this.currentPedido, interacciones : [...this.currentPedido.interacciones, response]
-      //}
-      this.currentPedido.interacciones = [ // No modificar directamente las interacciones sino que usar copias
-        ...this.currentPedido.interacciones,
-        response 
-      ];
-
-      // Agrego de nuevo el CurrentPedido (acabo de modificarlo) a la lista de Pedidos
-      this.pedidos = this.pedidos.map((pedido: any) => {
-        if(pedido.id === this.currentPedido?.id) { // No modificar directamente los pedidos sino que usar copias
-          return this.currentPedido
-        }
-        else {
-          return pedido
-        }
-      });
     }
   };
+  
+  isEditing = (algoConInteracciones: any) :boolean => {
+    let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(algoConInteracciones?.interacciones)) 
+      let last: Interaccion | undefined = InteraccionesCP.pop()
+    return algoConInteracciones !== undefined && algoConInteracciones.interacciones !== undefined 
+    && last !== undefined && last.rol === 'USUARIO'
+  }
 
   onClickChat(pedido: Pedido): void {
     this.currentPedido = pedido;
     let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(pedido.interacciones)) 
     let last: Interaccion | undefined = InteraccionesCP.pop() 
     if(last?.rol === 'USUARIO') {
-      let lastInteraction : Interaccion | undefined =  pedido.interacciones?.pop() 
+      let lastInteraction : Interaccion | undefined =  last; 
       if(lastInteraction) this.userCommentValue = lastInteraction.texto;  
     }
     this.isVisibleModalChat = true;
