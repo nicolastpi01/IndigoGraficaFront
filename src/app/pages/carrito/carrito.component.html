@@ -128,7 +128,7 @@
                                               <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
                                             </ng-template>
                                             <ng-template #actionAddInteraction>
-                                              <i nz-icon nzType="comment" (click)="onClickShowFileComments($event, file)" nzTheme="outline"></i>
+                                              <i nz-icon nzType="comment" (click)="onClickShowFileComments($event, file, pedido)" nzTheme="outline"></i>
                                             </ng-template>
                                       </nz-card>
                                     </nz-list-item>

@@ -114,9 +114,10 @@ export class CarritoComponent implements OnInit {
     //console.log("Click Tab")
   };
 
-  onClickShowFileComments = (event: MouseEvent, item: FileDB) => {
+  onClickShowFileComments = (event: MouseEvent, item: FileDB, pedido: Pedido) => {
     event.preventDefault;
-    this.currentFile = item; 
+    this.currentFile = item;
+    this.currentPedido = pedido; 
     this.isVisibleModalFileComments = true;
   }
 
@@ -234,55 +235,75 @@ export class CarritoComponent implements OnInit {
   };
 
   handleClickSendInteractionButton = () => {
-    
+
     if(this.currentComment && this.currentComment.interacciones && this.userCommentValue !== '') {
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentComment.interacciones)) 
-      let lastInteraccion: Interaccion | undefined = InteraccionesCP.pop() 
+      let lastInteraccion: Interaccion | undefined = InteraccionesCP.pop()
+      let commentCp : Comentario = JSON.parse(JSON.stringify(this.currentComment));
+      let fileCp : FileDB = JSON.parse(JSON.stringify(this.currentFile));
+      let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido));
 
-      if(lastInteraccion?.rol === 'USUARIO') this.currentComment.interacciones.pop();
-      
-      let response: Interaccion = {
-        texto: this.userCommentValue,
-        rol: 'USUARIO',
-        key: this.currentComment.interacciones.length 
-      };
-
-      this.currentComment = {
-        ...this.currentComment, interacciones: [...this.currentComment.interacciones, response] 
-      }
-      if(this.currentFile) {
-        this.currentFile = {
-          ...this.currentFile, comentarios: this.currentFile.comentarios.map((comentario: Comentario) => {
-            if(this.currentComment && comentario.id === this.currentComment.id) {
-              return this.currentComment
+      if(commentCp.interacciones) {
+        if(lastInteraccion?.rol === 'USUARIO') {
+          commentCp.interacciones.pop();
+        } 
+        let response: Interaccion = {
+          texto: this.userCommentValue,
+          rol: 'USUARIO',
+          key: commentCp.interacciones.length 
+        };
+        commentCp = {
+          ...commentCp, interacciones: [...commentCp.interacciones, response] 
+        };
+        fileCp = {
+          ...fileCp, comentarios: fileCp.comentarios.map((comentario: Comentario) => {
+            if(commentCp && comentario.id === commentCp.id) {
+              return commentCp
             }
             else {
               return comentario
             }
           })
-        }
-      };
-      if(this.currentPedido) {
-        this.currentPedido = {
-          ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
-            if(this.currentFile && file.id === this.currentFile.id) {
-              return this.currentFile
+        };
+        pedidoCp = {
+          ...pedidoCp, files: pedidoCp.files?.map((file: FileDB) => {
+            if(fileCp && file.id === fileCp.id) {
+              return fileCp
             }
             else {
               return file
             }
           })
+        };
+        this.service.update(pedidoCp).
+          pipe(filter(e => e instanceof HttpResponse))
+          .subscribe(async (e: any) => {
+              let pedido = (e.body as Pedido)
+              this.currentPedido = pedido;
+              this.currentPedido = {
+                ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+                  return {
+                    ...file, url: this.generateUrl(file)
+                  }
+                }) 
+              };
+              this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)
+              this.currentComment = this.currentFile?.comentarios.find((comentario: Comentario)=> comentario.id === this.currentComment?.id)
+              this.pedidos = this.pedidos.map((pedido: any) => {
+                if(pedido.id === this.currentPedido?.id) { 
+                  return this.currentPedido
+                }
+                else {
+                  return pedido
+                }
+              }); 
+              this.msg.success('Se agrego el comentario correctamente!');
+          }),
+          () => {
+              this.msg.error('Hubo un error, no enviar el comentario!');
+          }
         }
-      };
-      this.pedidos = this.pedidos.map((pedido: any) => {
-        if(pedido.id === this.currentPedido?.id) { 
-          return this.currentPedido
-        }
-        else {
-          return pedido
-        }
-      });
-    }
+      }  
   };
 
   handleClickAceptar = () => {
