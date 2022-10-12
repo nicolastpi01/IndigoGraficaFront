@@ -23,13 +23,9 @@
                               <ng-template #actions>
                                 <div nz-row nzJustify="center" [nzGutter]="[{ xs: 24, sm: 32, md: 48, lg: 64 }, 8]">
                                   <div nz-col>
-                                    <!--button class="buttonActions" nzType="default" nz-button>
-                                      Eliminar
-                                    </button-->
                                     <button class="buttonActions" nzType="default" (click)="showDeleteConfirm(pedido)" nz-button>
                                       Eliminar
-                                    </button>
-                                    <!--button nz-button nzType="dashed" (click)="showDeleteConfirm()">Delete</button-->    
+                                    </button>    
                                   </div>
                                   <div nz-col>
                                     <button class="buttonActions" (click)="onClickChat(pedido)" nzType="default" nz-button>

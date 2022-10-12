@@ -24,37 +24,38 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 })
 export class CarritoComponent implements OnInit {
 
-  pageIndex: number = 1; 
+  //pageIndex: number = 1;
+
   total: number = 0;
   pedidos: any[] = [];
   currentPedido: Pedido | undefined; 
   currentFile: FileDB | undefined;
   currentComment: Comentario | undefined;
-
   loadingSearch: boolean = false;
   loading: boolean = false;
   isVisibleModalMoreInfo: boolean = false;
   isVisibleModalChat: boolean = false;
   isVisibleModalFilesChat: boolean = false;
   isVisibleModalFileComments: boolean = false;
-  indeterminate = true;
   
+  /*
+  indeterminate = true;
   allChecked = false;
   checkOptionsOne = [
     { label: 'Apple', value: 'Apple', checked: true },
     { label: 'Pear', value: 'Pear', checked: false },
     { label: 'Orange', value: 'Orange', checked: false }
   ];
+  */
+
   dateFormat = 'dd/MM/YYYY';
-
   expanded: boolean = false;
-
   expandedId: boolean = false;
-
   userCommentValue: string = '';
   tabs: Array<{ name: string, icon: string, title: string }> = [];
-
   fallback: string = fallback;
+  time = formatDistance(new Date(), new Date());
+  AccionText: String = "Editar"
 
   toFullDate : (date: Date | any) => string = toFullDate;
   toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString;
@@ -65,10 +66,7 @@ export class CarritoComponent implements OnInit {
   badgeColorStyleFunction: ()  => {
     backgroundColor: string;
   } = badgeColorStyle;
-    
-  time = formatDistance(new Date(), new Date());
-  AccionText: String = "Editar"
-
+  
   constructor(private _router: Router, private service: PedidoService, 
     private fb: FormBuilder, private modal: NzModalService, private msg: NzMessageService) { }
 
@@ -105,8 +103,7 @@ export class CarritoComponent implements OnInit {
         }
        })
        this.total = pedidos.length
-       this.loading = false
-       //if(pedidos.length > 0) this.currentPedido = pedidos[0]; 
+       this.loading = false 
     });
   }
 
@@ -186,15 +183,62 @@ export class CarritoComponent implements OnInit {
   deleteInteractionForAFileWithComments = () => {
     if(this.currentComment && this.currentComment.interacciones) {
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentComment.interacciones))
+      let commentCp : Comentario = JSON.parse(JSON.stringify(this.currentComment));
+      let fileCp : FileDB = JSON.parse(JSON.stringify(this.currentFile));
+      let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido));
+      
       InteraccionesCP.pop()
-      // Esto se puede hacer una vez se llame al servicio
-      this.currentComment = {
-        ...this.currentComment, interacciones: InteraccionesCP 
+      commentCp = {
+        ...commentCp, interacciones: InteraccionesCP 
       }
-      this.userCommentValue = ''
-      // Actualizar Current File
-      // Actualizar Current Pedido
-      // Actualizar Pedidos
+      fileCp = {
+        ...fileCp, comentarios: fileCp.comentarios.map((comentario: Comentario) => {
+          if(commentCp && comentario.id === commentCp.id) {
+            return commentCp
+          }
+          else {
+            return comentario
+          }
+        })
+      }; 
+      pedidoCp = {
+        ...pedidoCp, files: pedidoCp.files?.map((file: FileDB) => {
+          if(fileCp && file.id === fileCp.id) {
+            return fileCp
+          }
+          else {
+            return file
+          }
+        })
+      };
+      this.service.update(pedidoCp).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe(async (e: any) => {
+            let pedido = (e.body as Pedido)
+            this.currentPedido = pedido;
+            this.userCommentValue = ''
+            this.currentPedido = {
+              ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+                return {
+                  ...file, url: this.generateUrl(file)
+                }
+              }) 
+            };
+            this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)
+            this.currentComment = this.currentFile?.comentarios.find((comentario: Comentario)=> comentario.id === this.currentComment?.id)
+            this.pedidos = this.pedidos.map((pedido: any) => {
+              if(pedido.id === this.currentPedido?.id) { 
+                return this.currentPedido
+              }
+              else {
+                return pedido
+              }
+            }); 
+            this.msg.success('Se elimino el comentario correctamente!');
+          }),
+          () => {
+              this.msg.error('Hubo un error al eliminar el comentario!');
+          }
     }
   };
 
@@ -300,7 +344,7 @@ export class CarritoComponent implements OnInit {
               this.msg.success('Se agrego el comentario correctamente!');
           }),
           () => {
-              this.msg.error('Hubo un error, no enviar el comentario!');
+              this.msg.error('Hubo un error al enviar el comentario!');
           }
         }
       }  
@@ -425,11 +469,6 @@ export class CarritoComponent implements OnInit {
     this.isVisibleModalMoreInfo = false;
   };
 
-  onClickFile(): void {
-    //this._router.navigateByUrl('/usuariocomentarios' + `/${this.currentPedido?.id}`)
-    
-  }
-
   pedidoColores = () :Color[]  => {
     if(this.currentPedido && this.currentPedido.colores) return this.currentPedido.colores
     if(this.currentPedido && this.currentPedido.tipo && this.currentPedido.tipo.colores) return this.currentPedido.tipo.colores
@@ -470,6 +509,7 @@ export class CarritoComponent implements OnInit {
       }
   };
 
+  /*
   updateSingleChecked(): void {
     if (this.checkOptionsOne.every(item => !item.checked)) {
       this.allChecked = false;
@@ -481,20 +521,19 @@ export class CarritoComponent implements OnInit {
       this.indeterminate = true;
     }
   }
+  */
 
   onClickAccion (pedido: Pedido): void {
     this._router.navigateByUrl('/nuevo' + `/${pedido.id}`)
   }
 
-  eliminar ():void {
-
-  }
-
+  /*
   indexChange($event: any){
     let newIndex = parseInt($event);
     this.pageIndex = newIndex;
     let newPedido = this.pedidos[newIndex-1];
     if(newPedido) this.currentPedido = newPedido;
   }
+  */
 
 }
