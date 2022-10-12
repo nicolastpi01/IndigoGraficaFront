@@ -13,6 +13,7 @@ import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { badgeColorStyle, getBase64, toLocalDateString } from 'src/app/utils/functions/functions';
 import { ThisReceiver } from '@angular/compiler';
 import { Solution } from 'src/app/interface/solution';
+import { Color } from 'src/app/interface/color';
 
 @Component({
   selector: 'app-resolver',
@@ -40,7 +41,7 @@ fallback =
   currentComment: Comentario | undefined;
   id!: string | null;
   //interaccionForResponse: Interaccion | undefined;
-  visibleResponse: boolean = false;
+  //visibleResponse: boolean = false;
   textAreaValue: string | undefined; 
   isVisibleModalComment = false;
   isVisibleModalChat = false;
@@ -100,7 +101,9 @@ fallback =
   eliminarRespuesta = () => {
     let last = this.searchLastInteraccion();
     if(last && last.id && last.rol === 'EDITOR') {
-      this.currentComment?.interacciones.pop();  
+      this.currentComment?.interacciones.pop();
+      if(this.currentComment) this.currentComment.respondido = false;
+        
     if(this.currentFile) {
       this.currentFile = {
         ...this.currentFile, comentarios: this.currentFile?.comentarios.map((comentario: Comentario) => {
@@ -141,7 +144,7 @@ fallback =
           };
           this.currentComment = this.currentFile?.comentarios.find((comentario: Comentario) => comentario.id === this.currentComment?.id)
           this.textAreaValue = undefined; // rep
-          this.visibleResponse = false; // rep
+          //this.visibleResponse = false; // rep
           this.msg.success('Se elimino la respuesta correctamente!');
       }),
       () => {
@@ -150,7 +153,7 @@ fallback =
     }
     else {
       this.textAreaValue = undefined; // rep
-      this.visibleResponse = false; // rep
+      //this.visibleResponse = false; // rep
     }
   };
 
@@ -172,6 +175,10 @@ fallback =
         rol: 'EDITOR',
         key: this.currentComment.interacciones.length // revisar esto
       };
+
+      this.currentComment = {
+        ...this.currentComment, respondido: true
+      }
 
       this.currentComment.interacciones = [
         ...this.currentComment.interacciones,
@@ -236,7 +243,7 @@ fallback =
     */
     //this.interaccionForResponse = undefined;
     this.textAreaValue = undefined;
-    this.visibleResponse = false;
+    //this.visibleResponse = false;
     this.isVisibleModalChat = false;
   };
 
@@ -259,7 +266,7 @@ fallback =
   responderInteraccion = (event: Event, interaccion: Interaccion) => {
     event.preventDefault;
     //this.interaccionForResponse = interaccion;
-    this.visibleResponse = true;
+    //this.visibleResponse = true;
     //this.isVisibleModalResponse = true;
     // Si esta al reves deberiamos verificar al principio  
   };
@@ -307,11 +314,19 @@ fallback =
         file: newFileDB 
       };
       // No setear el current Solution mandar una copia o algo asi
-      this.currentPedido = {
-        ...this.currentPedido, solutions : this.currentPedido && this.currentPedido.solutions ? 
-                                            [...this.currentPedido?.solutions, newSolution ] : [ newSolution ]
-      };
-
+      if(this.currentPedido && this.currentPedido.files && this.currentPedido.files.length > 0) {
+        this.currentPedido = {
+          ...this.currentPedido, solutions : this.currentPedido && this.currentPedido.solutions ? 
+          [...this.currentPedido?.solutions.filter((sol: Solution) => sol.idFileToSolution !== newSolution.idFileToSolution), newSolution ] 
+          : [ newSolution ]
+          };
+      }
+      else {
+        this.currentPedido = {
+          ...this.currentPedido, solutions : [ newSolution ]
+          };
+      }
+      
       this.service.update(this.currentPedido).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe(async (e: any) => { // revisar el any
@@ -369,16 +384,73 @@ fallback =
     }
   };
 
+  resolverFilesStyle = (pedido: Pedido) => {
+    if(pedido.files && pedido.files.length > 1) {
+      return "margin-left:10rem;"
+    }
+    else {
+      return "margin-left:3rem;"
+    }
+  };
+  
+
+  cardStyle = (file: FileDB) => {
+    if(this.currentFile?.id === file.id) {
+      return {
+        'border-color': 'rgb(179, 172, 172)',
+        'border-width': '2px',
+        'border-style': 'dashed'
+      }
+    }
+    else {
+      return ''
+    }
+  };
+
+  itemListStyle = (interaccion: Interaccion) => {
+    let last: Interaccion | undefined = this.searchLastInteraccion();
+      let ret :boolean = false
+      if(last) {
+        if(interaccion.key) {
+          ret = interaccion.key === last.key
+        }
+        else {
+          ret = interaccion.id === last.id
+        }
+      }
+      if(ret && interaccion.rol === 'EDITOR') {
+        return {
+          //'background-color':'#87d068'
+          'border-color': 'rgb(247, 251, 31)',
+          'border-width': '2px',
+          'border-style': 'dashed'
+        } 
+      }
+      else {
+        return ''
+      } 
+  };
+
   getPedido(): void {
     this.service.getPedido(this.id)
     .subscribe((pedido) => { // revisar el any
         this.currentPedido = pedido;
+        if(pedido.files === undefined || pedido.files.length === 0) {
+          let file : FileDB | undefined = pedido.solutions ? pedido.solutions[0].file : undefined
+          if(file) this.currentSolution = {...file, url: this.generateUrl(file) }
+        };
         this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
           return {
             ...file, url: this.generateUrl(file)  //this.blodToUrl(file) -> Mejorar este metodo, por ahora lo dejo asi
           }
         });
     })
+  };
+
+  pedidoColores = () :Color[]  => {
+    if(this.currentPedido && this.currentPedido.colores) return this.currentPedido.colores
+    if(this.currentPedido && this.currentPedido.tipo && this.currentPedido.tipo.colores) return this.currentPedido.tipo.colores
+    else return [] 
   };
 
   generateUrl = (file: FileDB) :string => {
@@ -391,14 +463,49 @@ fallback =
     this.isVisibleModalComment = true;
   };
 
+  onClickDeleteSolution = (event: MouseEvent) => {
+    event.preventDefault;
+    let cp : Pedido | undefined = JSON.parse(JSON.stringify(this.currentPedido))
+    if(this.currentFile) {
+      cp = {
+        ...cp, solutions : cp?.solutions?.filter((solution: Solution) => solution.idFileToSolution !== this.currentFile?.id) 
+      }
+    }
+    else {
+      cp = {
+        ...cp, solutions : [] 
+      }
+    }
+    
+    this.service.update(cp).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe(async (e: any) => {
+            let pedido = (e.body as Pedido)
+            this.currentPedido = pedido;
+            this.currentPedido = {
+              ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+                return {
+                  ...file, url: this.generateUrl(file)
+                }
+              }) 
+            };
+            this.msg.success(`Solución ${this.currentSolution?.name} eliminada correctamente!.`);
+            this.showFallback = true;
+            this.currentSolution = undefined        
+        }),
+        () => {
+            this.msg.error(`Hubo un error al intentar eliminar la solución ${this.currentSolution?.name}.`);
+        }
+  };
+
   onClickAddSolution = (event: MouseEvent, item: FileDB) => {
     //this.showFallback = false;
     event.preventDefault;
     this.currentFile = item
-    console.log("Current File: ", item)
-    console.log("Solutions: ", this.currentPedido?.solutions)
+    //console.log("Current File: ", item)
+    //console.log("Solutions: ", this.currentPedido?.solutions)
     this.currentSolution = this.currentPedido?.solutions?.find((solution: Solution) => solution.idFileToSolution === item.id)?.file
-    console.log("Current Solution: ", this.currentSolution)
+    //console.log("Current Solution: ", this.currentSolution)
     
     if(!this.currentSolution) {
       this.showFallback = true
@@ -408,13 +515,6 @@ fallback =
         ...this.currentSolution, url: this.generateUrl(this.currentSolution)
       }
     }
-    //console.log("Me ejecute onClickSolution!!")
-  };
-
-  beforeUpload = (file: NzUploadFile): boolean => {
-    console.log("Me ejecute beforeUpload!!")
-    //this.fileList = this.fileList.concat(file);
-    return false;
   };
 
   onClickChat = (event: MouseEvent, comentario: Comentario) => {
