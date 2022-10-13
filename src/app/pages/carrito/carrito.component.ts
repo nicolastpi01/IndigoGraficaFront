@@ -16,6 +16,7 @@ import { ThisReceiver } from '@angular/compiler';
 import { HttpResponse } from '@angular/common/http';
 import { filter } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
 
 @Component({
   selector: 'app-carrito',
@@ -68,7 +69,7 @@ export class CarritoComponent implements OnInit {
   } = badgeColorStyle;
   
   constructor(private _router: Router, private service: PedidoService, 
-    private fb: FormBuilder, private modal: NzModalService, private msg: NzMessageService) { }
+    private fb: FormBuilder, private modal: NzModalService, private msg: NzMessageService, private tokenService: TokenStorageService) { }
 
   ngOnInit(): void {
     this.tabs = [
@@ -88,7 +89,8 @@ export class CarritoComponent implements OnInit {
 
   getPedidos(): void {
     this.loading = true
-    this.service.getPedidos('Pendiente atencion')
+    let token :string = this.tokenService.getToken()
+    this.service.getPedidosPorUsuario(token)
     .subscribe(pedidos => {
        this.pedidos = pedidos.map((pedido: Pedido) => {
         return {
@@ -481,6 +483,7 @@ export class CarritoComponent implements OnInit {
     this.isVisibleModalMoreInfo = true   
   }
 
+  /*
   showDeleteConfirm(pedido: any): void {
 
     this.modal.confirm({
@@ -494,6 +497,7 @@ export class CarritoComponent implements OnInit {
       nzOnCancel: () => console.log('Cancel')
     });
   }
+  */
 
   onOkDeleteConfirm = (pedido: Pedido) => {
       this.service.eliminar(pedido.id).

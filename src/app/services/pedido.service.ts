@@ -4,6 +4,10 @@ import { Observable } from 'rxjs/internal/Observable';
 import { Pedido } from '../interface/pedido';
 import { Reservado } from '../objects/reservado';
 
+const httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,7 +15,9 @@ export class PedidoService {
   
 
   private baseUrl = 'http://localhost:8080'
-  private api = "/pedidos"
+  private api = "/pedidos";
+
+  
 
   @Output() change: EventEmitter<boolean> = new EventEmitter();
   isOpen = false;
@@ -72,8 +78,9 @@ export class PedidoService {
     return this.http.get<Pedido>(`${this.baseUrl}`+`${this.api}/${id}`);
   }
 
-  getPedidosPorUsuario() : Observable<Pedido[]> {
-    return this.http.get<Pedido[]>(`${this.baseUrl}/pedidos/porUsuario`) 
+  getPedidosPorUsuario(token: string) : Observable<Pedido[]> {
+    httpOptions.headers.append('Authorization', `Bearer ${token}`);
+    return this.http.get<Pedido[]>(`${this.baseUrl}/pedidos/porUsuario`, httpOptions) 
   };
 
   reservar(pedido: Pedido) : Observable<any> {

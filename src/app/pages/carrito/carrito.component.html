@@ -21,10 +21,10 @@
                         <ng-template [ngIf]="tab.name === 'Info' " [ngIfElse]="files">
                           <nz-card nzBorderless="true" [nzActions]="[actions]">                
                               <ng-template #actions>
-                                <div nz-row nzJustify="center" [nzGutter]="[{ xs: 24, sm: 32, md: 48, lg: 64 }, 8]">
+                                <div nz-row  [nzGutter]="[{ xs: 24, sm: 32, md: 48, lg: 64 }, 8]">
                                   <div nz-col>
-                                    <button class="buttonActions" nzType="default" (click)="showDeleteConfirm(pedido)" nz-button>
-                                      Eliminar
+                                    <button class="buttonActions" nzType="default" (click)="onClickMoreInfo($event, pedido)" nz-button>
+                                      Más Info
                                     </button>    
                                   </div>
                                   <div nz-col>
@@ -101,10 +101,10 @@
                                     <p>-</p>
                                   </ng-template>
                                 </div>
-                                <div nz-col>
+                                <!--div nz-col>
                                   <p class="subTitle">Mas Info :</p>
                                   <icon nz-icon nzType="plus" (click)="onClickMoreInfo($event, pedido)" style="margin-left: 18px; cursor:pointer" nzTheme="outline"></icon>
-                                </div>
+                                </div-->
                             </div>
                           </nz-card>
                         </ng-template>
