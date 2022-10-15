@@ -29,6 +29,8 @@ export class AppComponent {
 
   @HostBinding('class.is-open')
   isOpen = false;
+
+  resume: {[key: string]: number} | undefined;
   
   constructor(private service: PedidoService, private _router: Router,private tokenStorageService: TokenStorageService) {}
 
@@ -41,6 +43,7 @@ export class AppComponent {
       this.mostrarOpcionesCliente = this.roles.includes('ROLE_USER');
       this.mostrarOpcionesEncargado = this.roles.includes('ROLE_ENCARGADO');
 
+      this.findResume();
       this.username = user.username;
     }
     this.buscarTodos()
@@ -64,6 +67,21 @@ export class AppComponent {
         return DANGER;
       }
     }
+  };
+
+  amountToShowInCart = () :number => {
+    let amount: number = 0;
+    if(this.resume) {
+      amount += this.resume[PENDIENTEATENCION]
+      amount += this.resume['reservado']
+    }
+    return amount;
+  };
+  
+  findResume = () :void => {
+    let token :string = this.tokenStorageService.getToken()
+    this.service.getResume(token)
+    .subscribe(resume => this.resume = resume);
   };
 
   buscarTodos = () :void => {
@@ -99,7 +117,7 @@ export class AppComponent {
     .subscribe(pedidos => this.cantidadRetornados = pedidos.length);
   }
   
-  onClickCarrito = () => {
+  onClickCart = () => {
     this._router.navigateByUrl('/carrito')
   }
 

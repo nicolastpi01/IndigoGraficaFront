@@ -298,9 +298,10 @@ export class NuevoComponent implements OnInit {
         name: file.response.name,
         type: file.response.type,
         data: file.response.data,
-        requerimientos: file.response.requerimientos,
+        comentarios: file.response.comentarios,
+        //requerimientos: file.response.requerimientos,
         url: file.url || file['preview'],
-        comentarios : []
+        //comentarios : []
       }
 
       let currentPedidoCopy = JSON.parse(JSON.stringify(this.currentPedido))

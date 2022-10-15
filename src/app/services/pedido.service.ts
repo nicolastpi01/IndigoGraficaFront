@@ -41,6 +41,7 @@ export class PedidoService {
   
   constructor(private http: HttpClient) { }
 
+  /*
   upload(formData: FormData): Observable<HttpEvent<FormData>> {
     const req = new HttpRequest('POST', `${this.baseUrl}/pedidos`, formData, {
       reportProgress: true,
@@ -48,6 +49,7 @@ export class PedidoService {
     });
     return this.http.request(req);
   }
+  */
 
   eliminar(id: string | undefined) : Observable<HttpEvent<any>> {
     const req = new HttpRequest('DELETE', `${this.baseUrl}`+`${this.api}/${id}`)
@@ -81,6 +83,11 @@ export class PedidoService {
   getPedidosPorUsuario(token: string) : Observable<Pedido[]> {
     httpOptions.headers.append('Authorization', `Bearer ${token}`);
     return this.http.get<Pedido[]>(`${this.baseUrl}/pedidos/porUsuario`, httpOptions) 
+  };
+
+  getResume(token: string) : Observable<any> {
+    httpOptions.headers.append('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${this.baseUrl}/pedidos/resumen`, httpOptions) 
   };
 
   reservar(pedido: Pedido) : Observable<any> {

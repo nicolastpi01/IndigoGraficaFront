@@ -69,12 +69,13 @@
              nzTheme="outline">
           </i>
         </span>
-        <span (click)="onClickCarrito()" *ngIf="isLoggedIn">
-          <i  class="cart-normal"
-              nz-icon
-              nzType="shopping-cart" 
-              nzTheme="outline"
-          ></i>
+        <span (click)="onClickCart()" *ngIf="isLoggedIn">
+          <i 
+            class="cart-normal"
+            nz-icon
+            nzType="shopping-cart" 
+            nzTheme="outline"
+          >{{ amountToShowInCart() }}</i>
         </span> 
         <!--span>
           <strong style="font-size: medium; float: right;"><i
