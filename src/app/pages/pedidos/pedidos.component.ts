@@ -147,6 +147,7 @@ export class PedidosComponent implements OnInit {
     this.service.reservar(pedido)
     .subscribe((_) => {
        this.msg.success('Reservado exitosamente!');
+       this.service.toggle()
        this.getPedidos()
        this.loadingAccion = false
        setTimeout(() => {

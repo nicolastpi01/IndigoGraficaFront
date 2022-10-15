@@ -2,7 +2,7 @@ import { Component, HostBinding } from '@angular/core';
 import { Router } from '@angular/router';
 import { PedidoService } from './services/pedido.service';
 import { TokenStorageService } from './services/token-storage.service';
-import { CLEAR, DANGER, FINALIZADOS, PENDIENTEATENCION, RESERVADO, RETORNADOS, REVISION, WARNING } from './utils/const/constantes';
+import { CLEAR, DANGER, FINALIZADOS, NONE, PENDIENTEATENCION, RESERVADO, RETORNADOS, REVISION, WARNING } from './utils/const/constantes';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +22,8 @@ export class AppComponent {
   private roles: string[] = [];
   username: string = '';
   title = 'indigo'
+  pendienteAtencion = PENDIENTEATENCION;
+  reservado = RESERVADO;
 
   isVisible = false;
   isVisibleLogin = false;
@@ -43,30 +45,49 @@ export class AppComponent {
       this.mostrarOpcionesCliente = this.roles.includes('ROLE_USER');
       this.mostrarOpcionesEncargado = this.roles.includes('ROLE_ENCARGADO');
 
+      console.log("EJECUTE ON INIT")
       this.findResume();
       this.username = user.username;
+      this.service.change.subscribe((isOpen: any) => {
+        //this.isOpen = isOpen;
+        console.log("IS OPEN :", isOpen)
+        this.findResume();
+      });
     }
-    this.buscarTodos()
-    this.service.change.subscribe((isOpen: any) => {
-      this.isOpen = isOpen;
-      this.buscarTodos()
-    });
+    //this.buscarTodos()
+    
     this.title = 'indigo';
   }
 
-  determiteBadgeColor = () :string =>  {
-    let cantidad = this.cantidadPendienteAtencion;
-    if(cantidad <= 50) {
-      return CLEAR;
-    }
-    else {
-      if(cantidad <= 99) {
-        return WARNING;
+  determiteBadgeColor = (state?: string) :string =>  {
+    let cantidad = 0;
+    if(state && this.resume) {
+      cantidad += this.resume[state]
+    } 
+      if(cantidad === 0) {
+        return NONE
       }
       else {
-        return DANGER;
+        if(cantidad <= 50) {
+          return CLEAR;
+        }
+        else {
+          if(cantidad <= 99) {
+            return WARNING;
+          }
+          else {
+            return DANGER;
+          }
+        }
       }
+  };
+
+  amountByState = (state: string) :number => {
+    let amount: number = 0;
+    if(this.resume) {
+      amount += this.resume[state]
     }
+    return amount;
   };
 
   amountToShowInCart = () :number => {

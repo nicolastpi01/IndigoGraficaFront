@@ -2,11 +2,12 @@ import { Usuario } from "src/app/interface/usuario";
 
 
 export const PENDIENTEATENCION = "Pendiente atencion"
-export const RESERVADO = "Reservado"
+export const RESERVADO = "reservado"
 export const FINALIZADOS ="Finalizados"
 export const REVISION = "Revision"
 export const RETORNADOS = "Retornado"
 
+export const NONE: string = "#e9f7e2";
 export const CLEAR :string = "#52C41A";
 export const WARNING :string = "#FFFF00";
 export const DANGER :string = "#FF0000";
