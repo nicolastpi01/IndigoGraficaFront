@@ -464,7 +464,8 @@ export class CarritoComponent implements OnInit {
   }
 
   onClickEdit(pedido: Pedido) : void {
-    this._router.navigateByUrl('/pedidos/editar' + `/${pedido.id}`)
+    this._router.navigateByUrl('/editar' + `/${pedido.id}`)
+    //this._router.navigateByUrl('/pedidos/editar' + `/${pedido.id}`)
   };
 
   handleOkMoreInfo() : void {
@@ -528,7 +529,7 @@ export class CarritoComponent implements OnInit {
   */
 
   onClickAccion (pedido: Pedido): void {
-    this._router.navigateByUrl('/nuevo' + `/${pedido.id}`)
+    //this._router.navigateByUrl('/nuevo' + `/${pedido.id}`)
   }
 
   /*

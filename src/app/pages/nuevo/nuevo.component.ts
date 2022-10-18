@@ -163,7 +163,7 @@ export class NuevoComponent implements OnInit {
           remember: true
         })
       })
-      debugger
+      //debugger
       let nuevoMenu = document.getElementById("nuevo-menu")
       nuevoMenu!.classList.remove('ant-menu-item-selected')
     }else{
@@ -171,8 +171,6 @@ export class NuevoComponent implements OnInit {
       this.pedidoId = undefined
     }
   }
-
-  
 
   findColores() :void {
     this.colorService.getAllColores()
