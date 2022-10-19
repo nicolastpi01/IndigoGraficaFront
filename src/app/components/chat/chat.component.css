@@ -1,0 +1,12 @@
+
+
+.virtualScroll {
+    height: 35vw;
+    width: 18vw;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+}
+
+.list :hover {
+    background: #d8dadb;
+}

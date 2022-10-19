@@ -1,7 +1,6 @@
-
 import { NgModule } from "@angular/core";
-import { CarritoRoutingModule } from "./carrito-routing.module";
-import { CarritoComponent } from "./carrito.component";
+import { ChatRoutingModule } from "./chat-routing.module";
+import { ChatComponent } from "./chat.component";
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzTagModule } from "ng-zorro-antd/tag";
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
@@ -26,12 +25,9 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NzCommentModule } from 'ng-zorro-antd/comment';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
-import { ChatComponent } from "src/app/components/chat/chat.component";
-import { ChatModule } from "src/app/components/chat/chat.module";
 
 @NgModule({
     imports: [
-      CarritoRoutingModule,
       NzDescriptionsModule,
       NzTagModule,
       NzBadgeModule,
@@ -55,11 +51,10 @@ import { ChatModule } from "src/app/components/chat/chat.module";
       ScrollingModule,
       NzCommentModule,
       NzAvatarModule,
-      NzTabsModule,
-      ChatModule
+      NzTabsModule
              
     ],
-    declarations: [CarritoComponent],
-    exports: [CarritoComponent]
+    declarations: [ChatComponent],
+    exports: [ChatComponent]
   })
-  export class CarritoModule { }
+  export class ChatModule { }

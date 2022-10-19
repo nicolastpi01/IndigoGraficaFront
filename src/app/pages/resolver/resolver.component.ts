@@ -50,6 +50,7 @@ export class ResolverComponent implements OnInit {
   textAreaValue: string | undefined; 
   isVisibleModalComment = false;
   isVisibleModalChat = false;
+  isVisibleModalPedidoChat = false;
   
   panels: Array<{active: boolean, name: string, disabled: boolean}> = [];
   tabs: Array<{ name: string, icon: string, title: string }> = [];
@@ -234,6 +235,11 @@ export class ResolverComponent implements OnInit {
             this.msg.error('No se pudo agregar la respuesta, vuelva a intentarlo en unos segundos');
         }
     }; 
+  };
+
+  onClickPedidoChat = (event: MouseEvent) => {
+    event.preventDefault;
+    this.isVisibleModalPedidoChat = true;
   };
 
   

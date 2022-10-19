@@ -47,6 +47,16 @@
     
   }
 
+  .counter {
+    font-weight: bold; 
+    font-family: 'Abril Fatface', serif;
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer; 
+    justify-content: flex-end; 
+    float: right
+  }
+
   .user {
     height: 90px;
     /*width: 90px;*/

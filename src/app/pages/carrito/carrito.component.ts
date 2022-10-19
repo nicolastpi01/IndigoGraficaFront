@@ -431,15 +431,17 @@ export class CarritoComponent implements OnInit {
     return this.currentPedido && this.currentPedido.files && this.currentPedido.files.length > 0
   };
 
-  handleCancelChat() : void {
-    this.userCommentValue = ''
-    this.isVisibleModalChat = false;
+  handleCloseChat(visible: boolean) : void {
+    //this.userCommentValue = ''
+    this.isVisibleModalChat = visible;
   }
 
+  /*
   handleOkChat(): void {
     this.userCommentValue = ''
     this.isVisibleModalChat = false;
   }
+  */
 
   handleCancelFilesChat() : void {
     this.userCommentValue = ''

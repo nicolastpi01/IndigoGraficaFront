@@ -325,38 +325,13 @@
                        [nzTitle]="file.name"
                         nzDescription=""
                       ></nz-card-meta>
-                      <!--nz-card-meta
-                       [nzTitle]="file.name"
-                        nzDescription=""
-                        [nzAvatar]="avatarTemplate"
-                      ></nz-card-meta>
-                        <ng-template #avatarTemplate>
-                        </ng-template-->
                         <ng-template #coverTemplate>
                           <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '160px', height: '140px', cursor: 'pointer' }">
                         </ng-template>
-                        <!--ng-template #actionAddComment>
-                          <i nz-icon nzType="comment" (click)="onClickComment($event, file)" nzTheme="outline"></i>
-                        </ng-template-->
                         <ng-template #actionAddSolution>
-                          <!--nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload"-->
                             <button nzType="default" nz-button (click)="onClickAddSolution($event, file)">
                               Solución
-                              <!--span nz-icon  nzType="upload" (click)="onClickAddSolution($event, file)" nzTheme="outline"></span-->
                             </button>
-                          <!--/nz-upload-->
-                          <!--nz-upload
-                            [nzAction]="handleAction"
-                            nzListType="picture-card"
-                            [(nzFileList)]="fileList"
-                            [nzShowButton]="fileList.length < 8"
-                            [nzPreview]="handlePreview"
-                            (nzChange)="handleChange($event)"
-                            *ngIf="currentPedido"
-                          >
-                            <div><i nz-icon nzType="upload" nzTheme="outline"></i></div>
-                          </nz-upload-->
-                          <!--i nz-icon nzType="upload" (click)="onClickAddSolution($event, file)" nzTheme="outline"></i-->
                         </ng-template>
                     </nz-card>
                   </nz-list-item>
@@ -423,7 +398,7 @@
     <button nz-button nzType="default" style="width: 120px;">Salir<i nz-icon nzType="home" nzTheme="outline"></i></button>
   </div>
   <div nz-col>
-    <button nz-button nzType="primary" style="width: 120px;">Chat<i nz-icon nzType="message" nzTheme="outline"></i></button>
+    <button nz-button nzType="primary" style="width: 120px;" (click)="onClickPedidoChat($event)">Chat<i nz-icon nzType="message" nzTheme="outline"></i></button>
   </div>
 </div>
 

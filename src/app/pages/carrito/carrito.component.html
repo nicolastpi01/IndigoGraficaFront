@@ -342,7 +342,12 @@
                       </div>      
                     </ng-container>
                   </nz-modal>
-                  <nz-modal
+                  <app-chat 
+                    [currentPedido]="currentPedido" 
+                    [visible]="isVisibleModalChat" 
+                    (onClose)="handleCloseChat($event)">
+                  </app-chat>
+                  <!--nz-modal
                     [(nzVisible)]="isVisibleModalChat"
                     [nzBodyStyle]="{ minHeight: '600px' }"
                     nzWidth="50%"
@@ -354,7 +359,6 @@
                     (nzOnOk)="handleOkChat()"
                   >
                     <ng-container *nzModalContent>
-                      <!--ng-template #WithoutFiles-->
                         <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
                           <div nz-col>
                             <p style="text-align: center;"><b>Comentarios</b></p> 
@@ -415,7 +419,7 @@
                           </div>
                         </div>                            
                     </ng-container>
-                  </nz-modal>
+                  </nz-modal-->
                   <nz-modal
                     [(nzVisible)]="isVisibleModalFilesChat"
                     [nzBodyStyle]="{ minHeight: '600px' }"
