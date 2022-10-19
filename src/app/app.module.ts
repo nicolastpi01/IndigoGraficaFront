@@ -20,6 +20,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { LoginModule } from './pages/login/login.module';
 import { RegistrarModule } from './pages/registrar/registrar.module';
 import { RouterModule } from '@angular/router';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 
 registerLocaleData(es);
@@ -42,6 +43,7 @@ registerLocaleData(es);
     RegistrarModule,
     AppRoutingModule,
     RouterModule,
+    NzButtonModule,
 
 // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
 // and returns simulated server responses.

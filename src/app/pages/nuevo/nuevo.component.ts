@@ -47,7 +47,6 @@ export class NuevoComponent implements OnInit {
   esEdicion = false
   pedidoId?: string
 
-
   isLoggedIn = false;
   currentUser: any;
 
@@ -130,13 +129,22 @@ export class NuevoComponent implements OnInit {
       observer.complete();
   });
 
+  generateUrl = (file: FileDB) : string=> {
+    return 'data:' + file.type + ';base64,' + file.data
+  };
+
   loadPedidoIfExist(): void {
     this.pedidoId = this.route.snapshot.paramMap.get('id')||undefined
-
+    
     if(this.pedidoId){
       this.esEdicion = true
       this.service.getPedido(this.pedidoId).subscribe(pedido => {
         this.currentPedido = pedido
+        this.files = this.currentPedido.files?.map((file: FileDB) => {
+          return {
+            ...file, url: this.generateUrl(file)  
+          }
+        });
         this.panels[1].disabled = false
         const date = pedido.fechaEntrega as string
         const newDate = new Date(date)
@@ -144,7 +152,7 @@ export class NuevoComponent implements OnInit {
         this.validateForm.setValue({
           titulo: pedido.nombre,
           subtitulo: pedido.nombreExtendido,
-          cantidad: 1, // La cantidad por defecto es uno, y si no esta definido se pone uno en el Pedido
+          cantidad: 1,
           alto:  50,
           ancho: 50,
           datePicker: newDate,
@@ -155,6 +163,8 @@ export class NuevoComponent implements OnInit {
           remember: true
         })
       })
+      let nuevoMenu = document.getElementById("nuevo-menu")
+      nuevoMenu!.classList.remove('ant-menu-item-selected')
     }else{
       this.esEdicion = false
       this.pedidoId = undefined
