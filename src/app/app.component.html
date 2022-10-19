@@ -49,42 +49,35 @@
             ></i>
         </span>
         <!-- login -->
-        <span (click)="showModalLogin()" *ngIf="!isLoggedIn">
-          <i class="cart-normal" 
-             nz-icon nzType="login" 
-             nzTheme="outline">
-          </i>
-        </span>
+        <button class="button-normal" (click)="showModalLogin()" *ngIf="!isLoggedIn" nz-button nzType="default">Ingresar</button>
         <!-- logout -->
-        <span (click)="logout()" *ngIf="isLoggedIn">
-          <i class="cart-normal" 
-             nz-icon nzType="logout" 
-             nzTheme="outline">
-          </i>
-        </span>
+        <button class="button-normal" (click)="logout()" *ngIf="isLoggedIn" nz-button nzType="default">Cerrar sesión</button>
+        <button *ngIf="isLoggedIn" nz-button nzType="default">{{username}}</button>
         <!-- signon -->
-        <span (click)="showModalRegistrar()" *ngIf="!isLoggedIn">
+        <!--span (click)="showModalRegistrar()" *ngIf="!isLoggedIn">
           <i class="cart-normal" 
              nz-icon nzType="user-add" 
              nzTheme="outline">
           </i>
-        </span>
+        </span-->
+        <button class="button-normal" (click)="showModalRegistrar()" *ngIf="!isLoggedIn" nz-button nzType="primary">Creá tu cuenta</button>
         <span (click)="onClickCart()" *ngIf="isLoggedIn">
           <i 
             class="cart-normal"
             nz-icon
             nzType="shopping-cart" 
             nzTheme="outline"
-          >{{ amountToShowInCart() }}</i>
-        </span> 
-        <!--span>
-          <strong style="font-size: medium; float: right;"><i
-            class="user" 
-            nz-icon 
-            nzType="user" 
-            nzTheme="outline">
-          </i>Nicolás García</strong>   
-        </span-->
+          >{{ amountToShowInCart() }}</i></span>
+        
+        
+        <!--span (click)="onClickCarrito()" *ngIf="isLoggedIn">
+          <i  class="cart-normal"
+              nz-icon
+              nzType="shopping-cart" 
+              nzTheme="outline"
+          ></i-->
+         
+        
       </div>
     </nz-header>
     <nz-content>

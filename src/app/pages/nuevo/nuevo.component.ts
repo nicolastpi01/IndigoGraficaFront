@@ -163,7 +163,6 @@ export class NuevoComponent implements OnInit {
           remember: true
         })
       })
-      //debugger
       let nuevoMenu = document.getElementById("nuevo-menu")
       nuevoMenu!.classList.remove('ant-menu-item-selected')
     }else{
