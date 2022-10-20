@@ -353,7 +353,6 @@ export class CarritoComponent implements OnInit {
   };
 
   handleClickAceptar = (userComment: string) => {   
-     
     //if(this.currentPedido && this.currentPedido.interacciones && this.userCommentValue !== '') {
     if(this.currentPedido && this.currentPedido.interacciones && userComment !== '') {
       console.log("Me ejecute!!")
@@ -398,6 +397,7 @@ export class CarritoComponent implements OnInit {
                   return pedido
                 }
               });
+              //this.userCommentValue = userComment; 
               this.msg.success('Se agrego el comentario correctamente!');
           }),
           () => {

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from "@angular/core";
 import { formatDistance } from 'date-fns';
-import { Interaccion } from "src/app/interface/comentario";
+import { Comentario, Interaccion } from "src/app/interface/comentario";
+import { FileDB } from "src/app/interface/fileDB";
 import { Pedido } from "src/app/interface/pedido";
 import { avatarStyle, determineIcon } from "src/app/utils/functions/functions";
 
@@ -15,7 +16,7 @@ import { avatarStyle, determineIcon } from "src/app/utils/functions/functions";
     userCommentValue: string = '';
     determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
     avatarStyle: (interaccion: Interaccion) => { 'background-color': string; } = avatarStyle;
-    @Input() currentPedido: Pedido | undefined;
+    @Input() elem: Pedido | Comentario | undefined; // | FileDB 
     @Input('visible') isVisibleModalChat: boolean = false;
     @Output() onClose = new EventEmitter<boolean>();
     @Output() onAccept = new EventEmitter<string>();
@@ -46,7 +47,7 @@ import { avatarStyle, determineIcon } from "src/app/utils/functions/functions";
       this.userCommentValue = value;
     }
 
-    itemListStyle = (interaccion: Interaccion, item: any) => {
+    itemListStyle = (interaccion: Interaccion, item: Pedido | Comentario) => {
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(item.interacciones)) 
       let last: Interaccion | undefined = InteraccionesCP.pop()
       let ret :boolean = false
@@ -70,19 +71,19 @@ import { avatarStyle, determineIcon } from "src/app/utils/functions/functions";
       }
     }
 
-    isEditing = (algoConInteracciones: any) :boolean => {
-      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(algoConInteracciones?.interacciones)) 
+    isEditing = (elem: Pedido | Comentario | undefined) :boolean => {
+      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(elem?.interacciones)) 
         let last: Interaccion | undefined = InteraccionesCP.pop()
-      return algoConInteracciones !== undefined && algoConInteracciones.interacciones !== undefined 
+      return elem !== undefined && elem.interacciones !== undefined 
       && last !== undefined && last.rol === 'USUARIO'
     }
 
     // desabilito el botón de eliminar si no hay interacciones, o bien si la última interacción es del Editor
-    disabledInteractionDeletedButton = (algoConInteracciones: any) => {
-      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(algoConInteracciones?.interacciones)) 
+    disabledInteractionDeletedButton = (elem: Pedido | Comentario | undefined) => {
+      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(elem?.interacciones)) 
       let last: Interaccion | undefined = InteraccionesCP.pop() 
-      return (algoConInteracciones && algoConInteracciones.interacciones && algoConInteracciones.interacciones.length === 0) // No hay interacciones
-      || (algoConInteracciones && algoConInteracciones.interacciones && last && last.rol === 'EDITOR') // o bién, la última interacción es del editor  
+      return (elem && elem.interacciones && elem.interacciones.length === 0) // No hay interacciones
+      || (elem && elem.interacciones && last && last.rol === 'EDITOR') // o bién, la última interacción es del editor  
     }
 
     handleClickEliminarComment = () => {

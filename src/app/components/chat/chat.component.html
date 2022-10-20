@@ -10,14 +10,13 @@
     (nzOnOk)="handleOkChat()"
 >
 <ng-container *nzModalContent>
-  <!--ng-template #WithoutFiles-->
     <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
       <div nz-col>
         <p style="text-align: center;"><b>Comentarios</b></p> 
         <cdk-virtual-scroll-viewport itemSize="4" class="virtualScroll">
-        <nz-list class="list" *ngIf="currentPedido && currentPedido.interacciones">
-          <nz-list-empty [nzNoResult]="showNoResult()" *ngIf="currentPedido.interacciones.length == 0"></nz-list-empty>
-          <nz-list-item [style]="itemListStyle(interaccion, currentPedido)" *cdkVirtualFor="let interaccion of currentPedido.interacciones">
+        <nz-list class="list" *ngIf="elem && elem.interacciones">
+          <nz-list-empty [nzNoResult]="showNoResult()" *ngIf="elem.interacciones.length == 0"></nz-list-empty>
+          <nz-list-item [style]="itemListStyle(interaccion, elem)" *cdkVirtualFor="let interaccion of elem.interacciones">
             <nz-comment [nzAuthor]="interaccion.rol" [nzDatetime]="time">
               <nz-avatar
                 nz-comment-avatar
@@ -55,13 +54,13 @@
             </nz-form-item>
             <form nz-form [nzLayout]="'inline'">
               <nz-form-item>
-                <button nz-button [disabled]="disabledInteractionDeletedButton(currentPedido)" (click)="handleClickEliminarComment()" nzType="default">
+                <button nz-button [disabled]="disabledInteractionDeletedButton(elem)" (click)="handleClickEliminarComment()" nzType="default">
                   Eliminar
                 </button>
               </nz-form-item>
               <nz-form-item>
                 <button nz-button (click)="handleClickAceptar()" nzType="default">
-                  {{ isEditing(currentPedido) ? 'Editar' : 'Enviar' }}
+                  {{ isEditing(elem) ? 'Editar' : 'Enviar' }}
                 </button>
               </nz-form-item>
             </form>
