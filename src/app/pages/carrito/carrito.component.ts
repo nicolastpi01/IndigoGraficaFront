@@ -158,7 +158,7 @@ export class CarritoComponent implements OnInit {
           .subscribe(async (e: any) => {
               let pedido = (e.body as Pedido)
               this.currentPedido = pedido;
-              this.userCommentValue = ''    
+              this.userCommentValue = '' // Notificar al componente Chat    
               this.currentPedido = {
                 ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
                   return {
@@ -280,9 +280,9 @@ export class CarritoComponent implements OnInit {
       }
   };
 
-  handleClickSendInteractionButton = () => {
+  handleClickSendInteractionButton = (comment: string) => {
 
-    if(this.currentComment && this.currentComment.interacciones && this.userCommentValue !== '') {
+    if(this.currentComment && this.currentComment.interacciones && comment !== '') {
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentComment.interacciones)) 
       let lastInteraccion: Interaccion | undefined = InteraccionesCP.pop()
       let commentCp : Comentario = JSON.parse(JSON.stringify(this.currentComment));
@@ -294,7 +294,7 @@ export class CarritoComponent implements OnInit {
           commentCp.interacciones.pop();
         } 
         let response: Interaccion = {
-          texto: this.userCommentValue,
+          texto: comment,
           rol: 'USUARIO',
           key: commentCp.interacciones.length 
         };
@@ -445,6 +445,12 @@ export class CarritoComponent implements OnInit {
   }
   */
 
+  handleCloseFilesChat(visible: boolean) : void {
+    //this.userCommentValue = ''
+    this.isVisibleModalFilesChat = visible;
+  }
+
+  /*
   handleCancelFilesChat() : void {
     this.userCommentValue = ''
     this.isVisibleModalFilesChat = false;
@@ -454,6 +460,7 @@ export class CarritoComponent implements OnInit {
     this.userCommentValue = ''
     this.isVisibleModalFilesChat = false;
   }
+  */
 
   handleCancelMoreInfo() : void {
     this.isVisibleModalMoreInfo = false;

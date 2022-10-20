@@ -11,7 +11,6 @@ import { avatarStyle, determineIcon } from "src/app/utils/functions/functions";
     styleUrls: ['./chat.component.css']
   })
   export class ChatComponent implements OnInit {
-
     time = formatDistance(new Date(), new Date());
     userCommentValue: string = '';
     determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
@@ -20,6 +19,7 @@ import { avatarStyle, determineIcon } from "src/app/utils/functions/functions";
     @Input('visible') isVisibleModalChat: boolean = false;
     @Output() onClose = new EventEmitter<boolean>();
     @Output() onAccept = new EventEmitter<string>();
+    @Output() onDelete = new EventEmitter();
 
     ngOnInit(): void {
         //throw new Error("Method not implemented.");
@@ -87,6 +87,7 @@ import { avatarStyle, determineIcon } from "src/app/utils/functions/functions";
     }
 
     handleClickEliminarComment = () => {
+      this.onDelete.emit()
     }
 
     handleClickAceptar = () => {
