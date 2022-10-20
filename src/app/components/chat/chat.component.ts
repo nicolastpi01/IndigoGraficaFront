@@ -18,6 +18,7 @@ import { avatarStyle, determineIcon } from "src/app/utils/functions/functions";
     @Input() currentPedido: Pedido | undefined;
     @Input('visible') isVisibleModalChat: boolean = false;
     @Output() onClose = new EventEmitter<boolean>();
+    @Output() onAccept = new EventEmitter<string>();
 
     ngOnInit(): void {
         //throw new Error("Method not implemented.");
@@ -88,6 +89,7 @@ import { avatarStyle, determineIcon } from "src/app/utils/functions/functions";
     }
 
     handleClickAceptar = () => {
+      this.onAccept.emit(this.userCommentValue)
     }
     
   }

@@ -352,9 +352,11 @@ export class CarritoComponent implements OnInit {
       }  
   };
 
-  handleClickAceptar = () => {
-    
-    if(this.currentPedido && this.currentPedido.interacciones && this.userCommentValue !== '') {
+  handleClickAceptar = (userComment: string) => {   
+     
+    //if(this.currentPedido && this.currentPedido.interacciones && this.userCommentValue !== '') {
+    if(this.currentPedido && this.currentPedido.interacciones && userComment !== '') {
+      console.log("Me ejecute!!")
       // Copio las interacciones
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido.interacciones)) 
       // Obtengo el último elem. de la copia de las interacciones
@@ -368,7 +370,7 @@ export class CarritoComponent implements OnInit {
           pedidoCp.interacciones.pop(); // Modifico la copia del CurrentPedido, no el original
         }
         let response: Interaccion = {
-          texto: this.userCommentValue,
+          texto: userComment,
           rol: 'USUARIO',
           key: pedidoCp.interacciones.length
         };
