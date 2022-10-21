@@ -65,3 +65,7 @@ export const badgeColorStyle = () : { backgroundColor: string; } => {
     'backgroundColor': '#e95151'
   }
 };
+
+export const showNoResultTextChatFor = (rol: string) : string => {
+  return `No hay comentarios con el ${rol}, déjale un comentario!.`
+};

@@ -8,7 +8,7 @@ import { FileDB } from 'src/app/interface/fileDB';
 import { Pedido } from 'src/app/interface/pedido';
 import { PedidoService } from 'src/app/services/pedido.service';
 import { RESERVADO } from 'src/app/utils/const/constantes';
-import { avatarStyle, determineIcon, toLocalDateString, badgeUponImagePositionStyle, badgeColorStyle, toFullDate } from 'src/app/utils/functions/functions';
+import { avatarStyle, determineIcon, toLocalDateString, badgeUponImagePositionStyle, badgeColorStyle, toFullDate, showNoResultTextChatFor } from 'src/app/utils/functions/functions';
 import { fallback } from 'src/app/utils/const/constantes';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { formatDistance } from 'date-fns';
@@ -17,6 +17,7 @@ import { HttpResponse } from '@angular/common/http';
 import { filter } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { PerfilInfo } from 'src/app/components/chat/chat.component';
 
 @Component({
   selector: 'app-carrito',
@@ -26,7 +27,6 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 export class CarritoComponent implements OnInit {
 
   //pageIndex: number = 1;
-
   total: number = 0;
   pedidos: any[] = [];
   currentPedido: Pedido | undefined; 
@@ -38,7 +38,6 @@ export class CarritoComponent implements OnInit {
   isVisibleModalChat: boolean = false;
   isVisibleModalFilesChat: boolean = false;
   isVisibleModalFileComments: boolean = false;
-  
   /*
   indeterminate = true;
   allChecked = false;
@@ -48,7 +47,6 @@ export class CarritoComponent implements OnInit {
     { label: 'Orange', value: 'Orange', checked: false }
   ];
   */
-
   dateFormat = 'dd/MM/YYYY';
   expanded: boolean = false;
   expandedId: boolean = false;
@@ -58,6 +56,7 @@ export class CarritoComponent implements OnInit {
   time = formatDistance(new Date(), new Date());
   AccionText: String = "Editar"
 
+  ChatNoResultMessage: string = showNoResultTextChatFor('Editor'); 
   toFullDate : (date: Date | any) => string = toFullDate;
   toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString;
   determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
@@ -109,6 +108,13 @@ export class CarritoComponent implements OnInit {
     });
   }
 
+  getPerfil :PerfilInfo = {
+    title: "Charla con el Editor!",
+    label: "USUARIO",
+    icon: "user",
+    hexColor: "background-color: #87d068"
+  };
+
   onClickTab = () => {
     //console.log("Click Tab")
   };
@@ -158,7 +164,7 @@ export class CarritoComponent implements OnInit {
           .subscribe(async (e: any) => {
               let pedido = (e.body as Pedido)
               this.currentPedido = pedido;
-              this.userCommentValue = ''    
+              this.userCommentValue = '' // Notificar al componente Chat    
               this.currentPedido = {
                 ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
                   return {
@@ -280,9 +286,9 @@ export class CarritoComponent implements OnInit {
       }
   };
 
-  handleClickSendInteractionButton = () => {
+  handleClickSendInteractionButton = (comment: string) => {
 
-    if(this.currentComment && this.currentComment.interacciones && this.userCommentValue !== '') {
+    if(this.currentComment && this.currentComment.interacciones && comment !== '') {
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentComment.interacciones)) 
       let lastInteraccion: Interaccion | undefined = InteraccionesCP.pop()
       let commentCp : Comentario = JSON.parse(JSON.stringify(this.currentComment));
@@ -294,7 +300,7 @@ export class CarritoComponent implements OnInit {
           commentCp.interacciones.pop();
         } 
         let response: Interaccion = {
-          texto: this.userCommentValue,
+          texto: comment,
           rol: 'USUARIO',
           key: commentCp.interacciones.length 
         };
@@ -352,9 +358,10 @@ export class CarritoComponent implements OnInit {
       }  
   };
 
-  handleClickAceptar = () => {
-    
-    if(this.currentPedido && this.currentPedido.interacciones && this.userCommentValue !== '') {
+  handleClickAceptar = (userComment: string) => {   
+    //if(this.currentPedido && this.currentPedido.interacciones && this.userCommentValue !== '') {
+    if(this.currentPedido && this.currentPedido.interacciones && userComment !== '') {
+      console.log("Me ejecute!!")
       // Copio las interacciones
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido.interacciones)) 
       // Obtengo el último elem. de la copia de las interacciones
@@ -368,7 +375,7 @@ export class CarritoComponent implements OnInit {
           pedidoCp.interacciones.pop(); // Modifico la copia del CurrentPedido, no el original
         }
         let response: Interaccion = {
-          texto: this.userCommentValue,
+          texto: userComment,
           rol: 'USUARIO',
           key: pedidoCp.interacciones.length
         };
@@ -396,6 +403,7 @@ export class CarritoComponent implements OnInit {
                   return pedido
                 }
               });
+              //this.userCommentValue = userComment; 
               this.msg.success('Se agrego el comentario correctamente!');
           }),
           () => {
@@ -431,16 +439,24 @@ export class CarritoComponent implements OnInit {
     return this.currentPedido && this.currentPedido.files && this.currentPedido.files.length > 0
   };
 
-  handleCancelChat() : void {
-    this.userCommentValue = ''
-    this.isVisibleModalChat = false;
+  handleCloseChat(visible: boolean) : void {
+    //this.userCommentValue = ''
+    this.isVisibleModalChat = visible;
   }
 
+  /*
   handleOkChat(): void {
     this.userCommentValue = ''
     this.isVisibleModalChat = false;
   }
+  */
 
+  handleCloseFilesChat(visible: boolean) : void {
+    //this.userCommentValue = ''
+    this.isVisibleModalFilesChat = visible;
+  }
+
+  /*
   handleCancelFilesChat() : void {
     this.userCommentValue = ''
     this.isVisibleModalFilesChat = false;
@@ -450,6 +466,7 @@ export class CarritoComponent implements OnInit {
     this.userCommentValue = ''
     this.isVisibleModalFilesChat = false;
   }
+  */
 
   handleCancelMoreInfo() : void {
     this.isVisibleModalMoreInfo = false;

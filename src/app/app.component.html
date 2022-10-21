@@ -67,17 +67,16 @@
             nz-icon
             nzType="shopping-cart" 
             nzTheme="outline"
-          >{{ amountToShowInCart() }}</i></span>
-        
-        
-        <!--span (click)="onClickCarrito()" *ngIf="isLoggedIn">
-          <i  class="cart-normal"
-              nz-icon
-              nzType="shopping-cart" 
-              nzTheme="outline"
-          ></i-->
-         
-        
+          ><p class="counter">{{ amountToShowInCart() }}</p></i>
+        </span> 
+        <!--span>
+          <strong style="font-size: medium; float: right;"><i
+            class="user" 
+            nz-icon 
+            nzType="user" 
+            nzTheme="outline">
+          </i>Nicolás García</strong>   
+        </span-->
       </div>
     </nz-header>
     <nz-content>
