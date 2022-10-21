@@ -136,15 +136,15 @@
             </nz-list>
         <!--/div-->
         <nz-modal
-              [(nzVisible)]="isVisibleModalComment"
-              [nzBodyStyle]="{ minHeight: '600px' }"
-              nzWidth="100%"
-              nzTitle="Responder"
-              nzCentered
-              (nzOnCancel)="handleCancelResolver()"
-              (nzOnOk)="handleOkResolver()"
-              nzOkText="Enviar marcados"
-            >
+            [(nzVisible)]="isVisibleModalComment"
+            [nzBodyStyle]="{ minHeight: '600px' }"
+            nzWidth="100%"
+            nzTitle="Responder"
+            nzCentered
+            (nzOnCancel)="handleCancelResolver()"
+            (nzOnOk)="handleOkResolver()"
+            nzOkText="Enviar marcados"
+          >
               <ng-container *nzModalContent>
                 <p style="text-align: center;"><b>Comentarios</b></p>
                   <div nz-row nzJustify="center" [nzGutter]="[{ xs: 8, sm: 16, md: 24, lg: 32 }, 24]" >
@@ -242,7 +242,6 @@
               (nzOnOk)="handleOkModalResponse()"
               >
               <ng-container *nzModalContent>
-                <!--div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } "-->
                 <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
                   <div nz-col>
                     <p style="text-align: center;"><b>Comentarios</b></p> 
@@ -396,6 +395,7 @@
   [visible]="isVisibleModalPedidoChat" 
   (onClose)="handleClosePedidoChat($event)"
   [perfil]="getPerfil"
+  [text]="textAreaValue"
   [noResultText]="ChatNoResultMessage"
   (onAccept)="handleClickAceptar($event)"
   (onDelete)="handleClickEliminarComment()">

@@ -19,7 +19,7 @@ export interface PerfilInfo {
   })
   export class ChatComponent implements OnInit {
     time = formatDistance(new Date(), new Date());
-    userCommentValue: string = '';
+    @Input('text') userCommentValue: string | undefined;
     determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
     avatarStyle: (interaccion: Interaccion) => { 'background-color': string; } = avatarStyle;
     @Input() elem: Pedido | Comentario | undefined; // | FileDB
@@ -31,7 +31,6 @@ export interface PerfilInfo {
     @Output() onDelete = new EventEmitter();
 
     ngOnInit(): void {
-        //throw new Error("Method not implemented.");
     }
 
     handleOkChat(): void {
@@ -47,10 +46,6 @@ export interface PerfilInfo {
       this.isVisibleModalChat = false;
       this.onClose.emit(false);
     }  
-
-    showNoResult = () :string | TemplateRef<void> => {
-      return 'no hay comentarios con el Editor, dejále un comentario!'
-    }
 
     onChangeUserComment = (value: string) => {
       this.userCommentValue = value;
@@ -87,13 +82,18 @@ export interface PerfilInfo {
       && last !== undefined && last.rol === this.perfil.label
     };
 
-    // desabilito el botón de eliminar si no hay interacciones, o bien si la última interacción es del Editor
+    // desabilito el botón de eliminar si no hay interacciones, o bien si la última interacción no me pertenece
     disabledInteractionDeletedButton = (elem: Pedido | Comentario | undefined) => {
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(elem?.interacciones)) 
       let last: Interaccion | undefined = InteraccionesCP.pop() 
       return (elem && elem.interacciones && elem.interacciones.length === 0) // No hay interacciones
-      || (elem && elem.interacciones && last && last.rol === 'EDITOR') // o bién, la última interacción es del editor  
+      || (elem && elem.interacciones && last && this.perfil && last.rol === this.opposite(this.perfil.label) ) // o bién, la última interacción no me pertenece  
     }
+
+    opposite = (perfil: 'USUARIO' | 'EDITOR') : 'USUARIO' | 'EDITOR' => {
+      if(perfil === 'USUARIO') return 'EDITOR'
+      else return 'USUARIO' 
+    };
 
     handleClickEliminarComment = () => {
       this.onDelete.emit()

@@ -35,15 +35,11 @@ export class ResolverComponent implements OnInit {
     backgroundColor: string;
   } = badgeColorStyle;
   fullDate : (date: Date | any) => string = toFullDate;
-
-
   currentPedido: Pedido | undefined;
   currentFile: FileDB | undefined;
   currentSolution: FileDB | undefined; //string  | undefined; // NzUploadFile | undefined;//
   showFallback: boolean = false;
   //fileList: NzUploadFile[] = [];
-
-
   currentComment: Comentario | undefined;
   id!: string | null;
   //interaccionForResponse: Interaccion | undefined;
@@ -55,7 +51,6 @@ export class ResolverComponent implements OnInit {
   
   panels: Array<{active: boolean, name: string, disabled: boolean}> = [];
   tabs: Array<{ name: string, icon: string, title: string }> = [];
-
   time = formatDistance(new Date(), new Date());
   now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
   ChatNoResultMessage: string = showNoResultTextChatFor('Cliente'); 
@@ -245,6 +240,12 @@ export class ResolverComponent implements OnInit {
 
   onClickPedidoChat = (event: MouseEvent) => {
     event.preventDefault;
+    let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido?.interacciones)) 
+    let last: Interaccion | undefined = InteraccionesCP.pop()
+    // if hay respuesta previa entonces pongo en el texto la rta 
+    if(last?.rol === 'EDITOR') {
+        this.textAreaValue = last?.texto
+    };
     this.isVisibleModalPedidoChat = true;
   };
 
@@ -275,6 +276,7 @@ export class ResolverComponent implements OnInit {
           pipe(filter(e => e instanceof HttpResponse))
           .subscribe(async (e: any) => {
               let pedido = (e.body as Pedido)
+              this.textAreaValue = userComment;
               this.currentPedido = pedido;    
               this.currentPedido = {
                 ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
