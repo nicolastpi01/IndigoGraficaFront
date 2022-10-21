@@ -7,7 +7,7 @@ import { avatarStyle, determineIcon } from "src/app/utils/functions/functions";
 
 export interface PerfilInfo {
   title: string,
-  label: string,
+  label: 'USUARIO' | 'EDITOR',
   icon: string,
   hexColor: string
 }
@@ -68,7 +68,7 @@ export interface PerfilInfo {
           ret = interaccion.id === last.id
         }
       }
-      if(ret && interaccion.rol === 'USUARIO') {
+      if(ret && this.perfil && interaccion.rol === this.perfil.label) {
         return {
           'border-color': 'rgb(247, 251, 31)',
           'border-width': '2px',

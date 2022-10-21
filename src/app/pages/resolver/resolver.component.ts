@@ -292,8 +292,31 @@ export class ResolverComponent implements OnInit {
     }
   }
 
-  handleClickEliminarComment = () => {
 
+  handleClickEliminarComment = () => {
+    if(this.currentPedido && this.currentPedido.interacciones) {
+      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido.interacciones))
+      InteraccionesCP.pop()
+      let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
+      pedidoCp.interacciones = InteraccionesCP
+      this.service.update(pedidoCp).
+          pipe(filter(e => e instanceof HttpResponse))
+          .subscribe(async (e: any) => {
+              let pedido = (e.body as Pedido)
+              this.currentPedido = pedido;    
+              this.currentPedido = {
+                ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+                  return {
+                    ...file, url: this.generateUrl(file)
+                  }
+                }) 
+              };
+              this.msg.success('Se elimino el comentario correctamente!');
+          }),
+          () => {
+              this.msg.error('Hubo un error, no se pudo eliminar el comentario!');
+          }
+    }
   };
 
   handleCancelModalResponse = () => {
