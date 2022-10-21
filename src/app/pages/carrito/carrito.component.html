@@ -342,6 +342,8 @@
                     [elem]="currentPedido" 
                     [visible]="isVisibleModalChat" 
                     (onClose)="handleCloseChat($event)"
+                    [perfil]="getPerfil"
+                    [noResultText]="ChatNoResultMessage"
                     (onAccept)="handleClickAceptar($event)"
                     (onDelete)="handleClickEliminarComment()">
                   </app-chat>
@@ -349,6 +351,8 @@
                     [elem]="currentComment" 
                     [visible]="isVisibleModalFilesChat" 
                     (onClose)="handleCloseFilesChat($event)"
+                    [perfil]="getPerfil"
+                    [noResultText]="ChatNoResultMessage"
                     (onAccept)="handleClickSendInteractionButton($event)"
                     (onDelete)="deleteInteractionForAFileWithComments()">
                   </app-chat>

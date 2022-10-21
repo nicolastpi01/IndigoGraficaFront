@@ -5,6 +5,13 @@ import { FileDB } from "src/app/interface/fileDB";
 import { Pedido } from "src/app/interface/pedido";
 import { avatarStyle, determineIcon } from "src/app/utils/functions/functions";
 
+export interface PerfilInfo {
+  title: string,
+  label: string,
+  icon: string,
+  hexColor: string
+}
+
 @Component({
     selector: 'app-chat',
     templateUrl: './chat.component.html',
@@ -15,7 +22,9 @@ import { avatarStyle, determineIcon } from "src/app/utils/functions/functions";
     userCommentValue: string = '';
     determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
     avatarStyle: (interaccion: Interaccion) => { 'background-color': string; } = avatarStyle;
-    @Input() elem: Pedido | Comentario | undefined; // | FileDB 
+    @Input() elem: Pedido | Comentario | undefined; // | FileDB
+    @Input() perfil: PerfilInfo | undefined;
+    @Input() noResultText: string = ''; 
     @Input('visible') isVisibleModalChat: boolean = false;
     @Output() onClose = new EventEmitter<boolean>();
     @Output() onAccept = new EventEmitter<string>();

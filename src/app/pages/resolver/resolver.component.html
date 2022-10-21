@@ -387,11 +387,19 @@
             </nz-card>
         </div>
       </div>
-      
      </ng-template>
   </nz-collapse-panel>
 </nz-collapse>
 <br>
+<app-chat 
+  [elem]="currentPedido" 
+  [visible]="isVisibleModalPedidoChat" 
+  (onClose)="handleClosePedidoChat($event)"
+  [perfil]="getPerfil"
+  [noResultText]="ChatNoResultMessage"
+  (onAccept)="handleClickAceptar($event)"
+  (onDelete)="handleClickEliminarComment()">
+</app-chat>
 
 <div nz-row nzJustify="end" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
   <div nz-col>

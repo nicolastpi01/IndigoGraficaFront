@@ -15,7 +15,7 @@
         <p style="text-align: center;"><b>Comentarios</b></p> 
         <cdk-virtual-scroll-viewport itemSize="4" class="virtualScroll">
         <nz-list class="list" *ngIf="elem && elem.interacciones">
-          <nz-list-empty [nzNoResult]="showNoResult()" *ngIf="elem.interacciones.length == 0"></nz-list-empty>
+          <nz-list-empty [nzNoResult]="noResultText" *ngIf="elem.interacciones.length == 0"></nz-list-empty>
           <nz-list-item [style]="itemListStyle(interaccion, elem)" *cdkVirtualFor="let interaccion of elem.interacciones">
             <nz-comment [nzAuthor]="interaccion.rol" [nzDatetime]="time">
               <nz-avatar
@@ -42,9 +42,9 @@
       </cdk-virtual-scroll-viewport>
       </div>
       <div nz-col>
-        <p style="text-align: center;"><b>Charla con el Editor!</b></p>
-        <nz-comment style="min-width: 25vw;" nzAuthor="USUARIO" [nzDatetime]="time">
-          <nz-avatar nz-comment-avatar nzIcon="user" style="background-color: #87d068"></nz-avatar>
+        <p style="text-align: center;"><b>{{perfil?.title}}</b></p>
+        <nz-comment style="min-width: 25vw;" [nzAuthor]="perfil?.label" [nzDatetime]="time">
+          <nz-avatar nz-comment-avatar [nzIcon]="perfil?.icon" [style]="perfil?.hexColor"></nz-avatar>
           <nz-comment-content>
             <nz-form-item>
                 <textarea 

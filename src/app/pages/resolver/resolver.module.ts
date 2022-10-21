@@ -26,6 +26,7 @@ import { NzCommentModule } from 'ng-zorro-antd/comment';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzTagModule } from "ng-zorro-antd/tag";
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { ChatModule } from "src/app/components/chat/chat.module";
 
 
 @NgModule({
@@ -55,7 +56,8 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
       NzCommentModule,
       NzTagModule, 
       NzCheckboxModule,
-      NzTabsModule        
+      NzTabsModule,
+      ChatModule        
     ],
     declarations: [ResolverComponent],
     exports: [ResolverComponent]

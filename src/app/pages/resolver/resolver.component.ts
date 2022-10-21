@@ -11,11 +11,12 @@ import { Comentario, Interaccion } from 'src/app/interface/comentario';
 import { formatDistance } from 'date-fns';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { badgeColorStyle, getBase64, toLocalDateString, determineIcon, 
-  avatarStyle, badgeUponImagePositionStyle, toFullDate } from 'src/app/utils/functions/functions';
+  avatarStyle, badgeUponImagePositionStyle, toFullDate, showNoResultTextChatFor } from 'src/app/utils/functions/functions';
 import { ThisReceiver } from '@angular/compiler';
 import { Solution } from 'src/app/interface/solution';
 import { Color } from 'src/app/interface/color';
 import { fallback } from 'src/app/utils/const/constantes';
+import { PerfilInfo } from 'src/app/components/chat/chat.component';
 
 @Component({
   selector: 'app-resolver',
@@ -57,9 +58,7 @@ export class ResolverComponent implements OnInit {
 
   time = formatDistance(new Date(), new Date());
   now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
-
-  
-
+  ChatNoResultMessage: string = showNoResultTextChatFor('Cliente'); 
   //defaultFileList: NzUploadFile[] = [];
 
   constructor(private route: ActivatedRoute, private service :PedidoService, private msg: NzMessageService) {}
@@ -96,6 +95,13 @@ export class ResolverComponent implements OnInit {
         title: 'Info del usuario'
       }
     ];
+  };
+
+  getPerfil :PerfilInfo = {
+    title: "Charla con el Cliente!",
+    label: "EDITOR",
+    icon: "highlight",
+    hexColor: "background-color: #f56a00"
   };
 
   tieneDimension = () => {
@@ -242,7 +248,53 @@ export class ResolverComponent implements OnInit {
     this.isVisibleModalPedidoChat = true;
   };
 
-  
+  handleClosePedidoChat = (visible: boolean) => {
+    this.isVisibleModalPedidoChat = visible;
+  };
+
+  handleClickAceptar = (userComment: string) => {   
+    if(this.currentPedido && this.currentPedido.interacciones && userComment !== '') {
+      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido.interacciones)) 
+      let lastInteraccion: Interaccion | undefined = InteraccionesCP.pop()
+
+      let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
+      if(pedidoCp.interacciones) {
+        if(lastInteraccion?.rol === 'EDITOR') { 
+          pedidoCp.interacciones.pop(); 
+        }
+        let response: Interaccion = {
+          texto: userComment,
+          rol: 'EDITOR',
+          key: pedidoCp.interacciones.length
+        };
+        pedidoCp.interacciones = [ 
+          ...pedidoCp.interacciones,
+          response 
+        ];
+        this.service.update(pedidoCp).
+          pipe(filter(e => e instanceof HttpResponse))
+          .subscribe(async (e: any) => {
+              let pedido = (e.body as Pedido)
+              this.currentPedido = pedido;    
+              this.currentPedido = {
+                ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+                  return {
+                    ...file, url: this.generateUrl(file)
+                  }
+                }) 
+              }; 
+              this.msg.success('Se agrego el comentario correctamente!');
+          }),
+          () => {
+              this.msg.error('Hubo un error, no enviar el comentario!');
+          }
+      }
+    }
+  }
+
+  handleClickEliminarComment = () => {
+
+  };
 
   handleCancelModalResponse = () => {
     /*
@@ -260,6 +312,7 @@ export class ResolverComponent implements OnInit {
     this.isVisibleModalChat = false;
   };
 
+  
   
   sePuedeResponder = (interaccion: Interaccion) :boolean => {
       let last: Interaccion | undefined = this.searchLastInteraccion();

@@ -8,7 +8,7 @@ import { FileDB } from 'src/app/interface/fileDB';
 import { Pedido } from 'src/app/interface/pedido';
 import { PedidoService } from 'src/app/services/pedido.service';
 import { RESERVADO } from 'src/app/utils/const/constantes';
-import { avatarStyle, determineIcon, toLocalDateString, badgeUponImagePositionStyle, badgeColorStyle, toFullDate } from 'src/app/utils/functions/functions';
+import { avatarStyle, determineIcon, toLocalDateString, badgeUponImagePositionStyle, badgeColorStyle, toFullDate, showNoResultTextChatFor } from 'src/app/utils/functions/functions';
 import { fallback } from 'src/app/utils/const/constantes';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { formatDistance } from 'date-fns';
@@ -17,6 +17,7 @@ import { HttpResponse } from '@angular/common/http';
 import { filter } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { PerfilInfo } from 'src/app/components/chat/chat.component';
 
 @Component({
   selector: 'app-carrito',
@@ -26,7 +27,6 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 export class CarritoComponent implements OnInit {
 
   //pageIndex: number = 1;
-
   total: number = 0;
   pedidos: any[] = [];
   currentPedido: Pedido | undefined; 
@@ -38,7 +38,6 @@ export class CarritoComponent implements OnInit {
   isVisibleModalChat: boolean = false;
   isVisibleModalFilesChat: boolean = false;
   isVisibleModalFileComments: boolean = false;
-  
   /*
   indeterminate = true;
   allChecked = false;
@@ -48,7 +47,6 @@ export class CarritoComponent implements OnInit {
     { label: 'Orange', value: 'Orange', checked: false }
   ];
   */
-
   dateFormat = 'dd/MM/YYYY';
   expanded: boolean = false;
   expandedId: boolean = false;
@@ -58,6 +56,7 @@ export class CarritoComponent implements OnInit {
   time = formatDistance(new Date(), new Date());
   AccionText: String = "Editar"
 
+  ChatNoResultMessage: string = showNoResultTextChatFor('Editor'); 
   toFullDate : (date: Date | any) => string = toFullDate;
   toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString;
   determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
@@ -108,6 +107,13 @@ export class CarritoComponent implements OnInit {
        this.loading = false 
     });
   }
+
+  getPerfil :PerfilInfo = {
+    title: "Charla con el Editor!",
+    label: "USUARIO",
+    icon: "user",
+    hexColor: "background-color: #87d068"
+  };
 
   onClickTab = () => {
     //console.log("Click Tab")
