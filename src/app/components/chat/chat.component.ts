@@ -83,9 +83,9 @@ export interface PerfilInfo {
     isEditing = (elem: Pedido | Comentario | undefined) :boolean => {
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(elem?.interacciones)) 
         let last: Interaccion | undefined = InteraccionesCP.pop()
-      return elem !== undefined && elem.interacciones !== undefined 
-      && last !== undefined && last.rol === 'USUARIO'
-    }
+      return elem !== undefined && this.perfil !== undefined && elem.interacciones !== undefined 
+      && last !== undefined && last.rol === this.perfil.label
+    };
 
     // desabilito el botón de eliminar si no hay interacciones, o bien si la última interacción es del Editor
     disabledInteractionDeletedButton = (elem: Pedido | Comentario | undefined) => {
