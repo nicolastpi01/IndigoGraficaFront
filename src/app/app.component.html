@@ -17,7 +17,7 @@
           <li nz-menu-item nzMatchRouter>
             <a routerLink="/bienvenido">Bienvenido</a>
           </li>
-          <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesCliente||mostrarOpcionesEncargado">
+          <li id="nuevo-menu" nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesCliente||mostrarOpcionesEncargado">
             <a routerLink="/nuevo">Nuevo</a>
           </li>
           <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado">
@@ -49,26 +49,18 @@
             ></i>
         </span>
         <!-- login -->
-        <span (click)="showModalLogin()" *ngIf="!isLoggedIn">
-          <i class="cart-normal" 
-             nz-icon nzType="login" 
-             nzTheme="outline">
-          </i>
-        </span>
+        <button class="button-normal" (click)="showModalLogin()" *ngIf="!isLoggedIn" nz-button nzType="default">Ingresar</button>
         <!-- logout -->
-        <span (click)="logout()" *ngIf="isLoggedIn">
-          <i class="cart-normal" 
-             nz-icon nzType="logout" 
-             nzTheme="outline">
-          </i>
-        </span>
+        <button class="button-normal" (click)="logout()" *ngIf="isLoggedIn" nz-button nzType="default">Cerrar sesión</button>
+        <button *ngIf="isLoggedIn" nz-button nzType="default">{{username}}</button>
         <!-- signon -->
-        <span (click)="showModalRegistrar()" *ngIf="!isLoggedIn">
+        <!--span (click)="showModalRegistrar()" *ngIf="!isLoggedIn">
           <i class="cart-normal" 
              nz-icon nzType="user-add" 
              nzTheme="outline">
           </i>
-        </span>
+        </span-->
+        <button class="button-normal" (click)="showModalRegistrar()" *ngIf="!isLoggedIn" nz-button nzType="primary">Creá tu cuenta</button>
         <span (click)="onClickCart()" *ngIf="isLoggedIn">
           <i 
             class="cart-normal"

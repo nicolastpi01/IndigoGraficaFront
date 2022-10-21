@@ -59,7 +59,6 @@ export class RegistrarComponent implements OnInit {
 
   onSubmit() {
     if (this.registrarForm.valid) {
-      const rolEncargado = this.registrarForm.value.esEncargado? ['ROLE_ENCARGADO'] : null
       const form = {
         'username': this.registrarForm.value.usuario,
         'password': this.registrarForm.value.password,
@@ -68,7 +67,7 @@ export class RegistrarComponent implements OnInit {
         'apellido': this.registrarForm.value.apellido,
         'ubicacion': this.registrarForm.value.ubicacion,
         'contacto': this.registrarForm.value.contacto,
-        'role': rolEncargado
+        'role': null
       }
       this.authService.register(form).subscribe(
         data => {

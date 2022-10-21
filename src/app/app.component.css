@@ -56,6 +56,15 @@
     justify-content: flex-end; 
     float: right
   }
+  
+  .button-normal {
+    margin-top: 16px;
+    margin-right: 16px;
+    display:flex; 
+    justify-content: flex-end; 
+    /*outline: 2px; */
+    float: right;
+  }
 
   .user {
     height: 90px;
