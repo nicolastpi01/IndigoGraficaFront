@@ -231,83 +231,19 @@
                     </div>
                   </div>
               </ng-container>
-          </nz-modal> 
-            <nz-modal
-              [(nzVisible)]="isVisibleModalChat"
-              [nzBodyStyle]="{ minHeight: '600px' }"
-              nzWidth="50%"
-              nzTitle="Chat"
-              nzCentered
-              (nzOnCancel)="handleCancelModalResponse()"
-              (nzOnOk)="handleOkModalResponse()"
-              >
-              <ng-container *nzModalContent>
-                <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 } ">
-                  <div nz-col>
-                    <p style="text-align: center;"><b>Comentarios</b></p> 
-                    <!--cdk-virtual-scroll-viewport itemSize="10" class="demo-infinite-container"-->
-                    <cdk-virtual-scroll-viewport itemSize="4" class="demo-infinite-containerRE">
-                    <nz-list class="algo" *ngIf="currentComment && currentComment.interacciones">
-                      <!--nz-list-item *ngFor="let interaccion of currentComment.interacciones"-->
-                      <nz-list-item [style]="itemListStyle(interaccion)" *cdkVirtualFor="let interaccion of currentComment.interacciones">
-                        <nz-comment [nzAuthor]="interaccion.rol" [nzDatetime]="time">
-                          <nz-avatar
-                            nz-comment-avatar
-                            [nzIcon]="determineIcon(interaccion)"
-                            [style]="avatarStyle(interaccion)"
-                          ></nz-avatar>
-                          <nz-comment-content>
-                          <p
-                            nz-typography
-                            nzEllipsis
-                            nzExpandable
-                            nzCopyable 
-                            [nzCopyTooltips]="null"
-                            [attr.title]="interaccion.texto"
-                            [nzEllipsisRows]="2"
-                            [nzContent]="interaccion.texto"
-                          >
-                          </p>
-                          </nz-comment-content>
-                          <!--nz-comment-action *ngIf="sePuedeResponder(interaccion)">
-                              <a (click)="responderInteraccion($event, interaccion)">{{ interaccion.rol == 'USUARIO' ? 'Responder' : 'Editar respuesta'}}</a>
-                          </nz-comment-action-->
-                          <!--nz-comment-action *ngIf="sePuedeResponder(interaccion)">
-                              <a (click)="responderInteraccion($event, interaccion)">{{ interaccion.rol == 'USUARIO' ? 'Responder' : ''}}</a>
-                          </nz-comment-action-->
-                        </nz-comment>                
-                      </nz-list-item>
-                    </nz-list>
-                  </cdk-virtual-scroll-viewport>
-                    </div>
-                    <!--div nz-col *ngIf="visibleResponse"-->
-                    <div nz-col>
-                    <p style="text-align: center;"><b>Respuesta</b></p>
-                    <nz-comment style="min-width: 25vw;" nzAuthor="EDITOR" [nzDatetime]="time">
-                      <nz-avatar nz-comment-avatar nzIcon="highlight" style="background-color: #f56a00"></nz-avatar>
-                      <nz-comment-content>
-                        <nz-form-item>
-                            <textarea 
-                              (ngModelChange)="onChangeTextArea($event)" 
-                              [(ngModel)]="textAreaValue" nz-input rows="5">
-                            </textarea>
-                        </nz-form-item>
-                        <form nz-form [nzLayout]="'inline'">
-                          <nz-form-item>
-                            <button nz-button nzType="default" [disabled]="isDisabledEliminarRespuesta()" (click)="eliminarRespuesta()">
-                              Eliminar
-                            </button>
-                          </nz-form-item>
-                        </form>
-                      </nz-comment-content>
-                    </nz-comment>
-                  </div>
-                </div>      
-              </ng-container>
-            </nz-modal> 
+          </nz-modal>
+          <app-chat 
+            [elem]="currentComment" 
+            [visible]="isVisibleModalChat" 
+            (onClose)="handleCancelModalResponse($event)"
+            [perfil]="getPerfil"
+            [text]="textAreaValue"
+            [noResultText]="ChatNoResultMessage"
+            (onAccept)="handleOkModalResponse($event)"
+            (onDelete)="eliminarRespuesta()">
+          </app-chat>  
      </ng-template>
     </ng-template>
-
      <ng-template #Resolver>
       <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
         <ng-template [ngIf]="currentPedido && currentPedido.files && tieneDimension()" [ngIfElse]="ifElse">

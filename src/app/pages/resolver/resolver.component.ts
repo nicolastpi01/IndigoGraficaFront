@@ -172,15 +172,15 @@ export class ResolverComponent implements OnInit {
     this.textAreaValue = value;
   };
 
-  handleOkModalResponse = () => {
-    if(this.currentComment && this.textAreaValue) {      
+  handleOkModalResponse = (textValue: string | undefined) => {
+    if(this.currentComment && textValue) {      
       let lastInteraccion = this.searchLastInteraccion(); // Si esta al reves deberiamos verificar al principio
 
       if(lastInteraccion?.rol === 'EDITOR') {
         this.currentComment.interacciones.pop();
       }
       let response: Interaccion = {
-        texto: this.textAreaValue,
+        texto: textValue,
         rol: 'EDITOR',
         key: this.currentComment.interacciones.length // revisar esto
       };
@@ -216,7 +216,6 @@ export class ResolverComponent implements OnInit {
           }
         })
       };
-      
       this.service.update(this.currentPedido).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe(async (e: any) => {
@@ -230,7 +229,7 @@ export class ResolverComponent implements OnInit {
             };
             this.currentComment = this.currentFile?.comentarios.find((comentario: Comentario) => comentario.id === this.currentComment?.id)
             this.msg.success('Se agrego la respuesta correctamente!');
-            this.handleCancelModalResponse()
+            //this.handleCancelModalResponse()
         }),
         () => {
             this.msg.error('No se pudo agregar la respuesta, vuelva a intentarlo en unos segundos');
@@ -321,7 +320,7 @@ export class ResolverComponent implements OnInit {
     }
   };
 
-  handleCancelModalResponse = () => {
+  handleCancelModalResponse = (value: boolean) => {
     /*
     let last = this.searchLastInteraccion();
     if (last?.rol === 'EDITOR') {
@@ -334,7 +333,7 @@ export class ResolverComponent implements OnInit {
     //this.interaccionForResponse = undefined;
     this.textAreaValue = undefined;
     //this.visibleResponse = false;
-    this.isVisibleModalChat = false;
+    this.isVisibleModalChat = value;
   };
 
   
