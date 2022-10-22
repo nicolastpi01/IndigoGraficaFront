@@ -111,7 +111,7 @@
                                 <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="pedido.files">
                                   <div nz-col *ngFor="let file of pedido.files">
                                     <nz-list-item>
-                                      <nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddInteraction]">
+                                      <nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddInteraction, actionChat]">
                                           <nz-card-meta
                                               [nzTitle]="file.name"
                                               nzDescription=""
@@ -120,7 +120,15 @@
                                               <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
                                             </ng-template>
                                             <ng-template #actionAddInteraction>
-                                              <i nz-icon nzType="comment" (click)="onClickShowFileComments($event, file, pedido)" nzTheme="outline"></i>
+                                              <button nz-button (click)="onClickShowFileComments($event, file, pedido)">
+                                                <p style="font-size: 10px;">Comentarios</p>
+                                              </button>
+                                              <!--i nz-icon nzType="comment" (click)="onClickShowFileComments($event, file, pedido)" nzTheme="outline"></i-->
+                                            </ng-template>
+                                            <ng-template #actionChat>
+                                              <button nz-button (click)="onClickFileChat(file, pedido)">
+                                                <p style="font-size: 10px;">Chat</p>
+                                              </button>
                                             </ng-template>
                                       </nz-card>
                                     </nz-list-item>
@@ -144,6 +152,15 @@
                 <!--/div>
               </div-->
             </nz-list>
+            <app-chat 
+              [elem]="currentFile" 
+              [visible]="isVisibleModalChatUponAFile"
+              [perfil]="getPerfil"
+              [noResultText]="ChatNoResultMessage"
+              (onClose)="handleCloseFileChat($event)"
+              (onAccept)="onAcceptModalFileChat($event)"
+              (onDelete)="handleClickEliminarComment()">
+            </app-chat>
             <nz-modal
               [(nzVisible)]="isVisibleModalFileComments"
               [nzBodyStyle]="{ minHeight: '600px' }"

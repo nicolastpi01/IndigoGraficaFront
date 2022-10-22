@@ -38,6 +38,7 @@ export class CarritoComponent implements OnInit {
   isVisibleModalChat: boolean = false;
   isVisibleModalFilesChat: boolean = false;
   isVisibleModalFileComments: boolean = false;
+  isVisibleModalChatUponAFile: boolean = false;
   /*
   indeterminate = true;
   allChecked = false;
@@ -115,6 +116,12 @@ export class CarritoComponent implements OnInit {
     hexColor: "background-color: #87d068"
   };
 
+  onClickFileChat = (file: FileDB, pedido: Pedido) => {
+    this.currentFile = file;
+    this.currentPedido = pedido;
+    this.isVisibleModalChatUponAFile = true;
+  };
+
   onClickTab = () => {
     //console.log("Click Tab")
   };
@@ -186,6 +193,11 @@ export class CarritoComponent implements OnInit {
               this.msg.error('Hubo un error, no se pudo eliminar el comentario!');
           }
     }
+  };
+
+  handleCloseFileChat = (value: boolean) => {
+    this.userCommentValue = '';
+    this.isVisibleModalChatUponAFile = value;
   };
 
   deleteInteractionForAFileWithComments = () => {
@@ -358,10 +370,68 @@ export class CarritoComponent implements OnInit {
       }  
   };
 
+  onAcceptModalFileChat = (userComment: string) => {
+    if(this.currentFile && this.currentFile.interacciones && userComment !== undefined && userComment !== '') {
+      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentFile.interacciones)) 
+      let lastInteraccion: Interaccion | undefined = InteraccionesCP.pop()
+      let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
+      let fileCp : FileDB = JSON.parse(JSON.stringify(this.currentFile))
+
+      if(fileCp.interacciones) {
+        if(lastInteraccion?.rol === 'USUARIO') fileCp.interacciones.pop();
+        let response: Interaccion = {
+          texto: userComment,
+          rol: 'USUARIO',
+          key: fileCp.interacciones.length
+        }
+        fileCp.interacciones = [
+          ...fileCp.interacciones, response
+        ]
+        pedidoCp = {
+          ...pedidoCp, files: pedidoCp.files?.map((file: FileDB) => {
+            if(fileCp && file.id === fileCp.id) {
+              return fileCp
+            }
+            else {
+              return file
+            }
+          })
+        }
+        this.service.update(pedidoCp).
+          pipe(filter(e => e instanceof HttpResponse))
+          .subscribe(async (e: any) => {
+            let pedido = (e.body as Pedido)
+            this.currentPedido = pedido;    
+            this.currentPedido = {
+              ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+                return {
+                  ...file, url: this.generateUrl(file)
+                }
+              }) 
+            };
+            this.pedidos = this.pedidos.map((pedido: any) => {
+              if(pedido.id === this.currentPedido?.id) { 
+                return this.currentPedido
+              }
+              else {
+                return pedido
+              }
+            });
+            this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)
+            this.userCommentValue = userComment; 
+            this.msg.success('Se agrego el comentario correctamente!');
+          }),
+          () => {
+            this.msg.error('Hubo un error al enviar el comentario!');
+          }
+      };
+    }
+      
+  };
+
   handleClickAceptar = (userComment: string) => {   
     //if(this.currentPedido && this.currentPedido.interacciones && this.userCommentValue !== '') {
     if(this.currentPedido && this.currentPedido.interacciones && userComment !== '') {
-      console.log("Me ejecute!!")
       // Copio las interacciones
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido.interacciones)) 
       // Obtengo el último elem. de la copia de las interacciones
