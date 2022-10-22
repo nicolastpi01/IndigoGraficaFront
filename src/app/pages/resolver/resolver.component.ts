@@ -241,20 +241,25 @@ export class ResolverComponent implements OnInit {
   onClickPedidoChat = (event: MouseEvent) => {
     event.preventDefault;
     let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido?.interacciones)) 
-    let last: Interaccion | undefined = InteraccionesCP.pop()
-    // if hay respuesta previa entonces pongo en el texto la rta 
+    let last: Interaccion | undefined = InteraccionesCP.pop() 
     if(last?.rol === 'EDITOR') {
         this.textAreaValue = last?.texto
     };
     this.isVisibleModalPedidoChat = true;
   };
 
-  onClickFileChat = (item: FileDB) => {
-    this.currentFile = item;
+  onClickFileChat = (file: FileDB) => {
+    let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(file.interacciones)) 
+    let last: Interaccion | undefined = InteraccionesCP.pop() 
+    if(last?.rol === 'EDITOR') {
+        this.textAreaValue = last?.texto
+    };
+    this.currentFile = file;
     this.isVisibleModalFileChat = true;
   };
 
   handleClosePedidoChat = (visible: boolean) => {
+    this.textAreaValue = undefined;
     this.isVisibleModalPedidoChat = visible;
   };
 
@@ -322,7 +327,6 @@ export class ResolverComponent implements OnInit {
       if(fileCp.interacciones) {
         if(lastInteraccion?.rol === 'EDITOR') fileCp.interacciones.pop(); 
       };
-
       pedidoCp.files = pedidoCp.files?.map((file: FileDB) => {
         if(file.id === fileCp.id) {
           return fileCp
@@ -343,11 +347,12 @@ export class ResolverComponent implements OnInit {
               }
             }) 
           };
-          this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id); 
-            this.msg.success('Se elimino el comentario correctamente!');
+          this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id);
+          this.textAreaValue = undefined; 
+          this.msg.success('Se elimino el comentario correctamente!');
           }),
           () => {
-            this.msg.error('Hubo un error, intente eliminar el comentario de nuevo!');
+          this.msg.error('Hubo un error, intente eliminar el comentario de nuevo!');
           }
     }
   };
@@ -412,6 +417,7 @@ export class ResolverComponent implements OnInit {
                   }
                 }) 
               };
+              this.textAreaValue = undefined;
               this.msg.success('Se elimino el comentario correctamente!');
           }),
           () => {
@@ -421,18 +427,7 @@ export class ResolverComponent implements OnInit {
   };
 
   handleCancelModalResponse = (value: boolean) => {
-    /*
-    let last = this.searchLastInteraccion();
-    if (last?.rol === 'EDITOR') {
-      this.textAreaValue = last?.texto
-    }
-    else {
-      this.textAreaValue = undefined;
-    }
-    */
-    //this.interaccionForResponse = undefined;
     this.textAreaValue = undefined;
-    //this.visibleResponse = false;
     this.isVisibleModalChat = value;
   };
 
@@ -693,8 +688,6 @@ export class ResolverComponent implements OnInit {
   onClickChat = (event: MouseEvent, comentario: Comentario) => {
     event.preventDefault;
     this.currentComment = comentario;
-    // if hay response previa entonces pongo en el texto la rta
-    //if(this.tieneRtaCurrentComment() && !this.textAreaValue) {
     let last = this.searchLastInteraccion(); 
     if (last?.rol === 'EDITOR') {
       this.textAreaValue = last?.texto
