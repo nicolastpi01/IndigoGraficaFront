@@ -425,8 +425,56 @@ export class CarritoComponent implements OnInit {
             this.msg.error('Hubo un error al enviar el comentario!');
           }
       };
+    }  
+  };
+
+  onDelModalFileChat = () => {
+    if(this.currentFile && this.currentFile.interacciones) {
+      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentFile.interacciones))
+      let fileCp : FileDB = JSON.parse(JSON.stringify(this.currentFile));
+      let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido));
+      InteraccionesCP.pop()
+      fileCp = {
+        ...fileCp, interacciones: InteraccionesCP 
+      } 
+      pedidoCp = {
+        ...pedidoCp, files: pedidoCp.files?.map((file: FileDB) => {
+          if(fileCp && file.id === fileCp.id) {
+            return fileCp
+          }
+          else {
+            return file
+          }
+        })
+      };
+      this.service.update(pedidoCp).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe(async (e: any) => {
+            let pedido = (e.body as Pedido)
+            this.currentPedido = pedido;
+            this.userCommentValue = ''
+            this.currentPedido = {
+              ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+                return {
+                  ...file, url: this.generateUrl(file)
+                }
+              }) 
+            };
+            this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)
+            this.pedidos = this.pedidos.map((pedido: any) => {
+              if(pedido.id === this.currentPedido?.id) { 
+                return this.currentPedido
+              }
+              else {
+                return pedido
+              }
+            }); 
+            this.msg.success('Se elimino el comentario correctamente!');
+          }),
+          () => {
+              this.msg.error('Hubo un error al eliminar el comentario!');
+          }
     }
-      
   };
 
   handleClickAceptar = (userComment: string) => {   
