@@ -12,7 +12,6 @@ import { avatarStyle, determineIcon, toLocalDateString, badgeUponImagePositionSt
 import { fallback } from 'src/app/utils/const/constantes';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { formatDistance } from 'date-fns';
-import { ThisReceiver } from '@angular/compiler';
 import { HttpResponse } from '@angular/common/http';
 import { filter } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -267,42 +266,6 @@ export class CarritoComponent implements OnInit {
     }
   };
 
-  // desabilito el botón de eliminar si no hay interacciones, o bien si la última interacción es del Editor
-  disabledInteractionDeletedButton = (algoConInteracciones: any) => {
-    let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(algoConInteracciones?.interacciones)) 
-    let last: Interaccion | undefined = InteraccionesCP.pop() 
-    return (algoConInteracciones && algoConInteracciones.interacciones && algoConInteracciones.interacciones.length === 0) // No hay interacciones
-    || (algoConInteracciones && algoConInteracciones.interacciones && last && last.rol === 'EDITOR') // o bién, la última interacción es del editor  
-  };
-
-  showNoResult = () :string | TemplateRef<void> => {
-    return 'no hay comentarios con el Editor, dejále un comentario!'
-  }
-
-  itemListStyle = (interaccion: Interaccion, item: any) => {
-      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(item.interacciones)) 
-      let last: Interaccion | undefined = InteraccionesCP.pop()
-      let ret :boolean = false
-      if(last) {
-        if(interaccion.key) {
-          ret = interaccion.key === last.key
-        }
-        else {
-          ret = interaccion.id === last.id
-        }
-      }
-      if(ret && interaccion.rol === 'USUARIO') {
-        return {
-          'border-color': 'rgb(247, 251, 31)',
-          'border-width': '2px',
-          'border-style': 'dashed'
-        } 
-      }
-      else {
-        return ''
-      }
-  };
-
   handleClickSendInteractionButton = (comment: string) => {
 
     if(this.currentComment && this.currentComment.interacciones && comment !== '') {
@@ -535,13 +498,6 @@ export class CarritoComponent implements OnInit {
       }
     }
   };
-  
-  isEditing = (algoConInteracciones: any) :boolean => {
-    let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(algoConInteracciones?.interacciones)) 
-      let last: Interaccion | undefined = InteraccionesCP.pop()
-    return algoConInteracciones !== undefined && algoConInteracciones.interacciones !== undefined 
-    && last !== undefined && last.rol === 'USUARIO'
-  }
 
   onClickChat(pedido: Pedido): void {
     this.currentPedido = pedido;
@@ -567,29 +523,10 @@ export class CarritoComponent implements OnInit {
     this.isVisibleModalChat = visible;
   }
 
-  /*
-  handleOkChat(): void {
-    this.userCommentValue = ''
-    this.isVisibleModalChat = false;
-  }
-  */
-
   handleCloseFilesChat(visible: boolean) : void {
     this.userCommentValue = ''
     this.isVisibleModalFilesChat = visible;
   }
-
-  /*
-  handleCancelFilesChat() : void {
-    this.userCommentValue = ''
-    this.isVisibleModalFilesChat = false;
-  }
-
-  handleOkFilesChat(): void {
-    this.userCommentValue = ''
-    this.isVisibleModalFilesChat = false;
-  }
-  */
 
   handleCancelMoreInfo() : void {
     this.isVisibleModalMoreInfo = false;
@@ -605,7 +542,6 @@ export class CarritoComponent implements OnInit {
 
   onClickEdit(pedido: Pedido) : void {
     this._router.navigateByUrl('/editar' + `/${pedido.id}`)
-    //this._router.navigateByUrl('/pedidos/editar' + `/${pedido.id}`)
   };
 
   handleOkMoreInfo() : void {
@@ -649,7 +585,7 @@ export class CarritoComponent implements OnInit {
         this.msg.success(e.body.message);
       }),
       (e: any) => {
-          // Ojo, no esta catcheando el error 
+          // Ojo, no esta cacheando el error 
           this.msg.error(e.body.message);
       }
   };
@@ -669,7 +605,6 @@ export class CarritoComponent implements OnInit {
   */
 
   onClickAccion (pedido: Pedido): void {
-    //this._router.navigateByUrl('/nuevo' + `/${pedido.id}`)
   }
 
   /*
