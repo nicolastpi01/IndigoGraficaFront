@@ -117,6 +117,11 @@ export class CarritoComponent implements OnInit {
   };
 
   onClickFileChat = (file: FileDB, pedido: Pedido) => {
+    let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(file.interacciones))
+    let last: Interaccion | undefined =  InteraccionesCP.pop()
+    if (last && last.rol === 'USUARIO') {
+      this.userCommentValue = last.texto
+    };
     this.currentFile = file;
     this.currentPedido = pedido;
     this.isVisibleModalChatUponAFile = true;
@@ -558,7 +563,7 @@ export class CarritoComponent implements OnInit {
   };
 
   handleCloseChat(visible: boolean) : void {
-    //this.userCommentValue = ''
+    this.userCommentValue = ''
     this.isVisibleModalChat = visible;
   }
 
@@ -570,7 +575,7 @@ export class CarritoComponent implements OnInit {
   */
 
   handleCloseFilesChat(visible: boolean) : void {
-    //this.userCommentValue = ''
+    this.userCommentValue = ''
     this.isVisibleModalFilesChat = visible;
   }
 
