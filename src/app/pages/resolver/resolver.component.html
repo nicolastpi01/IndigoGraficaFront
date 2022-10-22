@@ -115,7 +115,7 @@
                 <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="currentPedido && currentPedido.files">
                   <div nz-col *ngFor="let file of currentPedido.files">
                     <nz-list-item>
-                      <nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddComment, actionChat]">
+                      <nz-card [nzCover]="coverTemplate" class="border" [nzActions]="[actionAddComment, actionChat]">
                           <nz-card-meta
                               [nzTitle]="file.name"
                               nzDescription=""
@@ -128,31 +128,33 @@
                             </ng-template>
                             <ng-template #actionAddComment>
                               <button nz-button (click)="onClickComment($event, file)">
-                                Comentarios
+                                <p style="font-size: 10px;">Comentarios</p>
                               </button>
                               <!--i nz-icon nzType="comment" (click)="onClickComment($event, file)" nzTheme="outline"></i-->
                             </ng-template>
                             <ng-template #actionChat>
-                              <button nz-button (click)="undefined">
-                                Chat<span nz-icon nzType="comment" nzTheme="outline"></span>
+                              <button nz-button (click)="onClickFileChat(file)">
+                                <p style="font-size: 10px;">Chat</p>
+                                  <!--div nz-icon nzType="comment" style="font-size: 10px;" nzTheme="outline">
+                                    Chat
+                                  </div-->
                               </button>
                             </ng-template>
-                            <!--ng-template #actionAddSolution>
-                              <nz-upload
-                                nzAction="http://localhost:8080/files/upload"
-                                (nzChange)="handleChange($event)"
-                              >
-                                <button nz-button>
-                                  <span nz-icon nzType="upload" nzTheme="outline"></span>Subir
-                                </button>
-                              </nz-upload>
-                            </ng-template-->
                       </nz-card>
                     </nz-list-item>
                   </div>
                 </div>
             </nz-list>
-        <!--/div-->
+        <app-chat 
+          [elem]="currentFile" 
+          [visible]="isVisibleModalFileChat" 
+          (onClose)="handleCancelModalFileChat($event)"
+          [perfil]="getPerfil"
+          [text]="textAreaValue"
+          [noResultText]="ChatNoResultMessage"
+          (onAccept)="handleOkModalFileChat($event)"
+          (onDelete)="handleDelModalFileChat()">
+        </app-chat>
         <nz-modal
             [(nzVisible)]="isVisibleModalComment"
             [nzBodyStyle]="{ minHeight: '600px' }"

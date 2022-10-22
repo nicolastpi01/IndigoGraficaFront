@@ -22,7 +22,7 @@ export interface PerfilInfo {
     @Input('text') userCommentValue: string | undefined;
     determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
     avatarStyle: (interaccion: Interaccion) => { 'background-color': string; } = avatarStyle;
-    @Input() elem: Pedido | Comentario | undefined; // | FileDB
+    @Input() elem: Pedido | Comentario | FileDB | undefined; 
     @Input() perfil: PerfilInfo | undefined;
     @Input() noResultText: string = ''; 
     @Input('visible') isVisibleModalChat: boolean = false;
@@ -51,7 +51,7 @@ export interface PerfilInfo {
       this.userCommentValue = value;
     }
 
-    itemListStyle = (interaccion: Interaccion, item: Pedido | Comentario) => {
+    itemListStyle = (interaccion: Interaccion, item: Pedido | Comentario | FileDB) => {
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(item.interacciones)) 
       let last: Interaccion | undefined = InteraccionesCP.pop()
       let ret :boolean = false
@@ -75,7 +75,7 @@ export interface PerfilInfo {
       }
     }
 
-    isEditing = (elem: Pedido | Comentario | undefined) :boolean => {
+    isEditing = (elem: Pedido | Comentario | FileDB | undefined) :boolean => {
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(elem?.interacciones)) 
         let last: Interaccion | undefined = InteraccionesCP.pop()
       return elem !== undefined && this.perfil !== undefined && elem.interacciones !== undefined 
@@ -83,7 +83,7 @@ export interface PerfilInfo {
     };
 
     // desabilito el botón de eliminar si no hay interacciones, o bien si la última interacción no me pertenece
-    disabledInteractionDeletedButton = (elem: Pedido | Comentario | undefined) => {
+    disabledInteractionDeletedButton = (elem: Pedido | Comentario | FileDB | undefined) => {
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(elem?.interacciones)) 
       let last: Interaccion | undefined = InteraccionesCP.pop() 
       return (elem && elem.interacciones && elem.interacciones.length === 0) // No hay interacciones

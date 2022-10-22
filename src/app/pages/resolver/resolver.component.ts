@@ -37,24 +37,21 @@ export class ResolverComponent implements OnInit {
   fullDate : (date: Date | any) => string = toFullDate;
   currentPedido: Pedido | undefined;
   currentFile: FileDB | undefined;
-  currentSolution: FileDB | undefined; //string  | undefined; // NzUploadFile | undefined;//
-  showFallback: boolean = false;
-  //fileList: NzUploadFile[] = [];
   currentComment: Comentario | undefined;
+  currentSolution: FileDB | undefined; 
+  showFallback: boolean = false;
   id!: string | null;
-  //interaccionForResponse: Interaccion | undefined;
-  //visibleResponse: boolean = false;
   textAreaValue: string | undefined; 
   isVisibleModalComment = false;
   isVisibleModalChat = false;
   isVisibleModalPedidoChat = false;
+  isVisibleModalFileChat = false;
   
   panels: Array<{active: boolean, name: string, disabled: boolean}> = [];
   tabs: Array<{ name: string, icon: string, title: string }> = [];
   time = formatDistance(new Date(), new Date());
   now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
   ChatNoResultMessage: string = showNoResultTextChatFor('Cliente'); 
-  //defaultFileList: NzUploadFile[] = [];
 
   constructor(private route: ActivatedRoute, private service :PedidoService, private msg: NzMessageService) {}
 
@@ -103,10 +100,6 @@ export class ResolverComponent implements OnInit {
     return this.currentPedido && this.currentPedido.files && this.currentPedido.files.length > 0
   };
 
-  isDisabledEliminarRespuesta = () => {
-    return !this.textAreaValue && this.tieneRtaCurrentComment()
-  };
-
   eliminarRespuesta = () => {
     let last = this.searchLastInteraccion();
     if(last && last.id && last.rol === 'EDITOR') {
@@ -152,17 +145,15 @@ export class ResolverComponent implements OnInit {
             }
           };
           this.currentComment = this.currentFile?.comentarios.find((comentario: Comentario) => comentario.id === this.currentComment?.id)
-          this.textAreaValue = undefined; // rep
-          //this.visibleResponse = false; // rep
+          this.textAreaValue = undefined;
           this.msg.success('Se elimino la respuesta correctamente!');
       }),
       () => {
-          this.msg.error('No se pudo eliminare la respuesta, vuelva a intentarlo en unos segundos');
+          this.msg.error('No se pudo eliminar la respuesta, vuelva a intentarlo en unos segundos');
       }
     }
     else {
-      this.textAreaValue = undefined; // rep
-      //this.visibleResponse = false; // rep
+      this.textAreaValue = undefined;
     }
   };
 
@@ -175,25 +166,21 @@ export class ResolverComponent implements OnInit {
   handleOkModalResponse = (textValue: string | undefined) => {
     if(this.currentComment && textValue) {      
       let lastInteraccion = this.searchLastInteraccion(); // Si esta al reves deberiamos verificar al principio
-
       if(lastInteraccion?.rol === 'EDITOR') {
         this.currentComment.interacciones.pop();
       }
       let response: Interaccion = {
         texto: textValue,
         rol: 'EDITOR',
-        key: this.currentComment.interacciones.length // revisar esto
+        key: this.currentComment.interacciones.length 
       };
-
       this.currentComment = {
         ...this.currentComment, respondido: true
       }
-
       this.currentComment.interacciones = [
         ...this.currentComment.interacciones,
         response 
       ];
-
       if(this.currentFile) {
         this.currentFile = {
           ...this.currentFile, comentarios: this.currentFile?.comentarios.map((comentario: Comentario) => {
@@ -229,7 +216,6 @@ export class ResolverComponent implements OnInit {
             };
             this.currentComment = this.currentFile?.comentarios.find((comentario: Comentario) => comentario.id === this.currentComment?.id)
             this.msg.success('Se agrego la respuesta correctamente!');
-            //this.handleCancelModalResponse()
         }),
         () => {
             this.msg.error('No se pudo agregar la respuesta, vuelva a intentarlo en unos segundos');
@@ -240,16 +226,120 @@ export class ResolverComponent implements OnInit {
   onClickPedidoChat = (event: MouseEvent) => {
     event.preventDefault;
     let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido?.interacciones)) 
-    let last: Interaccion | undefined = InteraccionesCP.pop()
-    // if hay respuesta previa entonces pongo en el texto la rta 
+    let last: Interaccion | undefined = InteraccionesCP.pop() 
     if(last?.rol === 'EDITOR') {
         this.textAreaValue = last?.texto
     };
     this.isVisibleModalPedidoChat = true;
   };
 
+  onClickFileChat = (file: FileDB) => {
+    let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(file.interacciones)) 
+    let last: Interaccion | undefined = InteraccionesCP.pop() 
+    if(last?.rol === 'EDITOR') {
+        this.textAreaValue = last?.texto
+    };
+    this.currentFile = file;
+    this.isVisibleModalFileChat = true;
+  };
+
   handleClosePedidoChat = (visible: boolean) => {
+    this.textAreaValue = undefined;
     this.isVisibleModalPedidoChat = visible;
+  };
+
+  handleOkModalFileChat = (editorComment: string) => {   
+    if(this.currentFile && this.currentFile.interacciones && editorComment !== undefined && editorComment !== '') {
+      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentFile.interacciones)) 
+      let lastInteraccion: Interaccion | undefined = InteraccionesCP.pop()
+      let fileCp : FileDB = JSON.parse(JSON.stringify(this.currentFile))
+      let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
+
+      if(fileCp.interacciones) {
+        if(lastInteraccion?.rol === 'EDITOR') { 
+          fileCp.interacciones.pop(); 
+        }
+        let response: Interaccion = {
+          texto: editorComment,
+          rol: 'EDITOR',
+          key: fileCp.interacciones.length
+        };
+        fileCp.interacciones = [ 
+          ...fileCp.interacciones,
+          response 
+        ];
+        pedidoCp = {
+          ...pedidoCp, files: pedidoCp.files?.map((file: FileDB) => {
+            if(file.id === fileCp.id && fileCp) {
+              return fileCp 
+            }
+            else {
+              return file
+            }
+          })
+        };
+        this.service.update(pedidoCp).
+          pipe(filter(e => e instanceof HttpResponse))
+          .subscribe(async (e: any) => {
+              let pedido = (e.body as Pedido)
+              this.textAreaValue = editorComment;
+              this.currentPedido = pedido;    
+              this.currentPedido = {
+                ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+                  return {
+                    ...file, url: this.generateUrl(file)
+                  }
+                }) 
+              };
+              this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id); 
+              this.msg.success('Se agrego el comentario correctamente!');
+          }),
+          () => {
+              this.msg.error('Hubo un error, intente enviar el comentario de nuevo!');
+          }
+      }
+    }
+  };
+
+
+  handleDelModalFileChat = () => {
+    if(this.currentFile && this.currentFile.interacciones) {
+      let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentFile.interacciones)) 
+      let lastInteraccion: Interaccion | undefined = InteraccionesCP.pop()
+      let fileCp : FileDB = JSON.parse(JSON.stringify(this.currentFile))
+      let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
+
+      if(fileCp.interacciones) {
+        if(lastInteraccion?.rol === 'EDITOR') fileCp.interacciones.pop(); 
+      };
+      pedidoCp.files = pedidoCp.files?.map((file: FileDB) => {
+        if(file.id === fileCp.id) {
+          return fileCp
+        }
+        else {
+          return file
+        }
+      })
+      this.service.update(pedidoCp).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe(async (e: any) => {
+          let pedido = (e.body as Pedido)
+          this.currentPedido = pedido;    
+          this.currentPedido = {
+            ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+              return {
+                ...file, url: this.generateUrl(file)
+              }
+            }) 
+          };
+          this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id);
+          this.textAreaValue = undefined; 
+          this.msg.success('Se elimino el comentario correctamente!');
+          }),
+          () => {
+          this.msg.error('Hubo un error, intente eliminar el comentario de nuevo!');
+          }
+    }
   };
 
   handleClickAceptar = (userComment: string) => {   
@@ -293,7 +383,6 @@ export class ResolverComponent implements OnInit {
     }
   }
 
-
   handleClickEliminarComment = () => {
     if(this.currentPedido && this.currentPedido.interacciones) {
       let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(this.currentPedido.interacciones))
@@ -312,6 +401,7 @@ export class ResolverComponent implements OnInit {
                   }
                 }) 
               };
+              this.textAreaValue = undefined;
               this.msg.success('Se elimino el comentario correctamente!');
           }),
           () => {
@@ -321,54 +411,16 @@ export class ResolverComponent implements OnInit {
   };
 
   handleCancelModalResponse = (value: boolean) => {
-    /*
-    let last = this.searchLastInteraccion();
-    if (last?.rol === 'EDITOR') {
-      this.textAreaValue = last?.texto
-    }
-    else {
-      this.textAreaValue = undefined;
-    }
-    */
-    //this.interaccionForResponse = undefined;
     this.textAreaValue = undefined;
-    //this.visibleResponse = false;
     this.isVisibleModalChat = value;
   };
 
-  
-  
-  sePuedeResponder = (interaccion: Interaccion) :boolean => {
-      let last: Interaccion | undefined = this.searchLastInteraccion();
-      let ret :boolean = false
-      if(last) {
-        if(interaccion.key) {
-          ret = interaccion.key === last.key
-        }
-        else {
-          ret = interaccion.id === last.id
-        }
-      }
-      return ret; 
-  };
-  
-  
-  responderInteraccion = (event: Event, interaccion: Interaccion) => {
-    event.preventDefault;
-    //this.interaccionForResponse = interaccion;
-    //this.visibleResponse = true;
-    //this.isVisibleModalResponse = true;
-    // Si esta al reves deberiamos verificar al principio  
+  handleCancelModalFileChat = (value: boolean) => {
+    this.textAreaValue = undefined;
+    this.isVisibleModalFileChat = value;
   };
 
-  tieneRtaCurrentComment = () :boolean => {
-    let last = this.searchLastInteraccion(); 
-    return last?.rol === 'EDITOR'
-  };
-
-  handlePreview = (file: NzUploadFile): void => {
-    
-  };
+  handlePreview = (file: NzUploadFile): void => { };
 
   async handleChange({ file, fileList }: NzUploadChangeParam): Promise<void> {
     if (file.status !== 'uploading') {
@@ -452,8 +504,6 @@ export class ResolverComponent implements OnInit {
     return 'http://localhost:8080/files/upload'
   };
 
-  
-
   resolverFilesStyle = (pedido: Pedido) => {
     if(pedido.files && pedido.files.length > 1) {
       return "margin-left:10rem;"
@@ -462,7 +512,6 @@ export class ResolverComponent implements OnInit {
       return "margin-left:3rem;"
     }
   };
-  
 
   cardStyle = (file: FileDB) => {
     if(this.currentFile?.id === file.id) {
@@ -475,30 +524,6 @@ export class ResolverComponent implements OnInit {
     else {
       return ''
     }
-  };
-
-  itemListStyle = (interaccion: Interaccion) => {
-    let last: Interaccion | undefined = this.searchLastInteraccion();
-      let ret :boolean = false
-      if(last) {
-        if(interaccion.key) {
-          ret = interaccion.key === last.key
-        }
-        else {
-          ret = interaccion.id === last.id
-        }
-      }
-      if(ret && interaccion.rol === 'EDITOR') {
-        return {
-          //'background-color':'#87d068'
-          'border-color': 'rgb(247, 251, 31)',
-          'border-width': '2px',
-          'border-style': 'dashed'
-        } 
-      }
-      else {
-        return ''
-      } 
   };
 
   getPedido(): void {
@@ -590,8 +615,6 @@ export class ResolverComponent implements OnInit {
   onClickChat = (event: MouseEvent, comentario: Comentario) => {
     event.preventDefault;
     this.currentComment = comentario;
-    // if hay response previa entonces pongo en el texto la rta
-    //if(this.tieneRtaCurrentComment() && !this.textAreaValue) {
     let last = this.searchLastInteraccion(); 
     if (last?.rol === 'EDITOR') {
       this.textAreaValue = last?.texto
@@ -647,7 +670,6 @@ export class ResolverComponent implements OnInit {
             this.msg.error('Hubo un error, no se pudieron marcar los comentarios');
         }
     };
-    
   };
 
   handleCancelResolver = () => {
