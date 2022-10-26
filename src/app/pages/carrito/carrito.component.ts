@@ -57,15 +57,11 @@ export class CarritoComponent implements OnInit {
   AccionText: String = "Editar"
 
   ChatNoResultMessage: string = showNoResultTextChatFor('Editor'); 
-  toFullDate : (date: Date | any) => string = toFullDate;
   toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString;
   determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
   avatarStyle: (interaccion: Interaccion) => { 'background-color': string; } = avatarStyle;
   colorear :(descripcion: string) => string | undefined = colorearEstado;
-  badgeUponImagePositionStyle: (comentario: Comentario) => { position: string; left: string; top: string; } = badgeUponImagePositionStyle;
-  badgeColorStyleFunction: ()  => {
-    backgroundColor: string;
-  } = badgeColorStyle;
+  
   
   constructor(private _router: Router, private service: PedidoService, 
     private fb: FormBuilder, private modal: NzModalService, private msg: NzMessageService, private tokenService: TokenStorageService) { }
@@ -137,8 +133,7 @@ export class CarritoComponent implements OnInit {
     this.isVisibleModalFileComments = true;
   }
 
-  onClickComment = (event: MouseEvent, comentario: Comentario) => {
-    event.preventDefault;
+  onClickComment = (comentario: Comentario) => {
     this.currentComment = comentario;
     let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(comentario.interacciones))
     let last: Interaccion | undefined =  InteraccionesCP.pop()
@@ -146,19 +141,7 @@ export class CarritoComponent implements OnInit {
       this.userCommentValue = last.texto
     };
     this.isVisibleModalFilesChat = true;    
-  }
-
-  onChangeCheck = (event: boolean, comentario: Comentario) => {
-    comentario.terminado = event;
   };
-
-  handleCancelResolver = () => {
-    this.isVisibleModalFileComments = false;
-  }
-
-  handleOkResolver = () => {
-    this.isVisibleModalFileComments = false;
-  }
 
   onChangeUserComment = (value: string) => {
     this.userCommentValue = value;
@@ -202,6 +185,12 @@ export class CarritoComponent implements OnInit {
   handleCloseFileChat = (value: boolean) => {
     this.userCommentValue = '';
     this.isVisibleModalChatUponAFile = value;
+  };
+
+  handleCloseComments = (value: boolean) => {
+    this.currentFile = undefined;
+    this.currentPedido = undefined;
+    this.isVisibleModalFileComments = value;
   };
 
   deleteInteractionForAFileWithComments = () => {
