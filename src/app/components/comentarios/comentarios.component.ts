@@ -17,6 +17,9 @@ import { badgeColorStyle, badgeUponImagePositionStyle, toFullDate } from "src/ap
     @Input() file: FileDB | undefined;
     @Output() onClose = new EventEmitter<boolean>();
     @Output() onAccept = new EventEmitter<Comentario>();
+    @Output() onSendMarkups = new EventEmitter<Comentario[]>();
+
+    markups: Comentario[] = [];
     
     ngOnInit(): void {
     }
@@ -39,8 +42,16 @@ import { badgeColorStyle, badgeUponImagePositionStyle, toFullDate } from "src/ap
     };
 
     // Revisar el comp. del botón para que se envíen los checks
-    onChangeCheck = (event: boolean, comentario: Comentario) => {
-        comentario.terminado = event;
+    changeCheck = (event: boolean, comentario: Comentario) => {
+        //comentario.terminado = event;
+        let commentCp : Comentario = JSON.parse(JSON.stringify(comentario))
+        commentCp.terminado = event
+        this.markups.push(commentCp)
+        //this.onChangeCheck.emit(commentCp);
+    };
+
+    sendMarkups = () => {
+        this.onSendMarkups.emit(this.markups);
     };
     
 }

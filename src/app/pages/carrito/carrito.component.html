@@ -166,7 +166,8 @@
               [isVisible]="isVisibleModalFileComments"
               [file]="currentFile"
               (onClose)="handleCloseComments($event)"
-              (onAccept)="onClickComment($event)">
+              (onAccept)="onClickComment($event)"
+              (onSendMarkups)="handleOnSendMarkups($event)">
             </app-comentarios>
             <nz-modal
               [(nzVisible)]="isVisibleModalMoreInfo"

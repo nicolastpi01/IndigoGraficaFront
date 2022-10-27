@@ -495,8 +495,9 @@ export class ResolverComponent implements OnInit {
     }
   };
 
-  onChangeCheck = (event: boolean, comentario: Comentario) => {
-    comentario.terminado = event;
+  handleSendMarkups = (comments: Comentario[]) => {
+    let fileCp : FileDB = JSON.parse(JSON.stringify(this.currentFile));
+    let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido));
   };
 
   // Este es la firma del metodo nzAction de Upload antZorro
@@ -612,9 +613,8 @@ export class ResolverComponent implements OnInit {
     }
   };
 
-  onClickChat = (event: MouseEvent, comentario: Comentario) => {
-    event.preventDefault;
-    this.currentComment = comentario;
+  onClickChat = (comment: Comentario) => {
+    this.currentComment = comment;
     let last = this.searchLastInteraccion(); 
     if (last?.rol === 'EDITOR') {
       this.textAreaValue = last?.texto
@@ -672,9 +672,9 @@ export class ResolverComponent implements OnInit {
     };
   };
 
-  handleCancelResolver = () => {
+  handleCancelResolver = (value: boolean) => {
     this.getPedido(); // revisar esto !
-    this.isVisibleModalComment = false;
+    this.isVisibleModalComment = value;
   };
 
 }

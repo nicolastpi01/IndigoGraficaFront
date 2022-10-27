@@ -17,6 +17,7 @@ import { filter } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { PerfilInfo } from 'src/app/components/chat/chat.component';
+import { Comment } from '@angular/compiler';
 
 @Component({
   selector: 'app-carrito',
@@ -497,6 +498,58 @@ export class CarritoComponent implements OnInit {
       if(lastInteraction) this.userCommentValue = lastInteraction.texto;  
     }
     this.isVisibleModalChat = true;
+  };
+
+  handleOnSendMarkups(comments: Comentario[]): void {
+    let fileCp : FileDB = JSON.parse(JSON.stringify(this.currentFile));
+    let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido));
+    /*
+    fileCp = {
+      ...fileCp, comentarios: fileCp.comentarios.map((comentario: Comentario) => {
+        if(comentario.id === comment.id) {
+          return comment
+        }
+        else {
+          return comentario
+        }
+      })
+    };
+    */
+    fileCp = {
+      ...fileCp, comentarios: fileCp.comentarios.filter((comentario: Comentario) => {
+        return !comments.includes(comentario)
+      })
+    };
+
+    pedidoCp = {
+      ...pedidoCp, files: pedidoCp.files?.map((file: FileDB) => {
+        if(fileCp && file.id === fileCp.id) {
+          return fileCp;
+        }
+        else {
+          return file;
+        }
+      })
+    };
+    //console.log("PEDIDO CP: ", pedidoCp)
+    this.service.update(pedidoCp).
+      pipe(filter(e => e instanceof HttpResponse))
+      .subscribe(async (e: any) => {
+        let pedido = (e.body as Pedido)
+        this.currentPedido = pedido;    
+        this.currentPedido = {
+          ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+            return {
+              ...file, url: this.generateUrl(file)
+            }
+          }) 
+        };
+        this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)        
+        this.msg.success('Se marcaron los comentarios!');
+      }),
+      () => {
+        this.msg.error('Hubo un error, no se pudieron marcar los comentarios');
+      }
   };
 
   generateUrl = (file: FileDB) :string => {

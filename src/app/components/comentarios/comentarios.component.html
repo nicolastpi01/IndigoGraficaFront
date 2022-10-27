@@ -6,8 +6,8 @@
     nzTitle="Responder"
     nzCentered
     (nzOnCancel)="handleCancel()"
-    (nzOnOk)="handleOk()"
-    nzOkText="Ok"
+    (nzOnOk)="sendMarkups()"
+    nzOkText="Envíar marcados"
 >
 <ng-container *nzModalContent>
   <p style="text-align: center;"><b>Comentarios</b></p>
@@ -80,7 +80,7 @@
                       <div nz-typography nzType="secondary">Está finalizado?</div>
                     </div>
                     <div nz-col>
-                      <div nz-checkbox [(ngModel)]="comentario.terminado" (ngModelChange)="onChangeCheck($event, comentario)"></div>
+                      <div nz-checkbox (ngModel)="comentario.terminado" (ngModelChange)="changeCheck($event, comentario)"></div>
                     </div>
                   </div>
                 </div>
