@@ -498,6 +498,44 @@ export class ResolverComponent implements OnInit {
   handleSendMarkups = (comments: Comentario[]) => {
     let fileCp : FileDB = JSON.parse(JSON.stringify(this.currentFile));
     let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido));
+    fileCp = {
+      ...fileCp, comentarios: fileCp.comentarios.map((comentario: Comentario) => {
+        if(comments.find((comment: Comentario) => comment.id === comentario.id) !== undefined) {
+          return comments.find((comment: Comentario) => comment.id === comentario.id)!
+        }
+        else {
+          return comentario
+        }
+      })
+    };
+    pedidoCp = {
+      ...pedidoCp, files: pedidoCp.files?.map((file: FileDB) => {
+        if(fileCp && file.id === fileCp.id) {
+          return fileCp;
+        }
+        else {
+          return file;
+        }
+      })
+    };
+    this.service.update(pedidoCp).
+      pipe(filter(e => e instanceof HttpResponse))
+      .subscribe(async (e: any) => {
+        let pedido = (e.body as Pedido)
+        this.currentPedido = pedido;    
+        this.currentPedido = {
+          ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+            return {
+              ...file, url: this.generateUrl(file)
+            }
+          }) 
+        };
+        this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)        
+        this.msg.success('Se marcaron los comentarios!');
+      }),
+      () => {
+        this.msg.error('Hubo un error, no se pudieron marcar los comentarios');
+      }
   };
 
   // Este es la firma del metodo nzAction de Upload antZorro
