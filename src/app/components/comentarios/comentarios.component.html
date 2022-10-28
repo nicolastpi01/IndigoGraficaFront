@@ -80,7 +80,7 @@
                       <div nz-typography nzType="secondary">Está finalizado?</div>
                     </div>
                     <div nz-col>
-                      <div nz-checkbox (ngModel)="comentario.terminado" (ngModelChange)="changeCheck($event, comentario)"></div>
+                        <div nz-checkbox [(ngModel)]="comentario.terminado" (ngModelChange)="changeCheck($event, comentario)"></div>
                     </div>
                   </div>
                 </div>

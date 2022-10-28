@@ -503,24 +503,16 @@ export class CarritoComponent implements OnInit {
   handleOnSendMarkups(comments: Comentario[]): void {
     let fileCp : FileDB = JSON.parse(JSON.stringify(this.currentFile));
     let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido));
-    /*
     fileCp = {
       ...fileCp, comentarios: fileCp.comentarios.map((comentario: Comentario) => {
-        if(comentario.id === comment.id) {
-          return comment
+        if(comments.find((comment: Comentario) => comment.id === comentario.id) !== undefined) {
+          return comments.find((comment: Comentario) => comment.id === comentario.id)!
         }
         else {
           return comentario
         }
       })
     };
-    */
-    fileCp = {
-      ...fileCp, comentarios: fileCp.comentarios.filter((comentario: Comentario) => {
-        return !comments.includes(comentario)
-      })
-    };
-
     pedidoCp = {
       ...pedidoCp, files: pedidoCp.files?.map((file: FileDB) => {
         if(fileCp && file.id === fileCp.id) {
@@ -531,7 +523,6 @@ export class CarritoComponent implements OnInit {
         }
       })
     };
-    //console.log("PEDIDO CP: ", pedidoCp)
     this.service.update(pedidoCp).
       pipe(filter(e => e instanceof HttpResponse))
       .subscribe(async (e: any) => {

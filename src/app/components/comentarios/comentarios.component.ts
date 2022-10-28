@@ -8,7 +8,7 @@ import { badgeColorStyle, badgeUponImagePositionStyle, toFullDate } from "src/ap
     templateUrl: './comentarios.component.html',
     styleUrls: ['./comentarios.component.css']
   })
-  export class ComentariosComponent implements OnInit {
+  export class ComentariosComponent {
 
     badgeUponImagePositionStyle: (comentario: Comentario) => { position: string; left: string; top: string; } = badgeUponImagePositionStyle;
     toFullDate : (date: Date | any) => string = toFullDate;
@@ -21,15 +21,10 @@ import { badgeColorStyle, badgeUponImagePositionStyle, toFullDate } from "src/ap
 
     markups: Comentario[] = [];
     
-    ngOnInit(): void {
-    }
 
     handleCancel = () => {
         this.handleClose()
 
-    };
-    handleOk = () => {
-        this.handleClose()  
     };
 
     handleClose(): void {
@@ -41,17 +36,20 @@ import { badgeColorStyle, badgeUponImagePositionStyle, toFullDate } from "src/ap
         this.onAccept.emit(comentario);
     };
 
-    // Revisar el comp. del botón para que se envíen los checks
     changeCheck = (event: boolean, comentario: Comentario) => {
-        //comentario.terminado = event;
+        console.log("markups")
         let commentCp : Comentario = JSON.parse(JSON.stringify(comentario))
         commentCp.terminado = event
-        this.markups.push(commentCp)
-        //this.onChangeCheck.emit(commentCp);
+        this.markups = [
+            ...this.markups.filter((comment: Comentario) => comment.id !== comentario.id), commentCp
+        ]
     };
 
     sendMarkups = () => {
-        this.onSendMarkups.emit(this.markups);
+        if(this.markups.length > 0) {
+            this.onSendMarkups.emit(this.markups);
+            this.markups = []
+        };
     };
     
 }
