@@ -167,7 +167,8 @@
               [file]="currentFile"
               (onClose)="handleCloseComments($event)"
               (onAccept)="onClickComment($event)"
-              (onSendMarkups)="handleOnSendMarkups($event)">
+              (onSendMarkups)="handleOnSendMarkups($event)"
+              [rol]="currentRol">
             </app-comentarios>
             <nz-modal
               [(nzVisible)]="isVisibleModalMoreInfo"

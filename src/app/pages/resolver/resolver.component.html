@@ -160,7 +160,8 @@
           [file]="currentFile"
           (onClose)="handleCancelResolver($event)"
           (onAccept)="onClickChat($event)"
-          (onSendMarkups)="handleSendMarkups($event)">
+          (onSendMarkups)="handleSendMarkups($event)"
+          [rol]="currentRol">
         </app-comentarios>
         <app-chat 
           [elem]="currentComment" 

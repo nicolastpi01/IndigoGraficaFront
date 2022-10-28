@@ -62,7 +62,7 @@ export class CarritoComponent implements OnInit {
   determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
   avatarStyle: (interaccion: Interaccion) => { 'background-color': string; } = avatarStyle;
   colorear :(descripcion: string) => string | undefined = colorearEstado;
-  
+  currentRol: string = 'CLIENTE'
   
   constructor(private _router: Router, private service: PedidoService, 
     private fb: FormBuilder, private modal: NzModalService, private msg: NzMessageService, private tokenService: TokenStorageService) { }

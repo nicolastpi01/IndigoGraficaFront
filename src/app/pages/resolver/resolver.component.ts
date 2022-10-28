@@ -51,7 +51,8 @@ export class ResolverComponent implements OnInit {
   tabs: Array<{ name: string, icon: string, title: string }> = [];
   time = formatDistance(new Date(), new Date());
   now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
-  ChatNoResultMessage: string = showNoResultTextChatFor('Cliente'); 
+  ChatNoResultMessage: string = showNoResultTextChatFor('Cliente');
+  currentRol :string = 'EDITOR'; 
 
   constructor(private route: ActivatedRoute, private service :PedidoService, private msg: NzMessageService) {}
 
