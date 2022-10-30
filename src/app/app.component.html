@@ -1,19 +1,22 @@
 <nz-layout class="app-layout">
-  <nz-sider class="menu-sidebar"
-            nzCollapsible
-            nzWidth="256px"
-            nzBreakpoint="md"
-            [(nzCollapsed)]="isCollapsed"
-            [nzTrigger]="null">
-    <div class="sidebar-logo">
+  <!--nz-sider class="menu-sidebar-->
+  <nz-sider
+    [style]="menuSider()"
+    nzCollapsible
+    nzWidth="256px"
+    nzBreakpoint="md"
+    [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null">
+    <!--div class="sidebar-logo"-->
+    <div [style]="sidebarLogo()">
       <a href="bienvenido/" target="_blank">
-        <img src="./assets/herramienta-de-diseno.gif" alt="logo">
-        <h1>Índigo Gráfica</h1>
+        <img class="icon" src="./assets/herramienta-de-diseno.gif" alt="logo">
+        <h1 class="title">Índigo Gráfica</h1>
       </a>
     </div>
-    <ul nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
-        <ul>
+    <ul class="primaryList" [ngStyle]="UlStyle()" nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      <li nz-submenu nzOpen style="color: #fff" nzTitle="Dashboard" nzIcon="dashboard">
+        <ul [ngStyle]="SecondaryListStyle()" class="list">
           <!--ng-template [ngIf]="mostrarOpcionesCliente" [ngIfElse]="ShowEditorOptions"-->
             <li nz-menu-item nzMatchRouter [ngStyle]="liStyle(item)" (click)="onClick(item)" *ngFor="let item of subMenuItems">
                 <a [routerLink]="item.route">{{ item.text }}</a>&nbsp;

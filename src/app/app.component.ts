@@ -101,16 +101,51 @@ export class AppComponent {
   liStyle = (item: any) => {
     if(item.active) {
       return {
-        'background': '#c7166b' 
+        'background': this.mostrarOpcionesCliente ? '#139afbcc' : '#cb4f8b' // Claro
+         
       }
     }
     else {
       return {
-        'background': '#c74216'
+        'background': this.mostrarOpcionesCliente ? '#0d1f71cc' : '#430825' // Strong
       }
     }
   }
-  
+
+  SecondaryListStyle = () => {
+    return {
+      'background': this.mostrarOpcionesCliente ? '#0d1f71cc' : '#430825' // Strong
+    }
+  };
+
+  menuSider = () => {
+    return {
+      'position': 'relative',
+      'z-index': '10',
+      'min-height': '100vh',
+      'box-shadow': '2px 0 6px rgba(133, 52, 123, 0.848)',
+      'background': this.mostrarOpcionesCliente ? '#001e88f6' : '#7e0f45',
+    }
+  }
+
+  UlStyle = () => {
+    return {
+      'box-shadow': '2px 0 6px rgba(133, 52, 123, 0.848)',
+      'background': this.mostrarOpcionesCliente ? '#001e88f6' : '#7e0f45'
+    }
+  }
+
+  sidebarLogo = () => {
+    return {
+      'position': 'relative',
+      'height': '64px',
+      'padding-left': '24px',
+      'overflow': 'hidden',
+      'line-height': '64px',
+      'background': this.mostrarOpcionesCliente ? '#001e88f6' : '#7e0f45',
+      'transition': 'all .3s',
+    }
+  }
 
   determiteBadgeColor = (state?: string) :string =>  {
     let cantidad = 0;

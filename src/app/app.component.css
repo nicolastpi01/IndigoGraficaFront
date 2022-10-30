@@ -22,7 +22,8 @@
     position: relative;
     z-index: 10;
     min-height: 100vh;
-    box-shadow: 2px 0 6px rgba(0,21,41,.35);
+    box-shadow: 2px 0 6px #cb4f8b;
+    background: #7e0f45;
   }
   
   .header-trigger {
@@ -117,18 +118,18 @@
     padding-left: 24px;
     overflow: hidden;
     line-height: 64px;
-    background: #290014;
+    background: #e50505;
     transition: all .3s;
   }
   
-  .sidebar-logo img {
+  .icon {
     display: inline-block;
     height: 32px;
     width: 32px;
     vertical-align: middle;
   }
   
-  .sidebar-logo h1 {
+  .title {
     display: inline-block;
     margin: 0 0 0 20px;
     color: #fff;
@@ -137,6 +138,26 @@
     font-family: Avenir,Helvetica Neue,Arial,Helvetica,sans-serif;
     vertical-align: middle;
   }
+
+  .list {
+    background-color: #430825;
+    /*color: #0d1f71cc; */
+  }
+
+  .list li a {
+    color: #fff;
+    /*
+    font-weight: 600;
+    font-size: 14px;
+    font-family: Avenir,Helvetica Neue,Arial,Helvetica,sans-serif;
+    */
+  }
+
+
+  .primaryList li title {
+    color: #fff;
+  }
+  
   
   nz-header {
     padding: 0;
