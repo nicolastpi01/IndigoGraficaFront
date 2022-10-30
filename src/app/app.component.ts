@@ -107,14 +107,14 @@ export class AppComponent {
     }
     else {
       return {
-        'background': this.mostrarOpcionesCliente ? '#0d1f71cc' : '#430825' // Strong
+        'background': this.mostrarOpcionesCliente ? '#070930' : '#430825' // Strong
       }
     }
   }
 
   SecondaryListStyle = () => {
     return {
-      'background': this.mostrarOpcionesCliente ? '#0d1f71cc' : '#430825' // Strong
+      'background': this.mostrarOpcionesCliente ? '#070930' : '#430825' // Strong
     }
   };
 
@@ -123,15 +123,15 @@ export class AppComponent {
       'position': 'relative',
       'z-index': '10',
       'min-height': '100vh',
-      'box-shadow': '2px 0 6px rgba(133, 52, 123, 0.848)',
-      'background': this.mostrarOpcionesCliente ? '#001e88f6' : '#7e0f45',
+      'box-shadow': '2px 0 6px' + this.mostrarOpcionesCliente ? '#031753f6' : 'rgba(133, 52, 123, 0.848)',
+      'background': this.mostrarOpcionesCliente ? '#031753f6' : '#7e0f45',
     }
   }
 
   UlStyle = () => {
     return {
-      'box-shadow': '2px 0 6px rgba(133, 52, 123, 0.848)',
-      'background': this.mostrarOpcionesCliente ? '#001e88f6' : '#7e0f45'
+      'box-shadow': '2px 0 6px' + this.mostrarOpcionesCliente ? '#031753f6' : 'rgba(133, 52, 123, 0.848)',
+      'background': this.mostrarOpcionesCliente ? '#031753f6' : '#7e0f45'
     }
   }
 
@@ -142,7 +142,7 @@ export class AppComponent {
       'padding-left': '24px',
       'overflow': 'hidden',
       'line-height': '64px',
-      'background': this.mostrarOpcionesCliente ? '#001e88f6' : '#7e0f45',
+      'background': this.mostrarOpcionesCliente ? '#031753f6' : '#7e0f45',
       'transition': 'all .3s',
     }
   }
