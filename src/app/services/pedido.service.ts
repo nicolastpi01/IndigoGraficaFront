@@ -2,7 +2,6 @@ import { HttpClient, HttpEvent, HttpHeaders, HttpRequest } from '@angular/common
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { Pedido } from '../interface/pedido';
-import { Reservado } from '../objects/reservado';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -91,8 +90,7 @@ export class PedidoService {
   };
 
   reservar(pedido: Pedido) : Observable<any> {
-    
-    return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, {...pedido, estado: new Reservado(), editor: this.usuarioLogueado }, this.httpOptions).pipe(
+    return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, {...pedido, editor: this.usuarioLogueado }, this.httpOptions).pipe(
     //tap(_ => ),
     )
   }

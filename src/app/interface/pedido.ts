@@ -16,7 +16,7 @@ export interface Pedido {
     alto?: number; 
     ancho?: number; 
     tipografia?: string;
-    state?: string; // Estado
+    state?: Estado; 
     fechaEntrega?: Date | string;
     tipo?: Tipo; 
     descripcion?: string; 

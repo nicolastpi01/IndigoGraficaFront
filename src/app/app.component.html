@@ -21,7 +21,7 @@
             <a routerLink="/nuevo">Nuevo</a>
           </li>
           <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado">
-            <a routerLink="/todos">Todos</a>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="amountByState(pendienteAtencion)" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColor(pendienteAtencion), color: '#000000' }"></nz-badge>
+            <a routerLink="/todos">Todos</a>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="amountByState('Pendiente atencion')" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColor('Pendiente atencion'), color: '#000000' }"></nz-badge>
           </li>
           <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado">
             <a routerLink="/reservados">Reservados</a>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="amountByState(reservado)" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColor(reservado), color: '#000000' }"></nz-badge>

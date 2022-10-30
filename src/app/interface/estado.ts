@@ -1,6 +1,8 @@
 export interface Estado {
-    descripcion: string,
-    // mas cosas....
+    id: number,
+    value: string,
+    label: string,
+    hexColor: string
 }
   
 

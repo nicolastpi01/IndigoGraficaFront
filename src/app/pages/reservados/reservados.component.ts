@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Comentario } from 'src/app/interface/comentario';
+import { Estado } from 'src/app/interface/estado';
 import { FileDB } from 'src/app/interface/fileDB';
 import { Pedido } from 'src/app/interface/pedido';
 import { PedidoService } from 'src/app/services/pedido.service';
@@ -32,7 +33,7 @@ export class ReservadosComponent implements OnInit {
   pedidos: any[] = []
   allData: Array<any> = []
   isVisibleFilesModal: boolean = false;
-  colorear :(descripcion: string) => string | undefined = colorearEstado
+  colorear :(state: Estado) => string | undefined = colorearEstado
   loading: boolean = false
   AccionText: String = "Resolver"
   loadingMore: boolean = false;

@@ -247,7 +247,6 @@ export class NuevoComponent implements OnInit {
       alto: form.value.alto,
       ancho: form.value.ancho,
       descripcion: form.value.comentario,
-      state: PENDIENTEATENCION,
       propietario: {
         ubicacion: this.currentUser.ubicacion,
         apellido: this.currentUser.apellido,

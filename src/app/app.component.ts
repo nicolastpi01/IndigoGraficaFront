@@ -92,10 +92,12 @@ export class AppComponent {
 
   amountToShowInCart = () :number => {
     let amount: number = 0;
+    //console.log("RESUMEN :", this.resume)
     if(this.resume) {
-      amount += this.resume[PENDIENTEATENCION]
+      amount += this.resume['Pendiente atencion']
       amount += this.resume['reservado']
     }
+    //console.log("AMOUNT: ", amount)
     return amount;
   };
   
@@ -105,6 +107,7 @@ export class AppComponent {
     .subscribe(resume => this.resume = resume);
   };
 
+  /*
   buscarTodos = () :void => {
     this.cantidadPedidos()
     this.buscarPedidosReservados()
@@ -112,6 +115,7 @@ export class AppComponent {
     this.buscarPedidosEnRevision()
     this.buscarPedidosRetornados()
   };
+  */
 
   cantidadPedidos () {
     this.service.getPedidos(PENDIENTEATENCION)
