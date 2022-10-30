@@ -33,6 +33,23 @@ export class AppComponent {
   isOpen = false;
 
   resume: {[key: string]: number} | undefined;
+
+  clientSubMenuItems = [
+    { id: 1, route: '/bienvenido', active: true, text: 'Bienvenido', badge: false, state: '' },
+    { id: 2, route: '/nuevo', active: false, text: 'Nuevo', badge: false , state: ''},
+  ]
+
+  editorSubMenuItems =  [
+      { id: 1, route: '/bienvenido', active: true, text: 'Bienvenido', badge: false, state: '' },
+      { id: 2, route: '/nuevo', active: false, text: 'Nuevo', badge: false , state: ''},
+      { id: 3, route: '/todos', active: false, text: 'Todos', badge: true, state: this.pendienteAtencion },
+      { id: 4, route: '/reservados', active: false, text: 'Reservados', badge: true, state: this.reservado },
+      { id: 5, route: '/revision', active: false, text: 'En revisión', badge: true, state: '' },
+      { id: 6, route: '/retornados', active: false, text: 'Retornados', badge: true, state: '' },
+      { id: 7, route: '/finalizados', active: false, text: 'Finalizados', badge: true, state: '' },
+  ]
+
+  subMenuItems = this.clientSubMenuItems;
   
   constructor(private service: PedidoService, private _router: Router,private tokenStorageService: TokenStorageService) {}
 
@@ -44,6 +61,13 @@ export class AppComponent {
 
       this.mostrarOpcionesCliente = this.roles.includes('ROLE_USER');
       this.mostrarOpcionesEncargado = this.roles.includes('ROLE_ENCARGADO');
+
+      if(this.mostrarOpcionesCliente) {
+        this.subMenuItems = this.clientSubMenuItems 
+      }
+      if(this.mostrarOpcionesEncargado) {
+        this.subMenuItems = this.editorSubMenuItems
+      }
 
       console.log("EJECUTE ON INIT")
       this.findResume();
@@ -58,6 +82,35 @@ export class AppComponent {
     
     this.title = 'indigo';
   }
+
+  onClick = (item: any) => {
+    this.subMenuItems = this.subMenuItems.map((elem: any) => {
+      if(elem.id === item.id) {
+        return {
+          ...elem, active: true
+        }
+      }
+      else {
+        return {
+          ...elem, active: false
+        }
+      }
+    })
+  };
+
+  liStyle = (item: any) => {
+    if(item.active) {
+      return {
+        'background': '#c7166b' 
+      }
+    }
+    else {
+      return {
+        'background': '#c74216'
+      }
+    }
+  }
+  
 
   determiteBadgeColor = (state?: string) :string =>  {
     let cantidad = 0;

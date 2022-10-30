@@ -11,9 +11,24 @@
         <h1>Índigo Gráfica</h1>
       </a>
     </div>
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+    <ul nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed">
       <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
         <ul>
+          <!--ng-template [ngIf]="mostrarOpcionesCliente" [ngIfElse]="ShowEditorOptions"-->
+            <li nz-menu-item nzMatchRouter [ngStyle]="liStyle(item)" (click)="onClick(item)" *ngFor="let item of subMenuItems">
+                <a [routerLink]="item.route">{{ item.text }}</a>&nbsp;
+                <nz-badge *ngIf="item.badge" nzShowZero nzStandalone [nzCount]="amountByState(item.state)" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColor(item.state), color: '#000000' }"></nz-badge>
+            </li>
+          <!--/ng-template-->
+          <!--ng-template #ShowEditorOptions>
+            <li nz-menu-item nzMatchRouter (click)="onClick(item)" *ngFor="let item of editorSubMenuItems">
+              <a [routerLink]="item.route">{{ item.text }}</a>&nbsp;
+              <nz-badge *ngIf="item.badge" nzShowZero nzStandalone [nzCount]="amountByState(item.state)" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColor(item.state), color: '#000000' }"></nz-badge>
+            </li>
+          </ng-template-->
+        </ul>
+
+        <!--ul>
           <li nz-menu-item nzMatchRouter>
             <a routerLink="/bienvenido">Bienvenido</a>
           </li>
@@ -35,7 +50,7 @@
           <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado">
             <a routerLink="/finalizados">Finalizados</a>&nbsp;<i nz-icon nzType="flag" nzTheme="outline"></i>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="cantidadFinalizados" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColor(), color: '#000000' }"></nz-badge>
           </li>
-        </ul>
+        </ul-->
       </li>
     </ul>
   </nz-sider>
