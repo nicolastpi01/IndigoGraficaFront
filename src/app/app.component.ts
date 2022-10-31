@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { PedidoService } from './services/pedido.service';
 import { TokenStorageService } from './services/token-storage.service';
 import { CLEAR, DANGER, FINALIZADOS, NONE, PENDIENTEATENCION, RESERVADO, RETORNADOS, REVISION, WARNING } from './utils/const/constantes';
+import { colorsForMenusClient, colorsForMenusEditor, MenuColor } from './utils/functions/functions';
 
 @Component({
   selector: 'app-root',
@@ -34,6 +35,10 @@ export class AppComponent {
 
   resume: {[key: string]: number} | undefined;
 
+  clientColors : MenuColor = colorsForMenusClient;
+  editorColors : MenuColor = colorsForMenusEditor;
+  menuColors : MenuColor | undefined;
+
   clientSubMenuItems = [
     { id: 1, route: '/bienvenido', active: true, text: 'Bienvenido', badge: false, state: '' },
     { id: 2, route: '/nuevo', active: false, text: 'Nuevo', badge: false , state: ''},
@@ -63,10 +68,12 @@ export class AppComponent {
       this.mostrarOpcionesEncargado = this.roles.includes('ROLE_ENCARGADO');
 
       if(this.mostrarOpcionesCliente) {
-        this.subMenuItems = this.clientSubMenuItems 
+        this.subMenuItems = this.clientSubMenuItems
+        this.menuColors = this.clientColors 
       }
       if(this.mostrarOpcionesEncargado) {
         this.subMenuItems = this.editorSubMenuItems
+        this.menuColors = this.editorColors
       }
 
       console.log("EJECUTE ON INIT")
@@ -101,20 +108,20 @@ export class AppComponent {
   liStyle = (item: any) => {
     if(item.active) {
       return {
-        'background': this.mostrarOpcionesCliente ? '#139afbcc' : '#cb4f8b' // Claro
+        'background': this.menuColors?.itemActive 
          
       }
     }
     else {
       return {
-        'background': this.mostrarOpcionesCliente ? '#070930' : '#430825' // Strong
+        'background': this.menuColors?.item 
       }
     }
   }
 
   SecondaryListStyle = () => {
     return {
-      'background': this.mostrarOpcionesCliente ? '#070930' : '#430825' // Strong
+      'background': this.menuColors?.background // Strong
     }
   };
 
@@ -123,15 +130,15 @@ export class AppComponent {
       'position': 'relative',
       'z-index': '10',
       'min-height': '100vh',
-      'box-shadow': '2px 0 6px' + this.mostrarOpcionesCliente ? '#031753f6' : 'rgba(133, 52, 123, 0.848)',
-      'background': this.mostrarOpcionesCliente ? '#031753f6' : '#7e0f45',
+      'box-shadow': '2px 0 6px' + this.menuColors?.shadow,
+      'background': this.menuColors?.background,
     }
   }
 
   UlStyle = () => {
     return {
-      'box-shadow': '2px 0 6px' + this.mostrarOpcionesCliente ? '#031753f6' : 'rgba(133, 52, 123, 0.848)',
-      'background': this.mostrarOpcionesCliente ? '#031753f6' : '#7e0f45'
+      'box-shadow': '2px 0 6px' + this.menuColors?.shadow,
+      'background': this.menuColors?.background
     }
   }
 
@@ -142,7 +149,7 @@ export class AppComponent {
       'padding-left': '24px',
       'overflow': 'hidden',
       'line-height': '64px',
-      'background': this.mostrarOpcionesCliente ? '#031753f6' : '#7e0f45',
+      'background': this.menuColors?.background,
       'transition': 'all .3s',
     }
   }

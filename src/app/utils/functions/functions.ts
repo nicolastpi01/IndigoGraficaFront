@@ -1,5 +1,11 @@
 import { Comentario, Interaccion } from "src/app/interface/comentario";
 
+export interface MenuColor {
+  itemActive: string,
+  item: string,
+  background: string,
+  shadow: string  
+}
 
  export const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
  new Promise((resolve, reject) => {
@@ -69,3 +75,17 @@ export const badgeColorStyle = () : { backgroundColor: string; } => {
 export const showNoResultTextChatFor = (rol: string) : string => {
   return `No hay comentarios con el ${rol}, déjale un comentario!.`
 };
+
+export const colorsForMenusClient :MenuColor = {
+  item : '#070930', // Strong 
+  itemActive: '#139afbcc', // Light
+  background: '#031753f6', // Mid Strong
+  shadow: '#031753f6'
+}
+
+export const colorsForMenusEditor :MenuColor = {
+  item : '#430825', // Strong
+  itemActive: '#cb4f8b', // Light
+  background: '#7e0f45', // Mid Strong
+  shadow: '#7e0f45'
+}
