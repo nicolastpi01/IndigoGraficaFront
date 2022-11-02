@@ -30,14 +30,16 @@ h2 {
     
 }
 
+/*
 .center {
     display: flex;
     justify-content: center;
     color: green;
 }
+*/
 
-.buttonActions {
-    width:150px;
+.actions {
+    width:100px;
 }
 
 .buttonSearch {
@@ -62,6 +64,24 @@ h2 {
     background: #d8dadb;
   }
 
+.nz-card {
+    display: flex;
+}
+
+.liItem {
+    /*
+    display: flex;
+    min-width: 100%;
+    */
+    border: 5px solid #FFFF00;
+}
+
+.buttonGroup { 
+    display:flex; 
+    justify-content: flex-end; 
+    outline: 2px;
+}
+
 .child {
     /* Center horizontally
     display: flex;
@@ -77,3 +97,38 @@ h2 {
 .algo :hover {
     background: #d8dadb;
   }
+
+  
+.center {
+    display: flex;
+    border: 5px solid #FFFF00; 
+    /*
+    height: 300px;
+    
+    align-items: center;
+    */
+    justify-content: center;
+    
+    
+}
+.center p {
+    font-size: 15px;   
+    color:#f56a00;  
+    font-weight: bold;   
+}
+
+/*
+.parent {
+    background: #CCCCCC;
+    height: 200px;
+    width: 200px;
+    position: relative;
+    }
+    .child {
+    background: #FFFF00;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+*/

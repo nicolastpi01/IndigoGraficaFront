@@ -11,41 +11,22 @@
             <nz-list nzBordered>
               <!--div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
                 <div nz-col nzSpan="24"-->
-                  <nz-list-item *ngFor="let pedido of pedidos">
+                  <nz-list-item  *ngFor="let pedido of pedidos">
+                    <div nz-col class="algo" style="border: 5px solid #FFFF00" nzSpan="24">
                     <nz-tabset>
                       <nz-tab *ngFor="let tab of tabs" (nzClick)="onClickTab()" [nzTitle]="titleTemplate">
                         <ng-template #titleTemplate>
                           <i nz-icon [nzType]="tab.icon"></i>
-                          {{ tab.title }}
+                            {{ tab.title }}
                         </ng-template>
                         <ng-template [ngIf]="tab.name === 'Info' " [ngIfElse]="files">
-                          <nz-card nzBorderless="true" [nzActions]="[actions]">                
-                              <ng-template #actions>
-                                <div nz-row  [nzGutter]="[{ xs: 24, sm: 32, md: 48, lg: 64 }, 8]">
-                                  <div nz-col>
-                                    <button class="buttonActions" nzType="default" (click)="onClickMoreInfo($event, pedido)" nz-button>
-                                      Más Info
-                                    </button>    
-                                  </div>
-                                  <div nz-col>
-                                    <button class="buttonActions" (click)="onClickChat(pedido)" nzType="default" nz-button>
-                                      Chat
-                                    </button>    
-                                  </div>
-                                  <div nz-col>
-                                    <button class="buttonActions" (click)="onClickEdit(pedido)" nzType="default" nz-button>
-                                      Editar
-                                    </button>    
-                                  </div>
-                                </div>
-                              </ng-template>
-                              <div nz-row [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
-                                <ng-template [ngIf]="pedido.id.lenght < 10 || pedido.expandedId" [ngIfElse]="WithoutExpandedId">
+                              <div nz-row nzJustify="center" [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
+                                <!--ng-template [ngIf]="pedido.id.lenght < 10 || pedido.expandedId" [ngIfElse]="WithoutExpandedId"-->
                                   <div nz-col>
                                     <p class="subTitle">Id :</p>
                                     <p>{{ pedido.id ? pedido.id : "-" }}</p>
                                   </div>
-                                </ng-template>
+                                <!--/ng-template>
                                 <ng-template #WithoutExpandedId>
                                   <div nz-col nzSpan="6">
                                     <p class="subTitle">Id :</p>
@@ -61,13 +42,13 @@
                                       >
                                     </p>
                                   </div>
-                                </ng-template>
-                                <ng-template [ngIf]="pedido.nombre.lenght < 10 || pedido.expandedTitle" [ngIfElse]="WithoutExpanded">
+                                </ng-template-->
+                                <!--ng-template [ngIf]="pedido.nombre.lenght < 10 || pedido.expandedTitle" [ngIfElse]="WithoutExpanded"-->
                                   <div nz-col>
                                     <p class="subTitle">Título :</p>
                                     <p>{{pedido.nombre ? pedido.nombre : '-' }}</p>
                                   </div>
-                                </ng-template>
+                                <!--/ng-template>
                                 <ng-template #WithoutExpanded>
                                   <div nz-col nzSpan="4">
                                     <p class="subTitle">Título :</p>
@@ -83,7 +64,7 @@
                                       >
                                     </p>
                                   </div>
-                                </ng-template>
+                                </ng-template-->
                                 <div nz-col>
                                   <p class="subTitle">Tipo :</p>
                                   <p>{{ pedido.tipo && pedido.tipo.nombre ? pedido.tipo.nombre : '-'}}</p>
@@ -101,8 +82,42 @@
                                     <p>-</p>
                                   </ng-template>
                                 </div>
+                                <div nz-col>
+                                  <p class="subTitle">Encargado :</p>
+                                  <p>{{ pedido.encargado && pedido.encargado.nombre && pedido.encargado.apellido ? pedido.encargado.nombre + " " + pedido.encargado.apellido : '-'}}</p>
+                                </div>
+                                <div nz-col>
+                                  <p class="subTitle">Cantidad :</p>
+                                  <p>{{ pedido.cantidad ? pedido.cantidad : '-'}}</p>
+                                </div>
                             </div>
-                          </nz-card>
+                            <div nz-row class="buttonGroup" [nzGutter]="16">
+                              <div nz-col>
+                                <button 
+                                  nz-button
+                                  class="actions" 
+                                  (click)="onClickMoreInfo($event, pedido)" 
+                                  nzType="default" 
+                                  >Más Info
+                                </button>
+                              </div>
+                              <div nz-col>
+                                <button
+                                  nz-button 
+                                  class="actions" 
+                                  (click)="onClickChat(pedido)" 
+                                  nzType="default">Chat
+                                </button>
+                              </div>
+                              <div nz-col>
+                                <button
+                                  nz-button 
+                                  class="actions" 
+                                  (click)="onClickEdit(pedido)" 
+                                  nzType="default">Editar
+                                </button>
+                              </div>
+                            </div>
                         </ng-template>
                         <ng-template #files>
                           <ng-template [ngIf]="pedido.files && pedido.files.length" [ngIfElse]="NoFiles">
@@ -111,7 +126,7 @@
                                 <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="pedido.files">
                                   <div nz-col *ngFor="let file of pedido.files">
                                     <nz-list-item>
-                                      <nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddInteraction, actionChat]">
+                                      <nz-card [nzCover]="coverTemplate" [nzActions]="[actions]">
                                           <nz-card-meta
                                               [nzTitle]="file.name"
                                               nzDescription=""
@@ -119,16 +134,19 @@
                                             <ng-template #coverTemplate>
                                               <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
                                             </ng-template>
-                                            <ng-template #actionAddInteraction>
-                                              <button nz-button (click)="onClickShowFileComments($event, file, pedido)">
-                                                <p style="font-size: 10px;">Comentarios</p>
-                                              </button>
-                                            <!--i nz-icon nzType="comment" (click)="onClickShowFileComments($event, file, pedido)" nzTheme="outline"></i-->
-                                            </ng-template>
-                                            <ng-template #actionChat>
-                                              <button nz-button (click)="onClickFileChat(file, pedido)">
-                                                <p style="font-size: 10px;">Chat</p>
-                                              </button>
+                                            <ng-template #actions>
+                                              <div nz-row [nzGutter]="[{ xs: 2, sm: 4, md: 6, lg: 8 }, 4]">
+                                                <div nz-col>
+                                                  <button nz-button type="default" (click)="onClickFileChat(file, pedido)">
+                                                    <p style="font-size: 10px;">Chat</p>
+                                                  </button>
+                                                </div>
+                                                <div nz-col>
+                                                  <button nz-button type="default" (click)="onClickShowFileComments($event, file, pedido)">
+                                                    <p style="font-size: 10px;">Comentarios</p>
+                                                  </button>
+                                                </div>
+                                              </div>
                                             </ng-template>
                                       </nz-card>
                                     </nz-list-item>
@@ -148,6 +166,7 @@
                         </ng-template>
                       </nz-tab>  
                     </nz-tabset>
+                  </div>
                   </nz-list-item>
                 <!--/div>
               </div-->
@@ -379,7 +398,13 @@
           </ng-template>
     </ng-template>
     <ng-template #CarritoVacio>
-      No se encontro ningun pedido en el carrito
+      <div class="center">
+        <div>
+          <!--span nz-icon nzType="stop" nzTheme="outline"></span-->
+          <p>No se encontro ningun pedido en el carrito</p>
+          <p>Puede agregar un pedido desde la opción Nuevo</p>
+        </div>
+      </div> 
     </ng-template>
 </div>
   
