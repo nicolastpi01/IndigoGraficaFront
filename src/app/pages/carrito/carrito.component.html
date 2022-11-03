@@ -132,8 +132,10 @@
                             <!--div class="center"-->
                               <!--p>No cuenta con archivos para este pedido</p>
                               <p>Puede editar el pedido para agregarlas</p-->
-                                <div nz-col nzSpan="24">
-                                  <img nz-image alt="" [nzSrc]="fallback" class="border" width="150" height="160" >
+                                <div style="text-align: center;">
+                                  <p>No cuenta con imágenes para este pedido</p>
+                                  <img nz-image alt="" [nzSrc]="fallback" width="150" height="160">
+                                  <p>Puede agregarlas desde el botón 'Editar'</p>
                                 </div>
                             <!--/div-->
                           </ng-template>
@@ -169,6 +171,13 @@
                     </nz-tabset>
                   </div>
                   </nz-list-item>
+                  <nz-list-footer>
+                    <div class="loadmore">
+                      <button nz-button nzType="primary" *ngIf="!loadingMore" (click)="onLoadMore()">
+                        Cargar más
+                      </button>
+                    </div>
+                  </nz-list-footer>
                 <!--/div>
               </div-->
             </nz-list>
@@ -399,12 +408,16 @@
           </ng-template>
     </ng-template>
     <ng-template #CarritoVacio>
+      <!--div class="center"-->
       <div class="center">
-        <div>
-          <!--span nz-icon nzType="stop" nzTheme="outline"></span-->
-          <p>No se encontro ningun pedido en el carrito</p>
-          <p>Puede agregar un pedido desde la opción Nuevo</p>
-        </div>
+        <!--div-->
+          
+          <i nz-icon nzType="stop" nzTheme="outline"></i>
+          <br>
+          <br>
+          <p>No cuenta con pedidos en el carrito</p>
+          <p>Puede agregarlos desde el menú, en la opción 'Nuevo'</p>
+        <!--/div-->
       </div> 
     </ng-template>
 </div>

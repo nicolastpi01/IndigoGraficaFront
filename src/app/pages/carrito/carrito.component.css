@@ -70,6 +70,12 @@ nz-card :hover {
     /* font-size: 20px; */
 }
 
+.loadmore {
+    text-align: center; 
+    height: 32px;
+    /* line-height: 32px; */
+}
+
 .buttonSearch {
     width:100px;
 }
@@ -128,23 +134,28 @@ nz-card :hover {
 
   
 .center {
-    display: flex;
-    border: 5px solid #FFFF00; 
+    margin-top: 10%;
     /*
+    border: 5px solid #FFFF00; 
     height: 300px;
-    
     align-items: center;
     */
-    justify-content: center;
+    text-align: center;
     
     
 }
 .center p {
-    font-size: 15px;   
-    color:#f56a00;  
+    font-size: 15px;
+    line-height: 0.4;   
+    /*color:#161514;*/  
     font-weight: bold;   
 }
 
+.center i {
+    font-size: 50px;
+    font-weight: bold;   
+    color:#f6180d 
+}
 /*
 .parent {
     background: #CCCCCC;

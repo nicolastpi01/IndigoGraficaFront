@@ -27,7 +27,12 @@ export class CarritoComponent implements OnInit {
 
   //pageIndex: number = 1;
   total: number = 0;
+  count: number = 2;
+  index: number = 0;
+  index2: number = 2;
   pedidos: any[] = [];
+  allData: any[] = []
+
   currentPedido: Pedido | undefined; 
   currentFile: FileDB | undefined;
   currentComment: Comentario | undefined;
@@ -38,6 +43,7 @@ export class CarritoComponent implements OnInit {
   isVisibleModalFilesChat: boolean = false;
   isVisibleModalFileComments: boolean = false;
   isVisibleModalChatUponAFile: boolean = false;
+  loadingMore: boolean = false;
   /*
   indeterminate = true;
   allChecked = false;
@@ -91,7 +97,7 @@ export class CarritoComponent implements OnInit {
     let token :string = this.tokenService.getToken()
     this.service.getPedidosPorUsuario(token)
     .subscribe(pedidos => {
-       this.pedidos = pedidos.map((pedido: Pedido) => {
+      this.allData = pedidos.map((pedido: Pedido) => {
         return {
           ...pedido, 
           expandedId : false,
@@ -102,7 +108,20 @@ export class CarritoComponent implements OnInit {
             }
           })
         }
-       })
+       });
+      this.pedidos = pedidos.map((pedido: Pedido) => {
+        return {
+          ...pedido, 
+          expandedId: false,
+          expandedTitle: false,
+          files : pedido.files?.map((file: FileDB) => {
+            return {
+              ...file, url: this.generateUrl(file)
+            }
+          })
+        }
+       }).slice(this.index, this.index2);
+
        this.total = pedidos.length
        this.loading = false 
     });
@@ -113,6 +132,19 @@ export class CarritoComponent implements OnInit {
     label: "USUARIO",
     icon: "user",
     hexColor: "background-color: #87d068"
+  };
+
+  onLoadMore = () => {
+    this.loadingMore = true;
+    let index = this.index + this.count
+    let index2 = this.index2 + this.count
+    
+    let slice = this.allData.slice(index, index2) // revisar esto "!!"!""
+    this.pedidos = this.pedidos.concat(slice)
+
+    this.index2 = index2;
+    this.index = index;
+    this.loadingMore = false;
   };
 
   onClickFileChat = (file: FileDB, pedido: Pedido) => {
