@@ -6,9 +6,10 @@
   <ng-template #ifElse>
     <h2 nz-typography>Carrito</h2>
     <ng-template [ngIf]="pedidos && pedidos.length  > 0" [ngIfElse]="CarritoVacio">
-
-            <p>ESTE ES EL TOTAL :{{ total }}</p>
             <nz-list nzBordered>
+              <nz-list-header class="amount">
+                <p>#Total: {{total}}</p>
+              </nz-list-header>
               <!--div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
                 <div nz-col nzSpan="24"-->
                   <nz-list-item *ngFor="let pedido of pedidos">
@@ -107,7 +108,7 @@
                                             <ng-template #coverTemplate>
                                               <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
                                             </ng-template>
-                                            <ng-template #actions>
+                                            <ng-template  #actions>
                                               <div nz-row [nzGutter]="[{ xs: 2, sm: 4, md: 6, lg: 8 }, 4]">
                                                 <div nz-col>
                                                   <button nz-button type="default" (click)="onClickFileChat(file, pedido)">
