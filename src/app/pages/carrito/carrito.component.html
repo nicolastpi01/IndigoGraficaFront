@@ -11,7 +11,7 @@
             <nz-list nzBordered>
               <!--div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
                 <div nz-col nzSpan="24"-->
-                  <nz-list-item  *ngFor="let pedido of pedidos">
+                  <nz-list-item *ngFor="let pedido of pedidos">
                     <div nz-col class="algo" style="border: 5px solid #FFFF00" nzSpan="24">
                     <nz-tabset>
                       <nz-tab *ngFor="let tab of tabs" (nzClick)="onClickTab()" [nzTitle]="titleTemplate">
@@ -91,33 +91,6 @@
                                   <p>{{ pedido.cantidad ? pedido.cantidad : '-'}}</p>
                                 </div>
                             </div>
-                            <div nz-row class="buttonGroup" [nzGutter]="16">
-                              <div nz-col>
-                                <button 
-                                  nz-button
-                                  class="actions" 
-                                  (click)="onClickMoreInfo($event, pedido)" 
-                                  nzType="default" 
-                                  >Más Info
-                                </button>
-                              </div>
-                              <div nz-col>
-                                <button
-                                  nz-button 
-                                  class="actions" 
-                                  (click)="onClickChat(pedido)" 
-                                  nzType="default">Chat
-                                </button>
-                              </div>
-                              <div nz-col>
-                                <button
-                                  nz-button 
-                                  class="actions" 
-                                  (click)="onClickEdit(pedido)" 
-                                  nzType="default">Editar
-                                </button>
-                              </div>
-                            </div>
                         </ng-template>
                         <ng-template #files>
                           <ng-template [ngIf]="pedido.files && pedido.files.length" [ngIfElse]="NoFiles">
@@ -164,6 +137,33 @@
                             <!--/div-->
                           </ng-template>
                         </ng-template>
+                        <div nz-row class="buttonGroup" [nzGutter]="16">
+                          <div nz-col>
+                            <button 
+                              nz-button
+                              class="actions" 
+                              (click)="onClickMoreInfo($event, pedido)" 
+                              nzType="primary" 
+                              >Más Info
+                            </button>
+                          </div>
+                          <div nz-col>
+                            <button
+                              nz-button 
+                              class="actions" 
+                              (click)="onClickChat(pedido)" 
+                              nzType="primary">Chat
+                            </button>
+                          </div>
+                          <div nz-col>
+                            <button
+                              nz-button 
+                              class="actions" 
+                              (click)="onClickEdit(pedido)" 
+                              nzType="primary">Editar
+                            </button>
+                          </div>
+                        </div>
                       </nz-tab>  
                     </nz-tabset>
                   </div>
