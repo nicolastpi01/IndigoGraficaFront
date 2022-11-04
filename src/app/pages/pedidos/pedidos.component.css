@@ -81,8 +81,9 @@
     color: red;
     font-weight: bold;
     float: right;
+    /*
     margin-top: 0.5rem;
-    /*text-align: right;
+    text-align: right;
      font-size: 20px; */
   }
 

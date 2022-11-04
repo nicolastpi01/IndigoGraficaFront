@@ -1,0 +1,21 @@
+.center {
+    margin-top: 10%;
+    /*
+    border: 5px solid #FFFF00; 
+    height: 300px;
+    align-items: center;
+    */
+    text-align: center;   
+}
+.center p {
+    font-size: 15px;
+    line-height: 0.4;   
+    /*color:#161514;*/  
+    font-weight: bold;   
+}
+
+.center i {
+    font-size: 50px;
+    font-weight: bold;   
+    color:#f6180d 
+}

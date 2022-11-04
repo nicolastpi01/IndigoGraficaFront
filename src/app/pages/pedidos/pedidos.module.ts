@@ -24,6 +24,7 @@ import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzCommentModule } from 'ng-zorro-antd/comment';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { NoElementsModule } from "src/app/components/noElements/noelements.module";
 
 @NgModule({
     imports: [
@@ -50,7 +51,8 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
       NzSkeletonModule,
       NzDividerModule,
       NzCommentModule,
-      NzTypographyModule
+      NzTypographyModule,
+      NoElementsModule
     ],
     declarations: [PedidosComponent],
     exports: [PedidosComponent]
