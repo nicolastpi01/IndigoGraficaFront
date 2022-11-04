@@ -91,10 +91,7 @@ export class PedidoService {
   };
 
   reservar(pedido: Pedido) : Observable<any> {
-    
-    return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, {...pedido, estado: new Reservado(), editor: this.usuarioLogueado }, this.httpOptions).pipe(
-    //tap(_ => ),
-    )
+    return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, {...pedido, estado: new Reservado() }, this.httpOptions).pipe()
   }
 
 }

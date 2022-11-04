@@ -457,7 +457,7 @@ export class NuevoComponent implements OnInit {
 
   goOutside = () => {
     // Deberia mostrar un modal indicando el pedido generado (brevemente)
-    this._router.navigateByUrl('/todos')
+    this._router.navigateByUrl('/bienvenido')
   };
 
   agregarTodosLosComentarios = () => {

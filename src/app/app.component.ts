@@ -45,7 +45,6 @@ export class AppComponent {
       this.mostrarOpcionesCliente = this.roles.includes('ROLE_USER');
       this.mostrarOpcionesEncargado = this.roles.includes('ROLE_ENCARGADO');
 
-      console.log("EJECUTE ON INIT")
       this.findResume();
       this.username = user.username;
       this.service.change.subscribe((isOpen: any) => {
