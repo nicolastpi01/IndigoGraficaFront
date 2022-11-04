@@ -2,7 +2,7 @@ import { Component, HostBinding } from '@angular/core';
 import { Router } from '@angular/router';
 import { PedidoService } from './services/pedido.service';
 import { TokenStorageService } from './services/token-storage.service';
-import { CLEAR, DANGER, FINALIZADOS, NONE, PENDIENTEATENCION, RESERVADO, RETORNADOS, REVISION, WARNING } from './utils/const/constantes';
+import { CLEAR, DANGER, FINALIZADOS, NONE, PENDIENTEATENCION, PROPIOS, RESERVADO, RETORNADOS, REVISION, WARNING } from './utils/const/constantes';
 
 @Component({
   selector: 'app-root',
@@ -92,8 +92,7 @@ export class AppComponent {
   amountToShowInCart = () :number => {
     let amount: number = 0;
     if(this.resume) {
-      amount += this.resume[PENDIENTEATENCION]
-      amount += this.resume['reservado']
+      amount = this.resume[PROPIOS]
     }
     return amount;
   };

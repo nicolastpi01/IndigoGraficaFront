@@ -2,6 +2,7 @@ import { Usuario } from "src/app/interface/usuario";
 
 
 export const PENDIENTEATENCION = "Pendiente atencion"
+export const PROPIOS = "propios"
 export const RESERVADO = "reservado"
 export const FINALIZADOS ="Finalizados"
 export const REVISION = "Revision"
