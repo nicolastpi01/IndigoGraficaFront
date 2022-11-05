@@ -357,6 +357,7 @@ export class NuevoComponent implements OnInit {
       pipe(filter(e => e instanceof HttpResponse))
       .subscribe( (e: any) => {
         this.resetForm();
+        this.service.toggle();
         this.msg.success(e.body.message);
         this.loadingEliminarPedido = false;
       }),
