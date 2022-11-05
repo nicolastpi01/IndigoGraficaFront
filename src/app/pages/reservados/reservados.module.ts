@@ -21,6 +21,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzImageModule } from 'ng-zorro-antd/image';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { NoElementsModule } from "src/app/components/noElements/noelements.module";
 
 @NgModule({
     imports: [
@@ -44,7 +45,8 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
       NzSpinModule,
       NzModalModule,
       NzImageModule,
-      NzTypographyModule 
+      NzTypographyModule,
+      NoElementsModule 
     ],
     declarations: [ReservadosComponent],
     exports: [ReservadosComponent]

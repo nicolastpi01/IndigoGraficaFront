@@ -61,6 +61,11 @@ export class ReservadosComponent implements OnInit {
     }
   };
 
+  showTotal = (total: number) => {
+    if(total > 0) return `#Total: ${total}`
+    else return ''
+  };
+
   onClickWatch = (event: MouseEvent, item: any) => {
     event.preventDefault;
     this.currentFile = item; 

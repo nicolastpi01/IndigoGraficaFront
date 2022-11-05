@@ -71,9 +71,13 @@ export class PedidosComponent implements OnInit {
       this.loading = false
     })
   };
-    
-    
 
+ // `Está seguro de querer eliminar el pedido con id: ${pedido.id} ?.`
+  showTotal = (total: number) => {
+    if(total > 0) return `#Total: ${total}`
+    else return ''
+  };
+    
   badgeUponImageStyle = (comentario: Comentario) => {
     return {
       position: 'absolute', 

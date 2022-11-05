@@ -325,17 +325,11 @@
           </ng-template>
     </ng-template>
     <ng-template #CarritoVacio>
-      <!--div class="center"-->
-      <div class="center">
-        <!--div-->
-          
-          <i nz-icon nzType="stop" nzTheme="outline"></i>
-          <br>
-          <br>
-          <p>No cuenta con pedidos en el carrito</p>
-          <p>Puede agregarlos desde el menú, en la opción 'Nuevo'</p>
-        <!--/div-->
-      </div> 
+      <app-noelements
+        topText=" 'No cuenta con pedidos en el carrito' "
+        bottomText="Puede agregarlos desde el menú, en la opción 'Nuevo' "
+      >
+      </app-noelements>
     </ng-template>
 </div>
   
