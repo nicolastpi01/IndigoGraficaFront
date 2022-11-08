@@ -10,6 +10,7 @@ import { badgeColorStyle, toLocalDateString } from 'src/app/utils/functions/func
 import { toArray } from 'ng-zorro-antd/core/util';
 import { getValueOrNot, HeadingData, userData } from 'src/app/utils/functions/pedidosData/functions';
 import { Router } from '@angular/router';
+import { Estado } from 'src/app/interface/estado';
 
 
 @Component({
@@ -34,7 +35,7 @@ export class PedidosComponent implements OnInit {
   loadingMore: boolean = false;
   //loadingCard: boolean = false;
   isVisibleFilesModal: boolean = false;
-  colorear :(descripcion: string) => string | undefined = colorearEstado
+  colorear :(state: Estado) => string | undefined = colorearEstado
   loadingAccion: boolean = false
   loading: boolean = false
   AccionText: String = "Reservar"
@@ -61,13 +62,12 @@ export class PedidosComponent implements OnInit {
 
   getPedidos(): void {
     this.loading = true
-    this.service.getPedidos(PENDIENTEATENCION)
+    this.service.getPedidos('pendAtencion')
     .subscribe(pedidos =>{
       this.allData = pedidos
       this.total = pedidos.length
       this.pedidos = pedidos.map((p) => ({ ...p, showMore: false }))
-      //this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2); 
-       
+      //this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2);        
       this.loading = false
     })
   };

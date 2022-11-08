@@ -18,6 +18,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { PerfilInfo } from 'src/app/components/chat/chat.component';
 import { Comment } from '@angular/compiler';
+import { Estado } from 'src/app/interface/estado';
 
 @Component({
   selector: 'app-carrito',
@@ -67,7 +68,7 @@ export class CarritoComponent implements OnInit {
   toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString;
   determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
   avatarStyle: (interaccion: Interaccion) => { 'background-color': string; } = avatarStyle;
-  colorear :(descripcion: string) => string | undefined = colorearEstado;
+  colorear :(state: Estado) => string | undefined = colorearEstado;
   currentRol: string = 'CLIENTE'
   
   constructor(private _router: Router, private service: PedidoService, 

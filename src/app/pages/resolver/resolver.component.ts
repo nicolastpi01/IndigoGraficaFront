@@ -17,6 +17,7 @@ import { Solution } from 'src/app/interface/solution';
 import { Color } from 'src/app/interface/color';
 import { fallback } from 'src/app/utils/const/constantes';
 import { PerfilInfo } from 'src/app/components/chat/chat.component';
+import { Estado } from 'src/app/interface/estado';
 
 @Component({
   selector: 'app-resolver',
@@ -158,7 +159,7 @@ export class ResolverComponent implements OnInit {
     }
   };
 
-  colorear :(descripcion: string) => string | undefined = colorearEstado
+  colorear :(state: Estado) => string | undefined = colorearEstado
   
   onChangeTextArea = (value: string) :void => {
     this.textAreaValue = value;
