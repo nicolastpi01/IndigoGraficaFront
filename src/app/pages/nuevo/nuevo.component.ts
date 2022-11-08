@@ -257,7 +257,6 @@ export class NuevoComponent implements OnInit {
         email: this.currentUser.email
       },
       fechaEntrega: form.value.datePicker,
-      encargado: null,
       tipo: this.tipoPedidosData.find((tipoPedido: Tipo) => tipoPedido.nombre === form.value.tipo),
       colores: coloresRet
     }

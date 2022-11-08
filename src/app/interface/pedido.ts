@@ -9,7 +9,7 @@ import { Usuario } from "./usuario";
 
 export interface Pedido {
     id?: string;
-    propietario?: Usuario; //| string;
+    propietario?: Usuario; 
     nombre?: string; 
     nombreExtendido?: string; 
     cantidad?: number;
@@ -23,8 +23,8 @@ export interface Pedido {
     colores?: Color[]; 
     //boceto?: File;
     //estado!: Estado;
-    editor?: Usuario;
-    encargado?: Usuario | null;
+    //editor?: Usuario;
+    encargado?: Usuario;
     files?:  Array<FileDB>;
     interacciones?: Array<Interaccion>, // Interacciones entre usuario y Editor (Es el ida y vuelta) o el chat
     solutions?:  Array<Solution>;

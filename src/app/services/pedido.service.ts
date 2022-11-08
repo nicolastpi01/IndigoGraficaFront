@@ -85,7 +85,8 @@ export class PedidoService {
 
   reservar(pedido: Pedido) : Observable<any> {
     
-    return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, pedido, this.httpOptions).pipe()
+    //return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, pedido, this.httpOptions).pipe()
+    return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, this.httpOptions).pipe()
   }
 
 }
