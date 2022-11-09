@@ -77,7 +77,7 @@
                                 <div nz-col>
                                   <p class="subTitle">Estado :</p>
                                   <ng-template [ngIf]="pedido.state" [ngIfElse]="WithoutState">
-                                    <p><nz-tag [nzColor]="colorear(pedido.state)">{{pedido.state}}</nz-tag></p>
+                                    <p><nz-tag [nzColor]="colorear(pedido.state)">{{pedido.state.label}}</nz-tag></p>
                                   </ng-template>
                                   <ng-template #WithoutState>
                                     <p>-</p>
@@ -129,9 +129,6 @@
                             </nz-list>
                           </ng-template>
                           <ng-template  #NoFiles>
-                            <!--div class="center"-->
-                              <!--p>No cuenta con archivos para este pedido</p>
-                              <p>Puede editar el pedido para agregarlas</p-->
                                 <div style="text-align: center;">
                                   <p>No cuenta con imágenes para este pedido</p>
                                   <img nz-image alt="" [nzSrc]="fallback" width="150" height="160">
@@ -265,7 +262,7 @@
                             <div nz-col nzSpan="8">
                               <p class="subTitle">Estado :</p>
                               <ng-template [ngIf]="currentPedido.state" [ngIfElse]="WithoutState">
-                                <p><nz-tag [nzColor]="colorear(currentPedido.state)">{{currentPedido.state}}</nz-tag></p>
+                                <p><nz-tag [nzColor]="colorear(currentPedido.state)">{{currentPedido.state.label}}</nz-tag></p>
                               </ng-template>
                               <ng-template #WithoutState>
                                 <p>-</p>

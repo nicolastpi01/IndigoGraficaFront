@@ -83,9 +83,9 @@ export class PedidoService {
     return this.http.get<any>(`${this.baseUrl}/pedidos/resumen`, httpOptions) 
   };
 
-  reservar(pedido: Pedido) : Observable<any> {
-    
+  reservar(pedido: Pedido, token: string) : Observable<any> {  
     //return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, pedido, this.httpOptions).pipe()
+    httpOptions.headers.append('Authorization', `Bearer ${token}`);
     return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, this.httpOptions).pipe()
   }
 

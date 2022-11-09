@@ -11,6 +11,7 @@ import { toArray } from 'ng-zorro-antd/core/util';
 import { getValueOrNot, HeadingData, userData } from 'src/app/utils/functions/pedidosData/functions';
 import { Router } from '@angular/router';
 import { Estado } from 'src/app/interface/estado';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
 
 
 @Component({
@@ -50,7 +51,8 @@ export class PedidosComponent implements OnInit {
   
 
 
-  constructor(private service: PedidoService,  private msg: NzMessageService, private _router: Router) { }
+  constructor(private service: PedidoService,  private msg: NzMessageService, private _router: Router, 
+    private tokenService: TokenStorageService) { }
 
   ngOnInit() {
     this.getPedidos()
@@ -148,7 +150,8 @@ export class PedidosComponent implements OnInit {
 
   onClickAccion (pedido: Pedido): void {
     this.loadingAccion = true
-    this.service.reservar(pedido)
+    let token :string = this.tokenService.getToken()
+    this.service.reservar(pedido, token)
     .subscribe((_) => {
        this.msg.success('Reservado exitosamente!');
        this.service.toggle()

@@ -9,22 +9,19 @@ import { Usuario } from "./usuario";
 
 export interface Pedido {
     id?: string;
-    propietario?: Usuario; 
+    propietario?: Usuario; // El Usuario que da de Alta el Pedido (Puede ser Editor o Cliente) 
     nombre?: string; 
     nombreExtendido?: string; 
     cantidad?: number;
     alto?: number; 
     ancho?: number; 
     tipografia?: string;
-    state?: Estado; // Estado
+    state?: Estado; 
     fechaEntrega?: Date | string;
     tipo?: Tipo; 
     descripcion?: string; 
     colores?: Color[]; 
-    //boceto?: File;
-    //estado!: Estado;
-    //editor?: Usuario;
-    encargado?: Usuario;
+    encargado?: Usuario; // El encargado de darle resolución al Pedido (siempre es un Editor --único)
     files?:  Array<FileDB>;
     interacciones?: Array<Interaccion>, // Interacciones entre usuario y Editor (Es el ida y vuelta) o el chat
     solutions?:  Array<Solution>;
