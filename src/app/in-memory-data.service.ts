@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { InMemoryDbService } from 'angular-in-memory-web-api';
 import { Pedido } from './interface/pedido';
 import { Logo } from './objects/logo';
-import { PendienteAtencion } from './objects/pendienteAtencion';
 
 
 @Injectable({
@@ -28,7 +27,6 @@ export class InMemoryDataService implements InMemoryDbService {
         tipografia: "Sans Serif",
         tipo: new  Logo(),
         descripcion: "Esto es una descripcion mas extensa donde se describen mas caracteristicas del Pedido, asi se es mas preciso",
-        estado: new PendienteAtencion()
       },
       {
         id:'2',
@@ -45,7 +43,6 @@ export class InMemoryDataService implements InMemoryDbService {
         tipografia: "Sans Serif",
         tipo: new  Logo(),
         descripcion: "Esto es una descripcion mas extensa donde se describen mas caracteristicas del Pedido, asi se es mas preciso",
-        estado: new PendienteAtencion()
       },
       {
         id:3,
@@ -62,7 +59,6 @@ export class InMemoryDataService implements InMemoryDbService {
         tipografia: "Sans Serif",
         tipo: new  Logo(),
         descripcion: "Esto es una descripcion mas extensa donde se describen mas caracteristicas del Pedido, asi se es mas preciso",
-        estado: new PendienteAtencion()
       },
       
     ];
