@@ -30,14 +30,50 @@ h2 {
     
 }
 
+/*
 .center {
     display: flex;
     justify-content: center;
     color: green;
 }
+*/
 
-.buttonActions {
-    width:150px;
+.actions {
+    width:100px;
+}
+/*
+.actions :hover {
+    background-color: #f56a00;
+    color: #f56a00;
+    background: #f56a00;
+}
+
+
+nz-card {
+    background-color: #f56a00;
+    color: #f56a00;
+    background: #f56a00;
+}
+
+nz-card :hover {
+    background-color: #f56a00;
+    color: #f56a00;
+    background: #f56a00;
+}
+
+*/
+
+.amount {
+    color: red;
+    font-weight: bold;
+    text-align: right;
+    /* font-size: 20px; */
+}
+
+.loadmore {
+    text-align: center; 
+    height: 32px;
+    /* line-height: 32px; */
 }
 
 .buttonSearch {
@@ -62,6 +98,24 @@ h2 {
     background: #d8dadb;
   }
 
+.nz-card {
+    display: flex;
+}
+
+.liItem {
+    /*
+    display: flex;
+    min-width: 100%;
+    */
+    border: 5px solid #FFFF00;
+}
+
+.buttonGroup { 
+    display:flex; 
+    justify-content: flex-end; 
+    outline: 2px;
+}
+
 .child {
     /* Center horizontally
     display: flex;
@@ -76,4 +130,44 @@ h2 {
 
 .algo :hover {
     background: #d8dadb;
-  }
+}
+
+  
+.center {
+    margin-top: 10%;
+    /*
+    border: 5px solid #FFFF00; 
+    height: 300px;
+    align-items: center;
+    */
+    text-align: center;
+    
+    
+}
+.center p {
+    font-size: 15px;
+    line-height: 0.4;   
+    /*color:#161514;*/  
+    font-weight: bold;   
+}
+
+.center i {
+    font-size: 50px;
+    font-weight: bold;   
+    color:#f6180d 
+}
+/*
+.parent {
+    background: #CCCCCC;
+    height: 200px;
+    width: 200px;
+    position: relative;
+    }
+    .child {
+    background: #FFFF00;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+*/

@@ -2,7 +2,6 @@ import { HttpClient, HttpEvent, HttpHeaders, HttpRequest } from '@angular/common
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { Pedido } from '../interface/pedido';
-import { Reservado } from '../objects/reservado';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -26,12 +25,6 @@ export class PedidoService {
     this.isOpen = !this.isOpen;
     //console.log("IsOpen :", this.isOpen)
     this.change.emit(this.isOpen);
-  }
-
-  private usuarioLogueado = {
-    direccion: "Calle False 1234",
-    nombre: "Emanuel",
-    contacto: '1559203404' // Telefono, mail, etc
   }
 
   httpOptions = {
@@ -90,8 +83,10 @@ export class PedidoService {
     return this.http.get<any>(`${this.baseUrl}/pedidos/resumen`, httpOptions) 
   };
 
-  reservar(pedido: Pedido) : Observable<any> {
-    return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, {...pedido, estado: new Reservado() }, this.httpOptions).pipe()
+  reservar(pedido: Pedido, token: string) : Observable<any> {  
+    //return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, pedido, this.httpOptions).pipe()
+    httpOptions.headers.append('Authorization', `Bearer ${token}`);
+    return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, this.httpOptions).pipe()
   }
 
 }

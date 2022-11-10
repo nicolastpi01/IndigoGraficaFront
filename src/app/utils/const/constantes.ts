@@ -1,3 +1,4 @@
+import { Estado } from "src/app/interface/estado";
 import { Usuario } from "src/app/interface/usuario";
 
 

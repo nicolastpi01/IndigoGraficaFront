@@ -1,7 +1,6 @@
 
 import { Pedido } from "../interface/pedido";
 import { Logo } from "../objects/logo";
-import { PendienteAtencion } from "../objects/pendienteAtencion";
 
 
 

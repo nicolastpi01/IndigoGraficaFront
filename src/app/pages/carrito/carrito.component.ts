@@ -17,6 +17,8 @@ import { filter } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { PerfilInfo } from 'src/app/components/chat/chat.component';
+import { Comment } from '@angular/compiler';
+import { Estado } from 'src/app/interface/estado';
 
 @Component({
   selector: 'app-carrito',
@@ -27,7 +29,12 @@ export class CarritoComponent implements OnInit {
 
   //pageIndex: number = 1;
   total: number = 0;
+  count: number = 2;
+  index: number = 0;
+  index2: number = 2;
   pedidos: any[] = [];
+  allData: any[] = []
+
   currentPedido: Pedido | undefined; 
   currentFile: FileDB | undefined;
   currentComment: Comentario | undefined;
@@ -38,6 +45,7 @@ export class CarritoComponent implements OnInit {
   isVisibleModalFilesChat: boolean = false;
   isVisibleModalFileComments: boolean = false;
   isVisibleModalChatUponAFile: boolean = false;
+  loadingMore: boolean = false;
   /*
   indeterminate = true;
   allChecked = false;
@@ -57,15 +65,11 @@ export class CarritoComponent implements OnInit {
   AccionText: String = "Editar"
 
   ChatNoResultMessage: string = showNoResultTextChatFor('Editor'); 
-  toFullDate : (date: Date | any) => string = toFullDate;
   toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString;
   determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
   avatarStyle: (interaccion: Interaccion) => { 'background-color': string; } = avatarStyle;
-  colorear :(descripcion: string) => string | undefined = colorearEstado;
-  badgeUponImagePositionStyle: (comentario: Comentario) => { position: string; left: string; top: string; } = badgeUponImagePositionStyle;
-  badgeColorStyleFunction: ()  => {
-    backgroundColor: string;
-  } = badgeColorStyle;
+  colorear :(state: Estado) => string | undefined = colorearEstado;
+  currentRol: string = 'CLIENTE'
   
   constructor(private _router: Router, private service: PedidoService, 
     private fb: FormBuilder, private modal: NzModalService, private msg: NzMessageService, private tokenService: TokenStorageService) { }
@@ -91,7 +95,7 @@ export class CarritoComponent implements OnInit {
     let token :string = this.tokenService.getToken()
     this.service.getPedidosPorUsuario(token)
     .subscribe(pedidos => {
-       this.pedidos = pedidos.map((pedido: Pedido) => {
+      this.allData = pedidos.map((pedido: Pedido) => {
         return {
           ...pedido, 
           expandedId : false,
@@ -102,7 +106,20 @@ export class CarritoComponent implements OnInit {
             }
           })
         }
-       })
+       });
+      this.pedidos = pedidos.map((pedido: Pedido) => {
+        return {
+          ...pedido, 
+          expandedId: false,
+          expandedTitle: false,
+          files : pedido.files?.map((file: FileDB) => {
+            return {
+              ...file, url: this.generateUrl(file)
+            }
+          })
+        }
+       }).slice(this.index, this.index2);
+
        this.total = pedidos.length
        this.loading = false 
     });
@@ -113,6 +130,19 @@ export class CarritoComponent implements OnInit {
     label: "USUARIO",
     icon: "user",
     hexColor: "background-color: #87d068"
+  };
+
+  onLoadMore = () => {
+    this.loadingMore = true;
+    let index = this.index + this.count
+    let index2 = this.index2 + this.count
+    
+    let slice = this.allData.slice(index, index2) // revisar esto "!!"!""
+    this.pedidos = this.pedidos.concat(slice)
+
+    this.index2 = index2;
+    this.index = index;
+    this.loadingMore = false;
   };
 
   onClickFileChat = (file: FileDB, pedido: Pedido) => {
@@ -137,8 +167,7 @@ export class CarritoComponent implements OnInit {
     this.isVisibleModalFileComments = true;
   }
 
-  onClickComment = (event: MouseEvent, comentario: Comentario) => {
-    event.preventDefault;
+  onClickComment = (comentario: Comentario) => {
     this.currentComment = comentario;
     let InteraccionesCP : Interaccion[] = JSON.parse(JSON.stringify(comentario.interacciones))
     let last: Interaccion | undefined =  InteraccionesCP.pop()
@@ -146,19 +175,7 @@ export class CarritoComponent implements OnInit {
       this.userCommentValue = last.texto
     };
     this.isVisibleModalFilesChat = true;    
-  }
-
-  onChangeCheck = (event: boolean, comentario: Comentario) => {
-    comentario.terminado = event;
   };
-
-  handleCancelResolver = () => {
-    this.isVisibleModalFileComments = false;
-  }
-
-  handleOkResolver = () => {
-    this.isVisibleModalFileComments = false;
-  }
 
   onChangeUserComment = (value: string) => {
     this.userCommentValue = value;
@@ -202,6 +219,12 @@ export class CarritoComponent implements OnInit {
   handleCloseFileChat = (value: boolean) => {
     this.userCommentValue = '';
     this.isVisibleModalChatUponAFile = value;
+  };
+
+  handleCloseComments = (value: boolean) => {
+    this.currentFile = undefined;
+    this.currentPedido = undefined;
+    this.isVisibleModalFileComments = value;
   };
 
   deleteInteractionForAFileWithComments = () => {
@@ -508,6 +531,49 @@ export class CarritoComponent implements OnInit {
       if(lastInteraction) this.userCommentValue = lastInteraction.texto;  
     }
     this.isVisibleModalChat = true;
+  };
+
+  handleOnSendMarkups(comments: Comentario[]): void {
+    let fileCp : FileDB = JSON.parse(JSON.stringify(this.currentFile));
+    let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido));
+    fileCp = {
+      ...fileCp, comentarios: fileCp.comentarios.map((comentario: Comentario) => {
+        if(comments.find((comment: Comentario) => comment.id === comentario.id) !== undefined) {
+          return comments.find((comment: Comentario) => comment.id === comentario.id)!
+        }
+        else {
+          return comentario
+        }
+      })
+    };
+    pedidoCp = {
+      ...pedidoCp, files: pedidoCp.files?.map((file: FileDB) => {
+        if(fileCp && file.id === fileCp.id) {
+          return fileCp;
+        }
+        else {
+          return file;
+        }
+      })
+    };
+    this.service.update(pedidoCp).
+      pipe(filter(e => e instanceof HttpResponse))
+      .subscribe(async (e: any) => {
+        let pedido = (e.body as Pedido)
+        this.currentPedido = pedido;    
+        this.currentPedido = {
+          ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+            return {
+              ...file, url: this.generateUrl(file)
+            }
+          }) 
+        };
+        this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)        
+        this.msg.success('Se marcaron los comentarios!');
+      }),
+      () => {
+        this.msg.error('Hubo un error, no se pudieron marcar los comentarios');
+      }
   };
 
   generateUrl = (file: FileDB) :string => {

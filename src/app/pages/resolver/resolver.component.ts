@@ -17,6 +17,7 @@ import { Solution } from 'src/app/interface/solution';
 import { Color } from 'src/app/interface/color';
 import { fallback } from 'src/app/utils/const/constantes';
 import { PerfilInfo } from 'src/app/components/chat/chat.component';
+import { Estado } from 'src/app/interface/estado';
 
 @Component({
   selector: 'app-resolver',
@@ -51,7 +52,8 @@ export class ResolverComponent implements OnInit {
   tabs: Array<{ name: string, icon: string, title: string }> = [];
   time = formatDistance(new Date(), new Date());
   now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
-  ChatNoResultMessage: string = showNoResultTextChatFor('Cliente'); 
+  ChatNoResultMessage: string = showNoResultTextChatFor('Cliente');
+  currentRol :string = 'EDITOR'; 
 
   constructor(private route: ActivatedRoute, private service :PedidoService, private msg: NzMessageService) {}
 
@@ -157,7 +159,7 @@ export class ResolverComponent implements OnInit {
     }
   };
 
-  colorear :(descripcion: string) => string | undefined = colorearEstado
+  colorear :(state: Estado) => string | undefined = colorearEstado
   
   onChangeTextArea = (value: string) :void => {
     this.textAreaValue = value;
@@ -495,8 +497,47 @@ export class ResolverComponent implements OnInit {
     }
   };
 
-  onChangeCheck = (event: boolean, comentario: Comentario) => {
-    comentario.terminado = event;
+  handleSendMarkups = (comments: Comentario[]) => {
+    let fileCp : FileDB = JSON.parse(JSON.stringify(this.currentFile));
+    let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido));
+    fileCp = {
+      ...fileCp, comentarios: fileCp.comentarios.map((comentario: Comentario) => {
+        if(comments.find((comment: Comentario) => comment.id === comentario.id) !== undefined) {
+          return comments.find((comment: Comentario) => comment.id === comentario.id)!
+        }
+        else {
+          return comentario
+        }
+      })
+    };
+    pedidoCp = {
+      ...pedidoCp, files: pedidoCp.files?.map((file: FileDB) => {
+        if(fileCp && file.id === fileCp.id) {
+          return fileCp;
+        }
+        else {
+          return file;
+        }
+      })
+    };
+    this.service.update(pedidoCp).
+      pipe(filter(e => e instanceof HttpResponse))
+      .subscribe(async (e: any) => {
+        let pedido = (e.body as Pedido)
+        this.currentPedido = pedido;    
+        this.currentPedido = {
+          ...this.currentPedido, files: this.currentPedido.files?.map((file: FileDB) => {
+            return {
+              ...file, url: this.generateUrl(file)
+            }
+          }) 
+        };
+        this.currentFile = this.currentPedido.files?.find((file: FileDB) => file.id === this.currentFile?.id)        
+        this.msg.success('Se marcaron los comentarios!');
+      }),
+      () => {
+        this.msg.error('Hubo un error, no se pudieron marcar los comentarios');
+      }
   };
 
   // Este es la firma del metodo nzAction de Upload antZorro
@@ -612,9 +653,8 @@ export class ResolverComponent implements OnInit {
     }
   };
 
-  onClickChat = (event: MouseEvent, comentario: Comentario) => {
-    event.preventDefault;
-    this.currentComment = comentario;
+  onClickChat = (comment: Comentario) => {
+    this.currentComment = comment;
     let last = this.searchLastInteraccion(); 
     if (last?.rol === 'EDITOR') {
       this.textAreaValue = last?.texto
@@ -672,9 +712,9 @@ export class ResolverComponent implements OnInit {
     };
   };
 
-  handleCancelResolver = () => {
+  handleCancelResolver = (value: boolean) => {
     this.getPedido(); // revisar esto !
-    this.isVisibleModalComment = false;
+    this.isVisibleModalComment = value;
   };
 
 }

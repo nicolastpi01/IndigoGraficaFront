@@ -245,7 +245,6 @@ export class NuevoComponent implements OnInit {
       alto: form.value.alto,
       ancho: form.value.ancho,
       descripcion: form.value.comentario,
-      state: PENDIENTEATENCION,
       propietario: {
         ubicacion: this.currentUser.ubicacion,
         apellido: this.currentUser.apellido,
@@ -255,9 +254,7 @@ export class NuevoComponent implements OnInit {
         username: this.currentUser.username,
         email: this.currentUser.email
       },
-      
       fechaEntrega: form.value.datePicker,
-      encargado: null,
       tipo: this.tipoPedidosData.find((tipoPedido: Tipo) => tipoPedido.nombre === form.value.tipo),
       colores: coloresRet
     }
@@ -313,6 +310,7 @@ export class NuevoComponent implements OnInit {
       let currentPedidoCopy = JSON.parse(JSON.stringify(this.currentPedido))
       currentPedidoCopy.files = [...currentPedidoCopy.files, newFileDB ]
 
+      console.log("CURRENT PEDIDO :", currentPedidoCopy)
       this.service.update(currentPedidoCopy).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe(async (e: any) => { // revisar el any
@@ -355,6 +353,7 @@ export class NuevoComponent implements OnInit {
       pipe(filter(e => e instanceof HttpResponse))
       .subscribe( (e: any) => {
         this.resetForm();
+        this.service.toggle();
         this.msg.success(e.body.message);
         this.loadingEliminarPedido = false;
       }),

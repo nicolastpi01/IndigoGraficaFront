@@ -1,6 +1,4 @@
 import { NgModule } from "@angular/core";
-import { CarritoRoutingModule } from "./carrito-routing.module";
-import { CarritoComponent } from "./carrito.component";
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzTagModule } from "ng-zorro-antd/tag";
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
@@ -25,13 +23,11 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NzCommentModule } from 'ng-zorro-antd/comment';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
-import { ChatModule } from "src/app/components/chat/chat.module";
-import { ComentariosModule } from "src/app/components/comentarios/comentarios.module";
-import { NoElementsModule } from "src/app/components/noElements/noelements.module";
+import { NoElementsComponent } from "./noelements.component";
+
 
 @NgModule({
     imports: [
-      CarritoRoutingModule,
       NzDescriptionsModule,
       NzTagModule,
       NzBadgeModule,
@@ -55,12 +51,9 @@ import { NoElementsModule } from "src/app/components/noElements/noelements.modul
       ScrollingModule,
       NzCommentModule,
       NzAvatarModule,
-      NzTabsModule,
-      ChatModule,
-      ComentariosModule,
-      NoElementsModule      
+      NzTabsModule
     ],
-    declarations: [CarritoComponent],
-    exports: [CarritoComponent]
+    declarations: [NoElementsComponent],
+    exports: [NoElementsComponent]
   })
-  export class CarritoModule { }
+  export class NoElementsModule { }

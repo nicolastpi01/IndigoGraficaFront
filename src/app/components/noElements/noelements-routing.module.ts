@@ -1,16 +1,13 @@
-
-
-
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-import { ComentariosComponent } from "./comentarios.component";
+import { NoElementsComponent } from "./noelements.component";
 
 const routes: Routes = [
-    { path: '', component: ComentariosComponent },
+    { path: '', component: NoElementsComponent },
   ];
   
   @NgModule({
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule]
   })
-  export class ComentariosRoutingModule { }
+  export class NoElementsRoutingModule { }

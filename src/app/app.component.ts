@@ -38,24 +38,21 @@ export class AppComponent {
 
   ngOnInit() {
     this.isLoggedIn = !!this.tokenStorageService.getToken();
+    this.title = 'indigo';
     if (this.isLoggedIn) {
       const user = this.tokenStorageService.getUser();
       this.roles = user.roles;
-
       this.mostrarOpcionesCliente = this.roles.includes('ROLE_USER');
       this.mostrarOpcionesEncargado = this.roles.includes('ROLE_ENCARGADO');
-
       this.findResume();
       this.username = user.username;
       this.service.change.subscribe((isOpen: any) => {
         //this.isOpen = isOpen;
         console.log("IS OPEN :", isOpen)
         this.findResume();
-      });
+      });  
     }
     //this.buscarTodos()
-    
-    this.title = 'indigo';
   }
 
   determiteBadgeColor = (state?: string) :string =>  {
@@ -100,7 +97,9 @@ export class AppComponent {
   findResume = () :void => {
     let token :string = this.tokenStorageService.getToken()
     this.service.getResume(token)
-    .subscribe(resume => this.resume = resume);
+    .subscribe(resume => {
+      this.resume = resume
+    });
   };
 
   buscarTodos = () :void => {

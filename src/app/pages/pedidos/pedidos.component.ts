@@ -10,6 +10,8 @@ import { badgeColorStyle, toLocalDateString } from 'src/app/utils/functions/func
 import { toArray } from 'ng-zorro-antd/core/util';
 import { getValueOrNot, HeadingData, userData } from 'src/app/utils/functions/pedidosData/functions';
 import { Router } from '@angular/router';
+import { Estado } from 'src/app/interface/estado';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
 
 
 @Component({
@@ -34,7 +36,7 @@ export class PedidosComponent implements OnInit {
   loadingMore: boolean = false;
   //loadingCard: boolean = false;
   isVisibleFilesModal: boolean = false;
-  colorear :(descripcion: string) => string | undefined = colorearEstado
+  colorear :(state: Estado) => string | undefined = colorearEstado
   loadingAccion: boolean = false
   loading: boolean = false
   AccionText: String = "Reservar"
@@ -49,7 +51,8 @@ export class PedidosComponent implements OnInit {
   
 
 
-  constructor(private service: PedidoService,  private msg: NzMessageService, private _router: Router) { }
+  constructor(private service: PedidoService,  private msg: NzMessageService, private _router: Router, 
+    private tokenService: TokenStorageService) { }
 
   ngOnInit() {
     this.getPedidos()
@@ -61,19 +64,22 @@ export class PedidosComponent implements OnInit {
 
   getPedidos(): void {
     this.loading = true
-    this.service.getPedidos(PENDIENTEATENCION)
+    this.service.getPedidos('pendAtencion')
     .subscribe(pedidos =>{
       this.allData = pedidos
       this.total = pedidos.length
       this.pedidos = pedidos.map((p) => ({ ...p, showMore: false }))
-      //this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2); 
-       
+      //this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2);        
       this.loading = false
     })
   };
-    
-    
 
+ // `Está seguro de querer eliminar el pedido con id: ${pedido.id} ?.`
+  showTotal = (total: number) => {
+    if(total > 0) return `#Total: ${total}`
+    else return ''
+  };
+    
   badgeUponImageStyle = (comentario: Comentario) => {
     return {
       position: 'absolute', 
@@ -144,7 +150,8 @@ export class PedidosComponent implements OnInit {
 
   onClickAccion (pedido: Pedido): void {
     this.loadingAccion = true
-    this.service.reservar(pedido)
+    let token :string = this.tokenService.getToken()
+    this.service.reservar(pedido, token)
     .subscribe((_) => {
        this.msg.success('Reservado exitosamente!');
        this.service.toggle()
