@@ -2,7 +2,7 @@ import { Component, HostBinding } from '@angular/core';
 import { Router } from '@angular/router';
 import { PedidoService } from './services/pedido.service';
 import { TokenStorageService } from './services/token-storage.service';
-import { CLEAR, DANGER, FINALIZADOS, NONE, PENDIENTEATENCION, RESERVADO, RETORNADOS, REVISION, WARNING } from './utils/const/constantes';
+import { CLEAR, DANGER, FINALIZADOS, NONE, PENDIENTEATENCION, PROPIOS, RESERVADO, RETORNADOS, REVISION, WARNING } from './utils/const/constantes';
 
 @Component({
   selector: 'app-root',
@@ -44,8 +44,6 @@ export class AppComponent {
       this.roles = user.roles;
       this.mostrarOpcionesCliente = this.roles.includes('ROLE_USER');
       this.mostrarOpcionesEncargado = this.roles.includes('ROLE_ENCARGADO');
-      console.log("EJECUTE ON INIT")
-      
       this.findResume();
       this.username = user.username;
       this.service.change.subscribe((isOpen: any) => {
@@ -91,8 +89,7 @@ export class AppComponent {
   amountToShowInCart = () :number => {
     let amount: number = 0;
     if(this.resume) {
-      amount += this.resume[PENDIENTEATENCION]
-      amount += this.resume['reservado']
+      amount = this.resume[PROPIOS]
     }
     return amount;
   };
@@ -100,7 +97,9 @@ export class AppComponent {
   findResume = () :void => {
     let token :string = this.tokenStorageService.getToken()
     this.service.getResume(token)
-    .subscribe(resume => this.resume = resume);
+    .subscribe(resume => {
+      this.resume = resume
+    });
   };
 
   buscarTodos = () :void => {
