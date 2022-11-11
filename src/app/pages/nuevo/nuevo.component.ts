@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { PedidoService } from '../../services/pedido.service';
-import { PENDIENTEATENCION, tipografias as arrayLetras } from 'src/app/utils/const/constantes';
+import { tipografias as arrayLetras } from 'src/app/utils/const/constantes';
 import { Tipo } from 'src/app/interface/tipo';
 import { Color } from 'src/app/interface/color';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -46,16 +46,13 @@ export class NuevoComponent implements OnInit {
   isVisibleModalComment = false;
   esEdicion = false
   pedidoId?: string
-
   isLoggedIn = false;
   currentUser: any;
-
   //@ViewChild(CdkVirtualScrollViewport) viewport: CdkVirtualScrollViewport | undefined;
   @ViewChild('viewport', { read: ElementRef }) viewport!: ElementRef;
 
   //@ViewChild('someVar') el!: ElementRef;
   //@ViewChild('dummyClick', { static: true }) dummyClickRef: ElementRef | undefined;
-
   constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, 
     private tipoService: TipoPedidoService, private colorService :ColorService, private _router: Router, 
     private msg: NzMessageService, private posService: PosicionService, private tokenService: TokenStorageService,  
@@ -82,7 +79,6 @@ export class NuevoComponent implements OnInit {
       this.findColores();
       this.findPedidos();
       this.loadPedidoIfExist()
-  
       this.panels = this.initialPanelState();
       //this.dummyClickRef?.nativeElement.click()
       //this.dummyClickRef?.nativeElement.focus()  
@@ -134,9 +130,9 @@ export class NuevoComponent implements OnInit {
   };
 
   loadPedidoIfExist(): void {
-    this.pedidoId = this.route.snapshot.paramMap.get('id')||undefined
+    this.pedidoId = this.route.snapshot.paramMap.get('id') || undefined
     
-    if(this.pedidoId){
+    if(this.pedidoId) {
       this.esEdicion = true
       this.service.getPedido(this.pedidoId).subscribe(pedido => {
         this.currentPedido = pedido
@@ -165,7 +161,7 @@ export class NuevoComponent implements OnInit {
       })
       let nuevoMenu = document.getElementById("nuevo-menu")
       nuevoMenu!.classList.remove('ant-menu-item-selected')
-    }else{
+    } else {
       this.esEdicion = false
       this.pedidoId = undefined
     }
@@ -346,24 +342,19 @@ export class NuevoComponent implements OnInit {
   };
 
   eliminarPedido = () :void => {
-    if(!this.currentPedido) {
-      this.msg.warning("Debe generar un pedido antes de proceder a eliminarlo")
-    }
-    else {
-      this.loadingEliminarPedido = true;
-      this.service.eliminar(this.currentPedido?.id).
-      pipe(filter(e => e instanceof HttpResponse))
-      .subscribe( (e: any) => {
-        this.resetForm();
-        this.service.toggle();
-        this.msg.success(e.body.message);
+    this.loadingEliminarPedido = true;
+    this.service.eliminar(this.currentPedido?.id).
+    pipe(filter(e => e instanceof HttpResponse))
+    .subscribe( (e: any) => {
+      this.resetForm();
+      this.service.toggle();
+      this.msg.success(e.body.message);
+      this.loadingEliminarPedido = false;
+    }),
+    (e: any) => {
+        // Ojo, no esta catcheando el error 
+        this.msg.error(e.body.message);
         this.loadingEliminarPedido = false;
-      }),
-      (e: any) => {
-          // Ojo, no esta catcheando el error 
-          this.msg.error(e.body.message);
-          this.loadingEliminarPedido = false;
-      }
     }
   };
 
