@@ -24,6 +24,7 @@ export class AppComponent {
   title = 'indigo'
   pendienteAtencion = PENDIENTEATENCION;
   reservado = RESERVADO;
+  allStates: string[] = [];
 
   isVisible = false;
   isVisibleLogin = false;
@@ -38,6 +39,8 @@ export class AppComponent {
 
   ngOnInit() {
     this.isLoggedIn = !!this.tokenStorageService.getToken();
+    this.allStates.push(this.pendienteAtencion)
+    this.allStates.push(this.reservado)
     this.title = 'indigo';
     if (this.isLoggedIn) {
       const user = this.tokenStorageService.getUser();
@@ -57,27 +60,51 @@ export class AppComponent {
     //this.buscarTodos()
   }
 
-  determiteBadgeColor = (state?: string) :string =>  {
-    let cantidad = 0;
-    if(state && this.resume) {
-      cantidad += this.resume[state]
-    } 
-      if(cantidad === 0) {
-        return NONE
+  isEditor = () :boolean => {
+    return this.roles.includes('ROLE_ENCARGADO')
+  };
+
+  determiteBadgeColorForAll = () :string => {
+    let amount = 0;
+    if(this.isEditor()) {
+      return this.determiteBadgeColor(this.pendienteAtencion)
+      //amount += this.resume[this.pendienteAtencion]
+    }
+    else { // I'm Client
+      console.log("Soy Cliente")
+      this.allStates.map((state: string) => {
+        console.log("Estoy en el Map")
+        amount += this.amountByState(state)
+      });
+      return this.amountForColor(amount) 
+    }
+  };
+
+  amountForColor = (amount: number) :string => {
+    if(amount === 0) {
+      return NONE
+    }
+    else {
+      if(amount <= 50) {
+        return CLEAR;
       }
       else {
-        if(cantidad <= 50) {
-          return CLEAR;
+        if(amount <= 99) {
+          return WARNING;
         }
         else {
-          if(cantidad <= 99) {
-            return WARNING;
-          }
-          else {
-            return DANGER;
-          }
+          return DANGER;
         }
       }
+    }
+  };
+
+  determiteBadgeColor = (state?: string) :string =>  {
+    let amount = 0;
+    if(state && this.resume) {
+      amount += this.resume[state]
+    }
+    return this.amountForColor(amount) 
   };
 
   amountByState = (state: string) :number => {
@@ -86,6 +113,20 @@ export class AppComponent {
       amount += this.resume[state]
     }
     return amount;
+  };
+
+  amountForAll = () :number => {
+    let amount: number = 0
+    if(this.resume) {
+      if(this.isEditor()) {
+        console.log("SOY EDITOR")
+        amount += this.resume[this.pendienteAtencion]
+      }
+      else { // I'm Client
+        amount += this.resume[this.pendienteAtencion] + this.resume[this.reservado] 
+      }
+    }    
+    return amount
   };
 
   amountToShowInCart = () :number => {

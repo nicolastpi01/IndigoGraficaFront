@@ -69,6 +69,11 @@ export class PedidoService {
     return this.http.get<Pedido[]>(`${this.baseUrl}/pedidos?state=`+ estado) 
   }
 
+  getAllPedidos(token: string) : Observable<Pedido[]> {
+    httpOptions.headers.append('Authorization', `Bearer ${token}`);
+    return this.http.get<Pedido[]>(`${this.baseUrl}/todos`, httpOptions) 
+  };
+
   getPedido(id: string | null) :Observable<Pedido> {
     return this.http.get<Pedido>(`${this.baseUrl}`+`${this.api}/${id}`);
   }

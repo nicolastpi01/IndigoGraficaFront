@@ -64,7 +64,8 @@ export class PedidosComponent implements OnInit {
 
   getPedidos(): void {
     this.loading = true
-    this.service.getPedidos('pendAtencion')
+    let token :string = this.tokenService.getToken()
+    this.service.getAllPedidos(token)
     .subscribe(pedidos =>{
       this.allData = pedidos
       this.total = pedidos.length
