@@ -21,13 +21,16 @@ import { LoginModule } from './pages/login/login.module';
 import { RegistrarModule } from './pages/registrar/registrar.module';
 import { RouterModule } from '@angular/router';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { SeccionNoEncontradaComponent } from './pages/seccion-no-encontrada/seccion-no-encontrada.component';
+import { NzAnchorModule } from 'ng-zorro-antd/anchor';
 
 
 registerLocaleData(es);
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SeccionNoEncontradaComponent
   ],
   imports: [
     BrowserModule,
@@ -44,6 +47,7 @@ registerLocaleData(es);
     AppRoutingModule,
     RouterModule,
     NzButtonModule,
+    NzAnchorModule,
 
 // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
 // and returns simulated server responses.
