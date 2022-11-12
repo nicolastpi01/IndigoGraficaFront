@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './guards/auth-guard.guard';
+import { SeccionNoEncontradaComponent } from './pages/seccion-no-encontrada/seccion-no-encontrada.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/bienvenido' },
@@ -17,6 +18,8 @@ const routes: Routes = [
   { path: 'carrito',  loadChildren: () => import('./pages/carrito/carrito.module').then(m => m.CarritoModule), canActivate: [AuthGuard] },
   { path: 'pedidos/editar/:id', loadChildren: () => import('./pages/editar/editar.module').then(m => m.EditarModule), canActivate: [AuthGuard] },
   { path: 'editar/:id', loadChildren: () => import('./pages/nuevo/nuevo.module').then(m => m.NuevoModule), canActivate: [AuthGuard] },
+  {path: '404', component: SeccionNoEncontradaComponent},
+  {path: '**', redirectTo: '/404'}
 ];
 
 @NgModule({
