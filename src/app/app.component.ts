@@ -130,7 +130,7 @@ export class AppComponent {
   amountToShowInCart = () :number => {
     let amount: number = 0;
     if(this.resume) {
-      amount = this.resume[PROPIOS]
+      amount += this.resume['PROPIOS']
     }
     return amount;
   };
