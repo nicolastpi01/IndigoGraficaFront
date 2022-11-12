@@ -1,13 +1,11 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { Pedido } from 'src/app/interface/pedido';
-import { PENDIENTEATENCION } from 'src/app/utils/const/constantes';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { PedidoService } from '../../services/pedido.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { FileDB } from 'src/app/interface/fileDB';
 import { Comentario } from 'src/app/interface/comentario';
 import { badgeColorStyle, toLocalDateString } from 'src/app/utils/functions/functions';
-import { toArray } from 'ng-zorro-antd/core/util';
 import { getValueOrNot, HeadingData, userData } from 'src/app/utils/functions/pedidosData/functions';
 import { Router } from '@angular/router';
 import { Estado } from 'src/app/interface/estado';
@@ -34,7 +32,6 @@ export class PedidosComponent implements OnInit {
   accionText = 'Reservar'
   //array = new Array(this.count);
   loadingMore: boolean = false;
-  //loadingCard: boolean = false;
   isVisibleFilesModal: boolean = false;
   colorear :(state: Estado) => string | undefined = colorearEstado
   loadingAccion: boolean = false
@@ -44,23 +41,28 @@ export class PedidosComponent implements OnInit {
   currentFile: any 
   @HostBinding('class.is-open')
   isOpen = false;
+  isLoggedIn = false;
+  private roles: string[] = [];
 
   pedidos: Array<any> = []
   allData: Array<any> = []
   total: number = 0;
   
-
-
   constructor(private service: PedidoService,  private msg: NzMessageService, private _router: Router, 
     private tokenService: TokenStorageService) { }
 
   ngOnInit() {
-    this.getPedidos()
-    //this.service.change.subscribe((isOpen: any) => {
-    //  this.isOpen = isOpen;
-      //this.getPedidos()
-    //});
-  }
+    this.isLoggedIn = !!this.tokenService.getToken()
+    if (this.isLoggedIn) {
+      this.getPedidos();
+      const user = this.tokenService.getUser()
+      this.roles = user.roles;
+    }
+  };  
+
+  isEditor = () :boolean => {
+    return this.roles.includes('ROLE_ENCARGADO')
+  };
 
   getPedidos(): void {
     this.loading = true
@@ -114,7 +116,6 @@ export class PedidosComponent implements OnInit {
   };
 
   onClickShowFiles(pedido: Pedido) {
-    //this.loadingCard = true
     this.currentPedido = pedido;
     this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
       return {
@@ -123,16 +124,7 @@ export class PedidosComponent implements OnInit {
     });
     this.currentFile = this.currentPedido.files? this.currentPedido.files[0] : undefined 
     this.isVisibleFilesModal = true;
-    //this.loadingCard = false
   };
-    /*
-    this.currentPedido = pedido;
-        this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
-          return {
-            ...file, url: this.generateUrl(file)  //this.blodToUrl(file) -> Mejorar este metodo, por ahora lo dejo asi
-          }
-        });
-    */
 
   handleAfterClose(event: EventInit) {
     this.currentPedido = undefined;
@@ -150,20 +142,21 @@ export class PedidosComponent implements OnInit {
   };
 
   onClickAccion (pedido: Pedido): void {
-    this.loadingAccion = true
-    let token :string = this.tokenService.getToken()
-    this.service.reservar(pedido, token)
-    .subscribe((_) => {
-       this.msg.success('Reservado exitosamente!');
-       this.service.toggle()
-       this.getPedidos()
-       this.loadingAccion = false
-       setTimeout(() => {
-        //console.log("Hola Mundo");
-        this._router.navigateByUrl("/reservados")
-    }, 2000);
-        
-    })
-  }
+    if(this.isEditor()) {
+      this.loadingAccion = true
+      let token :string = this.tokenService.getToken()
+      this.service.reservar(pedido, token)
+      .subscribe((_) => {
+        this.msg.success('Reservado exitosamente!');
+        this.service.toggle()
+        this.getPedidos()
+        this.loadingAccion = false
+        setTimeout(() => {
+          this._router.navigateByUrl("/reservados")
+        }, 2000);
+      })
+    }
+  };
+
 
 }
