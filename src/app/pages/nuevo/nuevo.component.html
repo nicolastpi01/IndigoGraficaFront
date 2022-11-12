@@ -270,7 +270,7 @@
                                 <input type="text" #someVar autofocus nz-input [ngModel]="item.interacciones[0].texto" (ngModelChange)="onChangeComment($event, item)" >
                               </ng-template-->
                               <!--ng-template #withoutFocus-->
-                                <input type="text" nz-input [ngModel]="item.interacciones[0].texto" (ngModelChange)="onChangeComment($event, item)" >
+                                <input #inputComment type="text" nz-input [ngModel]="item.interacciones[0].texto" (ngModelChange)="onChangeComment($event, item)" >
                               <!--/ng-template-->            
                             </nz-input-group>
                             <ng-template #addOnBeforeTemplate>

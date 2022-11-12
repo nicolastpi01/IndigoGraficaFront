@@ -54,12 +54,6 @@
         <button class="button-normal" (click)="logout()" *ngIf="isLoggedIn" nz-button nzType="default">Cerrar sesión</button>
         <button *ngIf="isLoggedIn" nz-button nzType="default">{{username}}</button>
         <!-- signon -->
-        <!--span (click)="showModalRegistrar()" *ngIf="!isLoggedIn">
-          <i class="cart-normal" 
-             nz-icon nzType="user-add" 
-             nzTheme="outline">
-          </i>
-        </span-->
         <button class="button-normal" (click)="showModalRegistrar()" *ngIf="!isLoggedIn" nz-button nzType="primary">Creá tu cuenta</button>
         <span (click)="onClickCart()" *ngIf="isLoggedIn">
           <i 

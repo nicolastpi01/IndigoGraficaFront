@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { PedidoService } from '../../services/pedido.service';
 import { tipografias as arrayLetras } from 'src/app/utils/const/constantes';
@@ -6,7 +6,7 @@ import { Tipo } from 'src/app/interface/tipo';
 import { Color } from 'src/app/interface/color';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { filter, Observable, Observer } from 'rxjs';
+import { filter, Observable, Observer, takeWhile } from 'rxjs';
 import {  HttpResponse } from '@angular/common/http';
 import {  NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 import { ColorService } from 'src/app/services/color.service';
@@ -50,13 +50,14 @@ export class NuevoComponent implements OnInit {
   currentUser: any;
   //@ViewChild(CdkVirtualScrollViewport) viewport: CdkVirtualScrollViewport | undefined;
   @ViewChild('viewport', { read: ElementRef }) viewport!: ElementRef;
-
+  @ViewChildren('inputComment', { read: ElementRef }) inputs!: QueryList<ElementRef>
   //@ViewChild('someVar') el!: ElementRef;
   //@ViewChild('dummyClick', { static: true }) dummyClickRef: ElementRef | undefined;
+
   constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, 
     private tipoService: TipoPedidoService, private colorService :ColorService, private _router: Router, 
-    private msg: NzMessageService, private posService: PosicionService, private tokenService: TokenStorageService,  
-    private route: ActivatedRoute) {} // para que se usa rd ?
+    private msg: NzMessageService, private tokenService: TokenStorageService,  
+    private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     
@@ -447,7 +448,7 @@ export class NuevoComponent implements OnInit {
 
   goOutside = () => {
     // Deberia mostrar un modal indicando el pedido generado (brevemente)
-    this._router.navigateByUrl('/todos')
+    this._router.navigateByUrl('/bienvenido')
   };
 
   agregarTodosLosComentarios = () => {
@@ -516,7 +517,6 @@ export class NuevoComponent implements OnInit {
     event.preventDefault();
     let position : {left: number, top: number, posx: number, posy: number, px: number, py: number } = this.determineMousePosition(event);
     
-    
       if (this.currentFile) {
         //this.currentFile.comentarios = this.currentFile.comentarios.map((comentario: Comentario) => {
         //  return {
@@ -542,9 +542,11 @@ export class NuevoComponent implements OnInit {
           llave:  this.currentFile.comentarios.length === 0 ? 1 : Math.max.apply(null, this.currentFile.comentarios.map((comentario: Comentario) => comentario.numero)) + 1 
        }
       ];
-
-      this.viewport.nativeElement.scrollIntoView({block: "end", behavior: "smooth"}); // Funciona parcialmente
-      
+      //this.viewport.nativeElement.scrollIntoView({block: "end", behavior: "smooth"}); // Ya no haria falta, el autofocus ya deja al input en pantalla
+      this.inputs.changes.pipe(takeWhile(()=>true)).subscribe(() => {
+        if (this.inputs.length)  //<--add this "if"
+          this.inputs.last.nativeElement.focus()
+      })
     };
   };
 
