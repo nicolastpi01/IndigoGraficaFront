@@ -236,7 +236,6 @@ export class NuevoComponent implements OnInit {
       let colorRet = this.coloresData.find( (colorData: Color) => colorData.hexCode === colorHexCode)
       if (colorRet) coloresRet.push(colorRet);
     })
-
     let nuevoPedido : Pedido = {
       id: this.currentPedido?.id, // Si ya cree un Pedido entonces manda el Create con un idPedido que ya existe en la bd, por ende actualiza
       cantidad: form.value.cantidad ? form.value.cantidad : 1,
@@ -255,16 +254,19 @@ export class NuevoComponent implements OnInit {
         username: this.currentUser.username,
         email: this.currentUser.email
       },
+      // encargado no va a tener nunca porque un Pedido Reservado no puede ser Editado por el Cliente
       fechaEntrega: form.value.datePicker,
       tipo: this.tipoPedidosData.find((tipoPedido: Tipo) => tipoPedido.nombre === form.value.tipo),
-      colores: coloresRet
+      colores: coloresRet,
+      interacciones: this.currentPedido?.interacciones // Si das de Alta un Pedido, y no esta Reservado, igual puede tener 
+      //Interacciones disparadas por el Usuario desde el Carrito
     }
-
     if(this.esEdicion && !nuevoPedido.id) {
       nuevoPedido.id = this.pedidoId
     }
-    
-    // OJO QUE CUANDO DOY DE EDITO ESTE PEDIDO, Y TIENE FILES ME LOS ESTOY OLVIDANDO...
+    nuevoPedido = {
+      ...nuevoPedido, files: this.currentPedido?.files // Si llega a tener Files los agrego antes de mandar de nuevo el Pedido
+    }
     this.service.create(nuevoPedido).
     pipe(filter(e => e instanceof HttpResponse))
     .subscribe( (e: any) => { // revisar el any
