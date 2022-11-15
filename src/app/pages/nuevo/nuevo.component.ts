@@ -18,6 +18,7 @@ import { Comentario, Interaccion } from 'src/app/interface/comentario';
 import { PosicionService } from 'src/app/services/posicion.service';
 import { getBase64 } from 'src/app/utils/functions/functions';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-nuevo',
@@ -56,7 +57,7 @@ export class NuevoComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, 
     private tipoService: TipoPedidoService, private colorService :ColorService, private _router: Router, 
-    private msg: NzMessageService, private tokenService: TokenStorageService,  
+    private msg: NzMessageService, private modal: NzModalService, private tokenService: TokenStorageService,  
     private route: ActivatedRoute) {}
 
   ngOnInit(): void {
@@ -342,21 +343,43 @@ export class NuevoComponent implements OnInit {
     this.previewVisible = true;
   };
 
-  eliminarPedido = () :void => {
+  showDeleteConfirm(pedido: any): void {
     this.loadingEliminarPedido = true;
-    this.service.eliminar(this.currentPedido?.id).
-    pipe(filter(e => e instanceof HttpResponse))
-    .subscribe( (e: any) => {
-      this.resetForm();
-      this.service.toggle();
-      this.msg.success(e.body.message);
-      this.loadingEliminarPedido = false;
-    }),
-    (e: any) => {
-        // Ojo, no esta catcheando el error 
-        this.msg.error(e.body.message);
+    this.modal.confirm({
+      nzTitle: `<b style="color: red;">Eliminar</b>`,
+      nzContent: `Está seguro de querer eliminar el pedido con id: ${pedido.id} ?`,
+      nzOkText: 'Sí',
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => this.onOkDeleteConfirm(pedido),
+      nzCancelText: 'No',
+      nzOnCancel: () => {
         this.loadingEliminarPedido = false;
-    }
+      }  
+    });
+  }
+
+  onOkDeleteConfirm = (pedido: Pedido) => {
+    this.service.eliminar(pedido.id)
+    .pipe(filter(e => e instanceof HttpResponse))
+    .subscribe({
+      next: (e: any) => {
+        this.resetForm();
+        this.service.toggle();
+        this.msg.success(e.body.message);
+        setTimeout(() => {
+          this.msg.info("redireccionando...");
+        }, 500);
+        setTimeout(() => {
+          this._router.navigateByUrl("/bienvenido")
+        }, 2500);
+      },
+      error: (e) => {
+        this.msg.error(e.body.message);
+      },
+      complete: () => {
+        this.loadingEliminarPedido = false;
+      }})
   };
 
   onClickDeleteFile = (event: MouseEvent, item: FileDB) => {
