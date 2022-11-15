@@ -238,6 +238,7 @@ export class NuevoComponent implements OnInit {
     })
 
     let nuevoPedido : Pedido = {
+      id: this.currentPedido?.id, // Si ya cree un Pedido entonces manda el Create con un idPedido que ya existe en la bd, por ende actualiza
       cantidad: form.value.cantidad ? form.value.cantidad : 1,
       nombre: form.value.titulo,
       nombreExtendido: form.value.subtitulo,
@@ -259,14 +260,16 @@ export class NuevoComponent implements OnInit {
       colores: coloresRet
     }
 
-    if(this.esEdicion){
+    if(this.esEdicion && !nuevoPedido.id) {
       nuevoPedido.id = this.pedidoId
     }
-  
+    
+    // OJO QUE CUANDO DOY DE EDITO ESTE PEDIDO, Y TIENE FILES ME LOS ESTOY OLVIDANDO...
     this.service.create(nuevoPedido).
     pipe(filter(e => e instanceof HttpResponse))
     .subscribe( (e: any) => { // revisar el any
         this.currentPedido = e.body as Pedido
+        this.esEdicion = true
         this.service.toggle(); // para que se actualice el contador del Sidebar
         this.loadingAlta = false;
         this.msg.success('Pedido generado satisfactoriamente!');
