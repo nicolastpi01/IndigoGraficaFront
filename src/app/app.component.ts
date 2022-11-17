@@ -65,6 +65,7 @@ export class AppComponent {
 
   determineMenuColors = () => {
     if(this.isEditor()) {
+      console.log("Es editor")
       this.menuColors = this.editorColors
     }
     else {
@@ -80,6 +81,28 @@ export class AppComponent {
     return this.roles.includes('ROLE_ENCARGADO')
   };
 
+  menuSidebar = () => {
+    return {
+      "position": 'relative',
+      "z-index": '10',
+      "min-height": '100vh',
+      "box-shadow": '2px 0 6px rgba(0,21,41,.35)',
+      "background": this.menuColors.background,
+    }
+  };
+
+  sidebarLogo = () => {
+    return {
+      "position": 'relative',
+      "height": '64px',
+      "padding-left": '24px',
+      "overflow": 'hidden',
+      "line-height": '64px',
+      "background": this.menuColors.background,
+      "transition": 'all .3s'
+    }
+  };
+
   determiteBadgeColorForAll = () :string => {
     let amount = 0;
     if(this.isEditor()) {
@@ -87,9 +110,9 @@ export class AppComponent {
       //amount += this.resume[this.pendienteAtencion]
     }
     else { // I'm Client
-      console.log("Soy Cliente")
+      //console.log("Soy Cliente")
       this.allStates.map((state: string) => {
-        console.log("Estoy en el Map")
+        //console.log("Estoy en el Map")
         amount += this.amountByState(state)
       });
       return this.amountForColor(amount) 
@@ -135,7 +158,7 @@ export class AppComponent {
     let amount: number = 0
     if(this.resume) {
       if(this.isEditor()) {
-        console.log("SOY EDITOR")
+        //console.log("SOY EDITOR")
         amount += this.resume[this.pendienteAtencion]
       }
       else { // I'm Client

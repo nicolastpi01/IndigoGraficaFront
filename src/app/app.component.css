@@ -14,17 +14,10 @@
     margin: '1px 1px';
     padding: 24;
     height: 'calc(105vh - 128px)';
-    background: '#f7f8f8';
+    background: "#f7f8f8";
     
   }
-  
-  .menu-sidebar {
-    position: relative;
-    z-index: 10;
-    min-height: 100vh;
-    box-shadow: 2px 0 6px rgba(0,21,41,.35);
-  }
-  
+   
   .header-trigger {
     height: 64px;
     padding: 20px 24px;
@@ -111,15 +104,17 @@
     color: #1890ff;
   }
   
+  /*
   .sidebar-logo {
     position: relative;
     height: 64px;
     padding-left: 24px;
     overflow: hidden;
     line-height: 64px;
-    background: #001529;
+    background: #030831;
     transition: all .3s;
   }
+  */
   
   .sidebar-logo img {
     display: inline-block;

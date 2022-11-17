@@ -1,11 +1,13 @@
 <nz-layout class="app-layout">
-  <nz-sider class="menu-sidebar"
-            nzCollapsible
-            nzWidth="256px"
-            nzBreakpoint="md"
-            [(nzCollapsed)]="isCollapsed"
-            [nzTrigger]="null">
-    <div class="sidebar-logo">
+  <nz-sider 
+    [style]="menuSidebar()"
+    nzCollapsible
+    nzWidth="256px"
+    nzBreakpoint="md"
+    [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null"
+  >
+    <div [style]="sidebarLogo()" class="sidebar-logo">
       <a href="bienvenido/" target="_blank">
         <img src="./assets/herramienta-de-diseno.gif" alt="logo">
         <h1>Índigo Gráfica</h1>

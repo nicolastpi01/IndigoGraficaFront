@@ -12,7 +12,7 @@ export const colorsForMenusClient :MenuColor = {
   //item : '#070930', // Strong 
   //itemActive: '#139afbcc', // Light
   theme: 'light',
-  background: '#031753f6', // Mid Strong
+  background: '#77083d', // Mid Strong
   //shadow: '#031753f6'
 }
 
@@ -20,7 +20,7 @@ export const colorsForMenusEditor :MenuColor = {
   //item : '#430825', // Strong
   //itemActive: '#cb4f8b', // Light
   theme: 'dark',
-  background: '#7e0f45', // Mid Strong
+  background: '#030831', // Mid Strong
   //shadow: '#7e0f45'
 }
 
