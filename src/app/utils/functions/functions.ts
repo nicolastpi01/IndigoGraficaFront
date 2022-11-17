@@ -24,6 +24,11 @@ export const colorsForMenusEditor :MenuColor = {
   //shadow: '#7e0f45'
 }
 
+export const colorsDefault: MenuColor = {
+  theme: 'light',
+  background: 'ghostwhite',
+}
+
 export const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
  new Promise((resolve, reject) => {
    const reader = new FileReader();

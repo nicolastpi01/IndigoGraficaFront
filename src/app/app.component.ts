@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { PedidoService } from './services/pedido.service';
 import { TokenStorageService } from './services/token-storage.service';
 import { CLEAR, DANGER, FINALIZADOS, NONE, PENDIENTEATENCION, PROPIOS, RESERVADO, RETORNADOS, REVISION, WARNING } from './utils/const/constantes';
-import { colorsForMenusClient, colorsForMenusEditor, MenuColor } from './utils/functions/functions';
+import { colorsDefault, colorsForMenusClient, colorsForMenusEditor, MenuColor } from './utils/functions/functions';
 
 @Component({
   selector: 'app-root',
@@ -38,8 +38,9 @@ export class AppComponent {
 
   clientColors : MenuColor = colorsForMenusClient;
   editorColors : MenuColor = colorsForMenusEditor;
-  menuColors : MenuColor = colorsForMenusClient; // Elijo por default el Menú con Color para el Cliente
-  
+  defaultColors: MenuColor = colorsDefault;
+  menuColors : MenuColor = colorsDefault;
+   
   constructor(private service: PedidoService, private _router: Router,private tokenStorageService: TokenStorageService) {}
 
   ngOnInit() {
