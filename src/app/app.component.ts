@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { PedidoService } from './services/pedido.service';
 import { TokenStorageService } from './services/token-storage.service';
 import { CLEAR, DANGER, FINALIZADOS, NONE, PENDIENTEATENCION, PROPIOS, RESERVADO, RETORNADOS, REVISION, WARNING } from './utils/const/constantes';
+import { colorsForMenusClient, colorsForMenusEditor, MenuColor } from './utils/functions/functions';
 
 @Component({
   selector: 'app-root',
@@ -34,6 +35,10 @@ export class AppComponent {
   isOpen = false;
 
   resume: {[key: string]: number} | undefined;
+
+  clientColors : MenuColor = colorsForMenusClient;
+  editorColors : MenuColor = colorsForMenusEditor;
+  menuColors : MenuColor = colorsForMenusClient; // Elijo por default el Menú con Color para el Cliente
   
   constructor(private service: PedidoService, private _router: Router,private tokenStorageService: TokenStorageService) {}
 
@@ -47,15 +52,28 @@ export class AppComponent {
       this.roles = user.roles;
       this.mostrarOpcionesCliente = this.roles.includes('ROLE_USER');
       this.mostrarOpcionesEncargado = this.roles.includes('ROLE_ENCARGADO');
+      this.determineMenuColors()
       this.findResume();
       this.username = user.username;
       this.service.change.subscribe((isOpen: any) => {
         //this.isOpen = isOpen;
-        console.log("IS OPEN :", isOpen)
+        //console.log("IS OPEN :", isOpen)
         this.findResume();
       });  
     }
-    //this.buscarTodos()
+  }
+
+  determineMenuColors = () => {
+    if(this.isEditor()) {
+      this.menuColors = this.editorColors
+    }
+    else {
+      this.menuColors = this.clientColors 
+    }
+  };
+
+  chooseMenuTheme = () : "light" | "dark" => {
+    return this.menuColors.theme;
   }
 
   isEditor = () :boolean => {
