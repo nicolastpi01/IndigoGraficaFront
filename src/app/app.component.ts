@@ -103,6 +103,25 @@ export class AppComponent {
     }
   };
 
+  userIconStyle = () => {
+    return {
+      "font-size": '200%',
+      "color": this.menuColors.background
+    }
+  };
+
+  userDescriptionStyle = ()  => {
+    return {
+      "color": this.menuColors.background, 
+      "float": 'right'
+    }
+  };
+
+  buildUsername = () :string => {
+    let rol: string = this.isEditor() ? 'Editor' : 'Cliente'
+    return `${this.username} - ${rol}`   
+  }
+
   determiteBadgeColorForAll = () :string => {
     let amount = 0;
     if(this.isEditor()) {

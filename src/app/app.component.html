@@ -54,7 +54,16 @@
         <button class="button-normal" (click)="showModalLogin()" *ngIf="!isLoggedIn" nz-button nzType="default">Ingresar</button>
         <!-- logout -->
         <button class="button-normal" (click)="logout()" *ngIf="isLoggedIn" nz-button nzType="default">Cerrar sesión</button>
-        <button *ngIf="isLoggedIn" nz-button nzType="default">{{username}}</button>
+
+        <span *ngIf="isLoggedIn">
+          <i 
+            nz-icon 
+            nzType="user" 
+            nzTheme="outline"
+            [style]="userIconStyle()" 
+          ><p [style]="userDescriptionStyle()">{{ buildUsername() }}</p>
+          </i>
+        </span>
         <!-- signon -->
         <button class="button-normal" (click)="showModalRegistrar()" *ngIf="!isLoggedIn" nz-button nzType="primary">Creá tu cuenta</button>
         <span (click)="onClickCart()" *ngIf="isLoggedIn">

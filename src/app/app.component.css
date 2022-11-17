@@ -50,16 +50,28 @@
     float: right
   }
   
-  .button-normal {
+.button-normal {
     margin-top: 16px;
     margin-right: 16px;
     display:flex; 
     justify-content: flex-end; 
     /*outline: 2px; */
     float: right;
-  }
+}
 
-  .user {
+.userIcon p {
+    font-weight: 400px;
+    font-size: 15px;     
+    font-weight: bold;   
+}
+
+.center i {
+    font-size: 50px;
+    font-weight: bold;   
+    color:#f6180d 
+}
+
+.user {
     height: 90px;
     /*width: 90px;*/
     padding: 20px 30px;
@@ -69,9 +81,9 @@
     justify-content: flex-end; 
     /*outline: 2px; */
     float: right  
-  }
+}
 
- .cart-shakeit {
+.cart-shakeit {
     height: 90px;
     padding: 20px 24px;
     font-size: 20px;
