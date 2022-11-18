@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { PedidoService } from './services/pedido.service';
 import { TokenStorageService } from './services/token-storage.service';
 import { CLEAR, DANGER, FINALIZADOS, NONE, PENDIENTEATENCION, PROPIOS, RESERVADO, RETORNADOS, REVISION, WARNING } from './utils/const/constantes';
+import { colorsDefault, colorsForMenusClient, colorsForMenusEditor, MenuColor } from './utils/functions/functions';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ export class AppComponent {
   title = 'indigo'
   pendienteAtencion = PENDIENTEATENCION;
   reservado = RESERVADO;
+  allStates: string[] = [];
 
   isVisible = false;
   isVisibleLogin = false;
@@ -33,49 +35,135 @@ export class AppComponent {
   isOpen = false;
 
   resume: {[key: string]: number} | undefined;
-  
+
+  clientColors : MenuColor = colorsForMenusClient;
+  editorColors : MenuColor = colorsForMenusEditor;
+  defaultColors: MenuColor = colorsDefault;
+  menuColors : MenuColor = colorsDefault;
+   
   constructor(private service: PedidoService, private _router: Router,private tokenStorageService: TokenStorageService) {}
 
   ngOnInit() {
     this.isLoggedIn = !!this.tokenStorageService.getToken();
+    this.allStates.push(this.pendienteAtencion)
+    this.allStates.push(this.reservado)
     this.title = 'indigo';
     if (this.isLoggedIn) {
       const user = this.tokenStorageService.getUser();
       this.roles = user.roles;
       this.mostrarOpcionesCliente = this.roles.includes('ROLE_USER');
       this.mostrarOpcionesEncargado = this.roles.includes('ROLE_ENCARGADO');
+      this.determineMenuColors()
       this.findResume();
       this.username = user.username;
       this.service.change.subscribe((isOpen: any) => {
         //this.isOpen = isOpen;
-        console.log("IS OPEN :", isOpen)
+        //console.log("IS OPEN :", isOpen)
         this.findResume();
       });  
     }
-    //this.buscarTodos()
   }
 
-  determiteBadgeColor = (state?: string) :string =>  {
-    let cantidad = 0;
-    if(state && this.resume) {
-      cantidad += this.resume[state]
-    } 
-      if(cantidad === 0) {
-        return NONE
+  determineMenuColors = () => {
+    if(this.isEditor()) {
+      console.log("Es editor")
+      this.menuColors = this.editorColors
+    }
+    else {
+      this.menuColors = this.clientColors 
+    }
+  };
+
+  chooseMenuTheme = () : "light" | "dark" => {
+    return this.menuColors.theme;
+  }
+
+  isEditor = () :boolean => {
+    return this.roles.includes('ROLE_ENCARGADO')
+  };
+
+  menuSidebar = () => {
+    return {
+      "position": 'relative',
+      "z-index": '10',
+      "min-height": '100vh',
+      "box-shadow": '2px 0 6px rgba(0,21,41,.35)',
+      "background": this.menuColors.background,
+    }
+  };
+
+  sidebarLogo = () => {
+    return {
+      "position": 'relative',
+      "height": '64px',
+      "padding-left": '24px',
+      "overflow": 'hidden',
+      "line-height": '64px',
+      "background": this.menuColors.background,
+      "transition": 'all .3s'
+    }
+  };
+
+  userIconStyle = () => {
+    return {
+      "font-size": '200%',
+      "color": this.menuColors.background
+    }
+  };
+
+  userDescriptionStyle = ()  => {
+    return {
+      "color": this.menuColors.background, 
+      "float": 'right'
+    }
+  };
+
+  buildUsername = () :string => {
+    let rol: string = this.isEditor() ? 'Editor' : 'Cliente'
+    return `${this.username} - ${rol}`   
+  }
+
+  determiteBadgeColorForAll = () :string => {
+    let amount = 0;
+    if(this.isEditor()) {
+      return this.determiteBadgeColor(this.pendienteAtencion)
+      //amount += this.resume[this.pendienteAtencion]
+    }
+    else { // I'm Client
+      //console.log("Soy Cliente")
+      this.allStates.map((state: string) => {
+        //console.log("Estoy en el Map")
+        amount += this.amountByState(state)
+      });
+      return this.amountForColor(amount) 
+    }
+  };
+
+  amountForColor = (amount: number) :string => {
+    if(amount === 0) {
+      return NONE
+    }
+    else {
+      if(amount <= 50) {
+        return CLEAR;
       }
       else {
-        if(cantidad <= 50) {
-          return CLEAR;
+        if(amount <= 99) {
+          return WARNING;
         }
         else {
-          if(cantidad <= 99) {
-            return WARNING;
-          }
-          else {
-            return DANGER;
-          }
+          return DANGER;
         }
       }
+    }
+  };
+
+  determiteBadgeColor = (state?: string) :string =>  {
+    let amount = 0;
+    if(state && this.resume) {
+      amount += this.resume[state]
+    }
+    return this.amountForColor(amount) 
   };
 
   amountByState = (state: string) :number => {
@@ -86,10 +174,24 @@ export class AppComponent {
     return amount;
   };
 
+  amountForAll = () :number => {
+    let amount: number = 0
+    if(this.resume) {
+      if(this.isEditor()) {
+        //console.log("SOY EDITOR")
+        amount += this.resume[this.pendienteAtencion]
+      }
+      else { // I'm Client
+        amount += this.resume[this.pendienteAtencion] + this.resume[this.reservado] 
+      }
+    }    
+    return amount
+  };
+
   amountToShowInCart = () :number => {
     let amount: number = 0;
     if(this.resume) {
-      amount = this.resume[PROPIOS]
+      amount += this.resume['PROPIOS']
     }
     return amount;
   };

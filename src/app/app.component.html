@@ -1,27 +1,29 @@
 <nz-layout class="app-layout">
-  <nz-sider class="menu-sidebar"
-            nzCollapsible
-            nzWidth="256px"
-            nzBreakpoint="md"
-            [(nzCollapsed)]="isCollapsed"
-            [nzTrigger]="null">
-    <div class="sidebar-logo">
+  <nz-sider 
+    [style]="menuSidebar()"
+    nzCollapsible
+    nzWidth="256px"
+    nzBreakpoint="md"
+    [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null"
+  >
+    <div [style]="sidebarLogo()" class="sidebar-logo">
       <a href="bienvenido/" target="_blank">
         <img src="./assets/herramienta-de-diseno.gif" alt="logo">
         <h1>Índigo Gráfica</h1>
       </a>
     </div>
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+    <ul nz-menu [nzTheme]="chooseMenuTheme()" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
       <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a routerLink="/bienvenido">Bienvenido</a>
           </li>
-          <li id="nuevo-menu" nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesCliente||mostrarOpcionesEncargado">
+          <li id="nuevo-menu" nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesCliente|| mostrarOpcionesEncargado">
             <a routerLink="/nuevo">Nuevo</a>
           </li>
-          <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado">
-            <a routerLink="/todos">Todos</a>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="amountByState(pendienteAtencion)" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColor(pendienteAtencion), color: '#000000' }"></nz-badge>
+          <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesCliente || mostrarOpcionesEncargado">
+            <a routerLink="/todos">Todos</a>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="amountForAll()" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColorForAll(), color: '#000000' }"></nz-badge>
           </li>
           <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado">
             <a routerLink="/reservados">Reservados</a>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="amountByState(reservado)" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColor(reservado), color: '#000000' }"></nz-badge>
@@ -52,7 +54,15 @@
         <button class="button-normal" (click)="showModalLogin()" *ngIf="!isLoggedIn" nz-button nzType="default">Ingresar</button>
         <!-- logout -->
         <button class="button-normal" (click)="logout()" *ngIf="isLoggedIn" nz-button nzType="default">Cerrar sesión</button>
-        <button *ngIf="isLoggedIn" nz-button nzType="default">{{username}}</button>
+        <span *ngIf="isLoggedIn">
+          <i 
+            nz-icon 
+            nzType="user" 
+            nzTheme="outline"
+            [style]="userIconStyle()" 
+          ><p [style]="userDescriptionStyle()">{{ buildUsername() }}</p>
+          </i>
+        </span>
         <!-- signon -->
         <button class="button-normal" (click)="showModalRegistrar()" *ngIf="!isLoggedIn" nz-button nzType="primary">Creá tu cuenta</button>
         <span (click)="onClickCart()" *ngIf="isLoggedIn">

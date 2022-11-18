@@ -627,36 +627,6 @@ export class CarritoComponent implements OnInit {
   }
 
   /*
-  showDeleteConfirm(pedido: any): void {
-
-    this.modal.confirm({
-      nzTitle: `<b style="color: red;">Eliminar</b>`,
-      nzContent: `Está seguro de querer eliminar el pedido con id: ${pedido.id} ?.`,
-      nzOkText: 'Sí',
-      nzOkType: 'primary',
-      nzOkDanger: true,
-      nzOnOk: () => this.onOkDeleteConfirm(pedido),
-      nzCancelText: 'No',
-      nzOnCancel: () => console.log('Cancel')
-    });
-  }
-  */
-
-  onOkDeleteConfirm = (pedido: Pedido) => {
-      this.service.eliminar(pedido.id).
-      pipe(filter(e => e instanceof HttpResponse))
-      .subscribe( (e: any) => {
-        this.pedidos = this.pedidos.filter((p: any) => p.id !== pedido.id)
-        this.total = this.pedidos.length
-        this.msg.success(e.body.message);
-      }),
-      (e: any) => {
-          // Ojo, no esta cacheando el error 
-          this.msg.error(e.body.message);
-      }
-  };
-
-  /*
   updateSingleChecked(): void {
     if (this.checkOptionsOne.every(item => !item.checked)) {
       this.allChecked = false;
@@ -670,8 +640,7 @@ export class CarritoComponent implements OnInit {
   }
   */
 
-  onClickAccion (pedido: Pedido): void {
-  }
+  onClickAccion (pedido: Pedido): void {}
 
   /*
   indexChange($event: any){

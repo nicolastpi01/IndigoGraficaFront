@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { PedidoService } from '../../services/pedido.service';
-import { PENDIENTEATENCION, tipografias as arrayLetras } from 'src/app/utils/const/constantes';
+import { tipografias as arrayLetras } from 'src/app/utils/const/constantes';
 import { Tipo } from 'src/app/interface/tipo';
 import { Color } from 'src/app/interface/color';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,6 +18,7 @@ import { Comentario, Interaccion } from 'src/app/interface/comentario';
 import { PosicionService } from 'src/app/services/posicion.service';
 import { getBase64 } from 'src/app/utils/functions/functions';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-nuevo',
@@ -46,18 +47,16 @@ export class NuevoComponent implements OnInit {
   isVisibleModalComment = false;
   esEdicion = false
   pedidoId?: string
-
   isLoggedIn = false;
   currentUser: any;
 
   @ViewChild('viewport', { read: ElementRef }) viewport!: ElementRef;
   @ViewChildren('inputComment', { read: ElementRef }) inputs!: QueryList<ElementRef>
 
-
   constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, 
     private tipoService: TipoPedidoService, private colorService :ColorService, private _router: Router, 
-    private msg: NzMessageService, private posService: PosicionService, private tokenService: TokenStorageService,  
-    private route: ActivatedRoute) {} // para que se usa rd ?
+    private msg: NzMessageService, private modal: NzModalService, private tokenService: TokenStorageService,  
+    private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     
@@ -80,7 +79,6 @@ export class NuevoComponent implements OnInit {
       this.findColores();
       this.findPedidos();
       this.loadPedidoIfExist()
-  
       this.panels = this.initialPanelState();
       //this.dummyClickRef?.nativeElement.click()
       //this.dummyClickRef?.nativeElement.focus()  
@@ -132,9 +130,9 @@ export class NuevoComponent implements OnInit {
   };
 
   loadPedidoIfExist(): void {
-    this.pedidoId = this.route.snapshot.paramMap.get('id')||undefined
+    this.pedidoId = this.route.snapshot.paramMap.get('id') || undefined
     
-    if(this.pedidoId){
+    if(this.pedidoId) {
       this.esEdicion = true
       this.service.getPedido(this.pedidoId).subscribe(pedido => {
         this.currentPedido = pedido
@@ -163,7 +161,7 @@ export class NuevoComponent implements OnInit {
       })
       let nuevoMenu = document.getElementById("nuevo-menu")
       nuevoMenu!.classList.remove('ant-menu-item-selected')
-    }else{
+    } else {
       this.esEdicion = false
       this.pedidoId = undefined
     }
@@ -236,8 +234,8 @@ export class NuevoComponent implements OnInit {
       let colorRet = this.coloresData.find( (colorData: Color) => colorData.hexCode === colorHexCode)
       if (colorRet) coloresRet.push(colorRet);
     })
-
     let nuevoPedido : Pedido = {
+      id: this.currentPedido?.id, // Si ya cree un Pedido entonces manda el Create con un idPedido que ya existe en la bd, por ende actualiza
       cantidad: form.value.cantidad ? form.value.cantidad : 1,
       nombre: form.value.titulo,
       nombreExtendido: form.value.subtitulo,
@@ -254,19 +252,24 @@ export class NuevoComponent implements OnInit {
         username: this.currentUser.username,
         email: this.currentUser.email
       },
+      // encargado no va a tener nunca porque un Pedido Reservado no puede ser Editado por el Cliente
       fechaEntrega: form.value.datePicker,
       tipo: this.tipoPedidosData.find((tipoPedido: Tipo) => tipoPedido.nombre === form.value.tipo),
-      colores: coloresRet
+      colores: coloresRet,
+      interacciones: this.currentPedido?.interacciones // Si das de Alta un Pedido, y no esta Reservado, igual puede tener 
+      //Interacciones disparadas por el Usuario desde el Carrito
     }
-
-    if(this.esEdicion){
+    if(this.esEdicion && !nuevoPedido.id) {
       nuevoPedido.id = this.pedidoId
     }
-  
+    nuevoPedido = {
+      ...nuevoPedido, files: this.currentPedido?.files // Si llega a tener Files los agrego antes de mandar de nuevo el Pedido
+    }
     this.service.create(nuevoPedido).
     pipe(filter(e => e instanceof HttpResponse))
     .subscribe( (e: any) => { // revisar el any
         this.currentPedido = e.body as Pedido
+        this.esEdicion = true
         this.service.toggle(); // para que se actualice el contador del Sidebar
         this.loadingAlta = false;
         this.msg.success('Pedido generado satisfactoriamente!');
@@ -343,26 +346,43 @@ export class NuevoComponent implements OnInit {
     this.previewVisible = true;
   };
 
-  eliminarPedido = () :void => {
-    if(!this.currentPedido) {
-      this.msg.warning("Debe generar un pedido antes de proceder a eliminarlo")
-    }
-    else {
-      this.loadingEliminarPedido = true;
-      this.service.eliminar(this.currentPedido?.id).
-      pipe(filter(e => e instanceof HttpResponse))
-      .subscribe( (e: any) => {
+  showDeleteConfirm(pedido: any): void {
+    this.loadingEliminarPedido = true;
+    this.modal.confirm({
+      nzTitle: `<b style="color: red;">Eliminar</b>`,
+      nzContent: `Está seguro de querer eliminar el pedido con id: ${pedido.id} ?`,
+      nzOkText: 'Sí',
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => this.onOkDeleteConfirm(pedido),
+      nzCancelText: 'No',
+      nzOnCancel: () => {
+        this.loadingEliminarPedido = false;
+      }  
+    });
+  }
+
+  onOkDeleteConfirm = (pedido: Pedido) => {
+    this.service.eliminar(pedido.id)
+    .pipe(filter(e => e instanceof HttpResponse))
+    .subscribe({
+      next: (e: any) => {
         this.resetForm();
         this.service.toggle();
         this.msg.success(e.body.message);
+        setTimeout(() => {
+          this.msg.info("redireccionando...");
+        }, 500);
+        setTimeout(() => {
+          this._router.navigateByUrl("/bienvenido")
+        }, 2500);
+      },
+      error: (e) => {
+        this.msg.error(e.body.message);
+      },
+      complete: () => {
         this.loadingEliminarPedido = false;
-      }),
-      (e: any) => {
-          // Ojo, no esta catcheando el error 
-          this.msg.error(e.body.message);
-          this.loadingEliminarPedido = false;
-      }
-    }
+      }})
   };
 
   onClickDeleteFile = (event: MouseEvent, item: FileDB) => {

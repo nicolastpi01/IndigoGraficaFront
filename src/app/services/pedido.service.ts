@@ -69,6 +69,11 @@ export class PedidoService {
     return this.http.get<Pedido[]>(`${this.baseUrl}/pedidos?state=`+ estado) 
   }
 
+  getAllPedidos(token: string) : Observable<Pedido[]> {
+    httpOptions.headers.append('Authorization', `Bearer ${token}`);
+    return this.http.get<Pedido[]>(`${this.baseUrl}/todos`, httpOptions) 
+  };
+
   getPedido(id: string | null) :Observable<Pedido> {
     return this.http.get<Pedido>(`${this.baseUrl}`+`${this.api}/${id}`);
   }
@@ -87,6 +92,15 @@ export class PedidoService {
     //return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, pedido, this.httpOptions).pipe()
     httpOptions.headers.append('Authorization', `Bearer ${token}`);
     return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, this.httpOptions).pipe()
+  }
+
+  // Voy a buscar el Pedido con el id, si el Pedido esta Reservado (y no esta Reservado por mi, ergo soy el Editor) entonces
+  // lanzo una excepcion 'No puede Editar un Pedido que ya fue reservado --y agrego una Sol. alternativa'
+  // Si el Pedido no esta Reservado o esta Reservado pero por mi entonces le permito Editar, y retorno el Pedido con un Estado nuevo
+  // Estado = available = False; - De este modo un Editor no puede 'Reservarlo' si quisiera
+  allowsEdit(idPedido: string | null) :Observable<Pedido> {
+    //const req = new HttpRequest('POST', `${this.baseUrl}`+this.api+'/create', httpOptions);
+    return this.http.get<Pedido>(`${this.baseUrl}/pedidos/AllowsEdit/` + idPedido, httpOptions);
   }
 
 }
