@@ -270,7 +270,7 @@
 
 <div nz-row nzJustify="end" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
   <div nz-col>
-    <button nz-button nzType="default" style="width: 120px;">Salir<i nz-icon nzType="home" nzTheme="outline"></i></button>
+    <button nz-button nzType="default" (click)="goOutside()" style="width: 120px;">Salir<i nz-icon nzType="home" nzTheme="outline"></i></button>
   </div>
   <div nz-col>
     <button nz-button nzType="primary" style="width: 120px;" (click)="onClickPedidoChat($event)">Chat<i nz-icon nzType="message" nzTheme="outline"></i></button>

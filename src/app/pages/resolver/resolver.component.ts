@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 import { PedidoService } from 'src/app/services/pedido.service';
 import { filter, last, Observable } from 'rxjs';
@@ -55,7 +55,7 @@ export class ResolverComponent implements OnInit {
   ChatNoResultMessage: string = showNoResultTextChatFor('Cliente');
   currentRol :string = 'EDITOR'; 
 
-  constructor(private route: ActivatedRoute, private service :PedidoService, private msg: NzMessageService) {}
+  constructor(private route: ActivatedRoute, private service :PedidoService, private msg: NzMessageService, private _router: Router) {}
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id')
@@ -715,6 +715,10 @@ export class ResolverComponent implements OnInit {
   handleCancelResolver = (value: boolean) => {
     this.getPedido(); // revisar esto !
     this.isVisibleModalComment = value;
+  };
+
+  goOutside = () => {
+    this._router.navigateByUrl('/bienvenido')
   };
 
 }
