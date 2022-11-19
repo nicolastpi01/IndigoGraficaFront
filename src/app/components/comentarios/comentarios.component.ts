@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { Comentario } from "src/app/interface/comentario";
+import { Comentario, Interaccion } from "src/app/interface/comentario";
 import { FileDB } from "src/app/interface/fileDB";
 import { TokenStorageService } from "src/app/services/token-storage.service";
 import { badgeColorStyle, badgeUponImagePositionStyle, toFullDate } from "src/app/utils/functions/functions";
@@ -66,6 +66,18 @@ import { badgeColorStyle, badgeUponImagePositionStyle, toFullDate } from "src/ap
         else {
             this.handleClose()            
         }
+    };
+
+    // REVISAR LO QUE ES ROL PORQUE VARIA ENTRE USUARIO Y CLIENTE...
+    thereIsAnAnswer = (rol: string, comentario: Comentario): boolean => {
+        let commentCp : Comentario = JSON.parse(JSON.stringify(comentario))
+        let last :Interaccion | undefined = commentCp.interacciones.pop();
+       if(rol === 'CLIENTE') {
+        return last?.rol === 'EDITOR'
+       }
+       else {
+        return last?.rol === 'USUARIO' || commentCp.terminado // POR QUE USUARIO Y NO CLIENTE ?
+       }
     };
 
     okText = () :string => {
