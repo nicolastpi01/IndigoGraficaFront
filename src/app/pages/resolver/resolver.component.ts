@@ -18,6 +18,7 @@ import { Color } from 'src/app/interface/color';
 import { fallback } from 'src/app/utils/const/constantes';
 import { PerfilInfo } from 'src/app/components/chat/chat.component';
 import { Estado } from 'src/app/interface/estado';
+import { Budget } from 'src/app/interface/Budget';
 
 @Component({
   selector: 'app-resolver',
@@ -39,7 +40,9 @@ export class ResolverComponent implements OnInit {
   currentPedido: Pedido | undefined;
   currentFile: FileDB | undefined;
   currentComment: Comentario | undefined;
-  currentSolution: FileDB | undefined; 
+  currentSolution: FileDB | undefined;
+  currentBudget: Budget | undefined; // Cargarlo en el OnInit si existe
+  showFallbackBudget: boolean = false;
   showFallback: boolean = false;
   id!: string | null;
   textAreaValue: string | undefined; 
@@ -47,6 +50,7 @@ export class ResolverComponent implements OnInit {
   isVisibleModalChat = false;
   isVisibleModalPedidoChat = false;
   isVisibleModalFileChat = false;
+  isVisibleModalBudgetChat = false;
   
   panels: Array<{active: boolean, name: string, disabled: boolean}> = [];
   tabs: Array<{ name: string, icon: string, title: string }> = [];
@@ -473,6 +477,8 @@ export class ResolverComponent implements OnInit {
               }
             })};
             console.log("El pedido: ", this.currentPedido)
+
+            console.log("Current Sol: ", this.currentSolution)
             //this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
             //  return {
             //    ...file, url: await getBase64(file)  
@@ -496,6 +502,40 @@ export class ResolverComponent implements OnInit {
         this.msg.error(`${file.name} file upload failed.`);
     }
   };
+
+  // : Promise<void>
+  onClickSendBudget = ({ file, fileList }: NzUploadChangeParam)  => {
+
+  };
+
+  onClickSendBudgetButton = () => {
+    this.isVisibleModalBudgetChat = true
+    this.showFallbackBudget = true
+  }
+
+  handleCancelBudget = () => {
+    this.goOutModalBudget()
+  }
+
+  onOkActionBudget = () => {
+    this.goOutModalBudget()
+  }
+
+  goOutModalBudget = () => {
+    this.isVisibleModalBudgetChat = false
+  }
+  
+  disabledSendBudget = () => {
+    //this.currentPedido?.files
+  };
+
+  handleChangeBudget = ({ file, fileList }: NzUploadChangeParam) => {
+    
+  };
+
+  onClickDeleteBudget = (event: MouseEvent) => {
+    
+  }; 
 
   handleSendMarkups = (comments: Comentario[]) => {
     let fileCp : FileDB = JSON.parse(JSON.stringify(this.currentFile));
@@ -635,13 +675,10 @@ export class ResolverComponent implements OnInit {
   };
 
   onClickAddSolution = (event: MouseEvent, item: FileDB) => {
-    //this.showFallback = false;
     event.preventDefault;
     this.currentFile = item
-    //console.log("Current File: ", item)
-    //console.log("Solutions: ", this.currentPedido?.solutions)
-    this.currentSolution = this.currentPedido?.solutions?.find((solution: Solution) => solution.idFileToSolution === item.id)?.file
-    //console.log("Current Solution: ", this.currentSolution)
+    // Cuidado, porque item.id y idFileToSolution son de =/ tipo
+    this.currentSolution = this.currentPedido?.solutions?.find((solution: Solution) => solution.idFileToSolution === item.id?.toString())?.file
     
     if(!this.currentSolution) {
       this.showFallback = true
