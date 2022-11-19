@@ -426,7 +426,7 @@ export class ResolverComponent implements OnInit {
 
   async handleChange({ file, fileList }: NzUploadChangeParam): Promise<void> {
     if (file.status !== 'uploading') {
-      console.log(file, fileList);
+      //console.log(file, fileList);
     }
     if (file.status === 'done') {
       file['preview'] = await getBase64(file.originFileObj!);
@@ -493,7 +493,7 @@ export class ResolverComponent implements OnInit {
         }
 
     } else if (file.status === 'error') {
-      this.msg.error(`${file.name} file upload failed.`);
+        this.msg.error(`${file.name} file upload failed.`);
     }
   };
 

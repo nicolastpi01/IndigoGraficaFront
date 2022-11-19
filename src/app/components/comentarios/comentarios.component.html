@@ -74,18 +74,26 @@
                     </div>
                   </div>
                 </div>
-                <ng-template [ngIf]="rol === 'CLIENTE' ">
                   <div nz-col>
                     <div nz-row [nzGutter]="8">
                       <div nz-col>
                         <div nz-typography nzType="secondary">Está finalizado?</div>
                       </div>
                       <div nz-col>
+                        <ng-template [ngIf]="rol === 'CLIENTE' " [ngIfElse]='EDITOR'>
                           <div nz-checkbox [(ngModel)]="comentario.terminado" (ngModelChange)="changeCheck($event, comentario)"></div>
+                        </ng-template>
+                        <ng-template #EDITOR>
+                          <ng-template [ngIf]="comentario.terminado" [ngIfElse]="AwaitForFinish">
+                            <span nz-icon nzType="check" style="color: green;" nzTheme="outline"></span>
+                          </ng-template>
+                          <ng-template #AwaitForFinish>
+                              <span nz-icon nzType="close" style="color: red;" nzTheme="outline"></span>
+                          </ng-template>
+                        </ng-template>  
                       </div>
                     </div>
                   </div>
-                </ng-template>
               </div>
               </nz-comment-content>
             </nz-comment> 
