@@ -60,11 +60,11 @@
                 <div nz-col>
                   <div nz-row [nzGutter]="8">
                     <div nz-col>
-                      <div nz-typography nzType="secondary">Tiene respuesta?</div>
+                      <div nz-typography nzType="secondary">Respondí?</div>
                     </div>
                     <div nz-col>
                       <div nz-typography nzType="secondary">
-                        <ng-template [ngIf]="comentario.respondido" [ngIfElse]="ShowClose">
+                        <ng-template [ngIf]="IAnswered(rol, comentario)" [ngIfElse]="ShowClose">
                             <span nz-icon nzType="check" style="color: green;" nzTheme="outline"></span>
                         </ng-template>
                         <ng-template #ShowClose>

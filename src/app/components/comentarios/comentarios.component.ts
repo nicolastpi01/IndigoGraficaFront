@@ -80,6 +80,17 @@ import { badgeColorStyle, badgeUponImagePositionStyle, toFullDate } from "src/ap
        }
     };
 
+    IAnswered = (rol: string, comentario: Comentario): boolean => {
+        let commentCp : Comentario = JSON.parse(JSON.stringify(comentario))
+        let last :Interaccion | undefined = commentCp.interacciones.pop();
+       if(rol === 'CLIENTE') {
+        return last?.rol === 'USUARIO'
+       }
+       else {
+        return last?.rol === 'EDITOR' 
+       }
+    };
+
     okText = () :string => {
         if(this.rol === 'CLIENTE') {
             return 'Envíar marcados' 
