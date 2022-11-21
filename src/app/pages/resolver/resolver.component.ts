@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 import { PedidoService } from 'src/app/services/pedido.service';
-import { filter, last, Observable } from 'rxjs';
+import { catchError, filter, last, Observable, of } from 'rxjs';
 import {  HttpResponse } from '@angular/common/http';
 import { Pedido } from 'src/app/interface/pedido';
 import { FileDB } from 'src/app/interface/fileDB';
@@ -20,6 +20,7 @@ import { PerfilInfo } from 'src/app/components/chat/chat.component';
 import { Estado } from 'src/app/interface/estado';
 import { Budget } from 'src/app/interface/Budget';
 import { getCurrencySymbol } from '@angular/common';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-resolver',
@@ -61,7 +62,8 @@ export class ResolverComponent implements OnInit {
   ChatNoResultMessage: string = showNoResultTextChatFor('Cliente');
   currentRol :string = 'EDITOR'; 
 
-  constructor(private route: ActivatedRoute, private service :PedidoService, private msg: NzMessageService, private _router: Router) {}
+  constructor(private route: ActivatedRoute, private service :PedidoService, private msg: NzMessageService, 
+    private _router: Router, private modal: NzModalService) {}
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id')
@@ -511,7 +513,43 @@ export class ResolverComponent implements OnInit {
   };
 
   resolver = () => {
-    
+   this.service.resolver(this.currentPedido?.id).pipe(
+    catchError(er => {
+      this.msg.error(er.error.message);
+      return of(er)
+    })
+  )
+    .subscribe((pedido: any) => {
+      this.msg.success(pedido.message)
+      setTimeout(() => {
+        this.msg.info("redireccionando...");
+      }, 500);
+      setTimeout(() => {
+        this._router.navigateByUrl("/revision") // redireccionar a otro lado...
+      }, 2500);
+    }); 
+  };
+
+  showNotifyPayment(): void {
+    this.modal.warning({
+      nzTitle: `<b style="color: yellow;">Atención!</b>`,
+      nzContent: `Está seguro de querer notificar que el Cliente realizo el pago para el Pedido con id: ${this.currentPedido?.id} ?`,
+      nzOkText: 'Sí',
+      nzOkType: 'primary',
+      nzOnOk: () => this.onOkNotifyPayment(),
+      nzCancelText: 'No',
+      nzOnCancel: () => {
+      }  
+    });
+  }
+
+  onOkNotifyPayment = () => {
+    // Llama al servicio para indicar que el Cliente ya pago por la res. del Pedido
+  };
+
+  notifyPayment = () => {
+    // Levanta un cartel donde se le re-pregunta al Usuario si esta seguro de notificar el Pago del Presupuesto acordado...
+    // Si esta de acuerdo se envia, sino no!
   };
 
   paymentInfoStyle = () => {

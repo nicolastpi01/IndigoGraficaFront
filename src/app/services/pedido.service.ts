@@ -103,4 +103,8 @@ export class PedidoService {
     return this.http.get<Pedido>(`${this.baseUrl}/pedidos/AllowsEdit/` + idPedido, httpOptions);
   }
 
+  resolver(id: string | undefined) :Observable<any> {
+    return this.http.put(`${this.baseUrl}/pedidos/resolver/` + id, httpOptions);
+  }
+
 }
