@@ -19,12 +19,14 @@ import { fallback } from 'src/app/utils/const/constantes';
 import { PerfilInfo } from 'src/app/components/chat/chat.component';
 import { Estado } from 'src/app/interface/estado';
 import { Budget } from 'src/app/interface/Budget';
+import { getCurrencySymbol } from '@angular/common';
 
 @Component({
   selector: 'app-resolver',
   templateUrl: './resolver.component.html',
   styleUrls: ['./resolver.component.css']
 })
+
 
 export class ResolverComponent implements OnInit {
 
@@ -506,6 +508,44 @@ export class ResolverComponent implements OnInit {
   // : Promise<void>
   onClickSendBudget = ({ file, fileList }: NzUploadChangeParam)  => {
 
+  };
+
+  resolver = () => {
+    
+  };
+
+  paymentInfoStyle = () => {
+    let retStyle = {
+      "font-weight": 'bold',
+      "font-size": '1rem',
+      "line-height": '0.2',
+      "margin-top": '5%',
+    }
+    if(this.currentPedido && this.currentPedido.hasPayment) {
+      return {
+        ...retStyle, color: 'rgb(37, 167, 52)', // green
+      }
+    }
+    else {
+      return {
+        ...retStyle, color: 'rgb(201, 46, 46)' // red
+      }
+    } 
+  };
+
+  paymentInfoText = () => {
+    if(this.currentPedido && this.currentPedido.hasPayment) {
+      return {
+        "fistParagraph": 'El Cliente ya ha depositado',
+        "secondParagraph": 'el pago para este Pedido.'
+      }
+    }
+    else {
+      return {
+        "fistParagraph": 'Aún no se ha depositado',
+        "secondParagraph": 'un pago para este Pedido.'
+      }
+    } 
   };
 
   onClickSendBudgetButton = () => {

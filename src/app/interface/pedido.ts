@@ -14,7 +14,8 @@ export interface Pedido {
     nombreExtendido?: string; 
     cantidad?: number;
     alto?: number; 
-    ancho?: number; 
+    ancho?: number;
+    hasPayment?: boolean; 
     tipografia?: string;
     state?: Estado; 
     fechaEntrega?: Date | string;

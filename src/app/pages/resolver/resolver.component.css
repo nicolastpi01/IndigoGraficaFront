@@ -67,3 +67,19 @@ nz-divider {
     text-decoration: underline;
     */
   }
+
+  .resolverText {
+    font-weight: bold; 
+    /* font-family: 'Abril Fatface', serif; */
+    font-size: 1.5rem;
+  }
+
+  
+  .paymentInfo2 {
+    font-weight: bold;
+    font-size: 1rem;
+    line-height: 0.2;
+    color: rgba(167, 37, 165, 0.755);
+    margin-top: 5%;
+  }
+  

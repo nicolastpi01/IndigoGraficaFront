@@ -159,8 +159,7 @@
                 >
                   <span nz-icon nzType="upload" nzTheme="outline"></span>Enviar presupuesto
                 </button>
-              </nz-upload-->
-              <button nz-button nzType="primary" (click)="onClickSendBudgetButton()">Enviar presupuesto</button>
+              </nz-upload-->      
             </div>
 
         <nz-modal
@@ -317,7 +316,21 @@
                   </button>
                 </nz-upload>
               </ng-template>
-            </nz-card>
+            </nz-card>            
+        </div>
+      </div>
+      <br>
+      <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+        <div nz-col>
+          <button nz-button nzType="primary" style="height: 50px; width: 150px;" (click)="resolver()">
+            <p class="resolverText">Resolver</p>
+          </button>
+        </div>
+        <div nz-col>
+          <div [style]="paymentInfoStyle()">
+            <p>{{ paymentInfoText().fistParagraph }}</p>
+            <p>{{ paymentInfoText().secondParagraph }}</p>
+          </div>
         </div>
       </div>
      </ng-template>
@@ -341,6 +354,9 @@
   </div>
   <div nz-col>
     <button nz-button nzType="primary" style="width: 120px;" (click)="onClickPedidoChat($event)">Chat<i nz-icon nzType="message" nzTheme="outline"></i></button>
+  </div>
+  <div nz-col>
+    <button nz-button nzType="primary" (click)="undefined">Enviar presupuesto</button>
   </div>
 </div>
 
