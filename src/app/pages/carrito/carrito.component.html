@@ -20,7 +20,7 @@
                           <i nz-icon [nzType]="tab.icon"></i>
                             {{ tab.title }}
                         </ng-template>
-                        <ng-template [ngIf]="tab.name === 'Info' " [ngIfElse]="files">
+                        <ng-template [ngIf]="tab.name === 'Info' " [ngIfElse]="FilesOrSolutions">
                               <div nz-row nzJustify="center" [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
                                 <!--ng-template [ngIf]="pedido.id.lenght < 10 || pedido.expandedId" [ngIfElse]="WithoutExpandedId"-->
                                   <div nz-col>
@@ -93,50 +93,84 @@
                                 </div>
                             </div>
                         </ng-template>
-                        <ng-template #files>
-                          <ng-template [ngIf]="pedido.files && pedido.files.length" [ngIfElse]="NoFiles">
-                            <p style="text-align: center;"><b>Archivos</b></p>
-                            <nz-list nzGrid>
-                                <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="pedido.files">
-                                  <div nz-col *ngFor="let file of pedido.files">
+                        <ng-template #FilesOrSolutions>
+                          <ng-template [ngIf]="tab.name === 'Files' " [ngIfElse]="Solutions">
+                            <ng-template [ngIf]="pedido.files && pedido.files.length" [ngIfElse]="NoFiles">
+                              <p style="text-align: center;"><b>Archivos</b></p>
+                                <nz-list nzGrid>
+                                  <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="pedido.files">
+                                    <div nz-col *ngFor="let file of pedido.files">
+                                      <nz-list-item>
+                                        <nz-card [nzCover]="coverTemplate" [nzActions]="[actions]">
+                                            <nz-card-meta
+                                                [nzTitle]="file.name"
+                                                nzDescription=""
+                                            ></nz-card-meta>
+                                              <ng-template #coverTemplate>
+                                                <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
+                                              </ng-template>
+                                              <ng-template  #actions>
+                                                <div nz-row [nzGutter]="[{ xs: 2, sm: 4, md: 6, lg: 8 }, 4]">
+                                                  <div nz-col>
+                                                    <button nz-button type="default" (click)="onClickFileChat(file, pedido)">
+                                                      <p style="font-size: 10px;">Chat</p>
+                                                    </button>
+                                                  </div>
+                                                  <div nz-col>
+                                                    <button nz-button type="default" (click)="onClickShowFileComments($event, file, pedido)">
+                                                      <p style="font-size: 10px;">Comentarios</p>
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              </ng-template>
+                                        </nz-card>
+                                      </nz-list-item>
+                                    </div>
+                                  </div>
+                              </nz-list>
+                        </ng-template>
+                            <ng-template  #NoFiles>
+                                  <div style="text-align: center;">
+                                    <p>No cuenta con imágenes para este pedido</p>
+                                    <img nz-image alt="" [nzSrc]="fallback" width="150" height="160">
+                                    <p>Puede agregarlas desde el botón 'Editar'</p>
+                                  </div>
+                              
+                          </ng-template>
+                        </ng-template>
+                        <ng-template #Solutions>
+                        
+                            <p style="text-align: center;"><b>Imágenes con soluciones</b></p>
+                              <nz-list nzGrid>
+                                <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="pedido.solutions">
+                                  <div nz-col *ngFor="let solution of pedido.solutions">
                                     <nz-list-item>
                                       <nz-card [nzCover]="coverTemplate" [nzActions]="[actions]">
-                                          <nz-card-meta
-                                              [nzTitle]="file.name"
-                                              nzDescription=""
-                                          ></nz-card-meta>
-                                            <ng-template #coverTemplate>
-                                              <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
-                                            </ng-template>
-                                            <ng-template  #actions>
-                                              <div nz-row [nzGutter]="[{ xs: 2, sm: 4, md: 6, lg: 8 }, 4]">
-                                                <div nz-col>
-                                                  <button nz-button type="default" (click)="onClickFileChat(file, pedido)">
-                                                    <p style="font-size: 10px;">Chat</p>
-                                                  </button>
-                                                </div>
-                                                <div nz-col>
-                                                  <button nz-button type="default" (click)="onClickShowFileComments($event, file, pedido)">
-                                                    <p style="font-size: 10px;">Comentarios</p>
-                                                  </button>
-                                                </div>
-                                              </div>
-                                            </ng-template>
+                                        <nz-card-meta
+                                          [nzTitle]="solution.file.name"
+                                          nzDescription=""
+                                        ></nz-card-meta>
+                                        <ng-template #coverTemplate>
+                                          <img nz-image alt="no cargo imagen" *ngIf="solution && solution.file && solution.file.url" 
+                                            [nzSrc]="solution.file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
+                                        </ng-template>
+                                        <ng-template #actions>
+                                            <nz-tag class="tag" style="height: 40px; width: 100px;" [nzColor]="'#87d068'">
+                                              <p style="font-size: 15px;">APROBADO</p>
+                                            </nz-tag>
+                                            <br>
+                                            <br>
+                                            <button nz-button type="primary" style="height: 40px; width: 100px;" (click)="showRevisarModal(solution)">
+                                              <p>Revisar</p>
+                                            </button>
+                                        </ng-template>
                                       </nz-card>
                                     </nz-list-item>
                                   </div>
                                 </div>
-                            </nz-list>
-                          </ng-template>
-                          <ng-template  #NoFiles>
-                                <div style="text-align: center;">
-                                  <p>No cuenta con imágenes para este pedido</p>
-                                  <img nz-image alt="" [nzSrc]="fallback" width="150" height="160">
-                                  <p>Puede agregarlas desde el botón 'Editar'</p>
-                                </div>
-                            <!--/div-->
-                          </ng-template>
-                        </ng-template>
+                              </nz-list>
+                          </ng-template> 
+                      </ng-template>
                         <div nz-row class="buttonGroup" [nzGutter]="16">
                           <div nz-col>
                             <button 
@@ -161,6 +195,14 @@
                               class="actions" 
                               (click)="onClickEdit(pedido)" 
                               nzType="primary">Editar
+                            </button>
+                          </div>
+                          <div nz-col>
+                            <button
+                              *ngIf="isPendingRevision(pedido)"
+                              nz-button 
+                              (click)="undefined" 
+                              nzType="primary">Enviar revisión
                             </button>
                           </div>
                         </div>
@@ -297,6 +339,64 @@
                           </div>
                         </div>
                       </div>      
+                    </ng-container>
+                  </nz-modal>
+                  <nz-modal
+                    [(nzVisible)]="isVisibleModalRevisarSolucion"
+                    [nzBodyStyle]="{ minHeight: '600px' }"
+                    nzWidth="60%"
+                    nzTitle="Revisar solución"
+                    nzCentered
+                    nzOkText="Ok"
+                    nzCancelText="Cerrar"
+                    (nzOnCancel)="closeModalSolution()"
+                    (nzOnOk)="closeModalSolution()"
+                  >
+                    <ng-container *nzModalContent>
+                      <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+                        <div nz-col>
+                          <p *ngIf="currentSolution" style="text-align: center;"><b>Solución</b></p>
+                          <nz-card *ngIf="currentSolution && currentSolution.file && currentSolution.file.url" [nzCover]="coverTemplate">
+                            <nz-card-meta>
+                              <span nz-icon nzType="check" nzTheme="outline"></span>Aprobado
+                            </nz-card-meta>
+                            <ng-template #coverTemplate>
+                              <img nz-image nzDisablePreview="false" [nzFallback]="fallback" alt="" [nzSrc]="currentSolution.file.url" width="400" height="200" >
+                            </ng-template>
+                            <div style="text-align: center;">
+                              <span [style]="determineSolutionFeedback(currentSolution).color" nz-icon [nzType]="determineSolutionFeedback(currentSolution).icon" nzTheme="outline">
+                                <p [style]="determineSolutionFeedback(currentSolution).color">{{determineSolutionFeedback(currentSolution).text}}</p>
+                              </span>
+                            </div>
+                          </nz-card>            
+                        </div>
+                        <!--div nz-col>
+                          ES SOLUCIÓN DE: SACO UNA FECHA 
+                        </div-->
+                        <div nz-col>
+                          <p style="text-align: center;"><b>Imagén base</b></p>
+                          <img nz-image nzDisablePreview="false" [nzSrc]="determineImageToSolution()" width="400" height="200">
+                        </div>
+                      </div>
+                      <br>
+                      <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+                        <div nz-col>
+                          <button 
+                            nz-button nzType="primary" 
+                            style="height: 50px; width: 150px;" 
+                            (click)="undefined"
+                          ><p>Aprobar</p>
+                          </button>
+                        </div>
+                        <div nz-col>
+                          <button 
+                            nz-button nzType="primary" 
+                            style="height: 50px; width: 150px;" 
+                            (click)="undefined"
+                          ><p>Desaprobar</p>
+                          </button>
+                        </div>
+                      </div>        
                     </ng-container>
                   </nz-modal>
                   <app-chat 

@@ -454,7 +454,8 @@ export class ResolverComponent implements OnInit {
 
       let newSolution: Solution = {
         idFileToSolution: this.currentFile?.id,
-        file: newFileDB 
+        file: newFileDB,
+        approved: false 
       };
       // No setear el current Solution mandar una copia o algo asi
       if(this.currentPedido && this.currentPedido.files && this.currentPedido.files.length > 0) {

@@ -171,3 +171,25 @@ nz-card :hover {
     transform: translate(-50%, -50%);
 }
 */
+
+.solutionActions {
+    line-height: 0.2;
+  }
+.revisar {
+  color: white;
+  background-color: green;  
+}
+
+.revisar :hover {
+    color: whitesmoke;
+    background-color: darkgreen;
+}
+
+.tag {
+    cursor:default;
+}
+
+.tag :hover {
+    color: whitesmoke;
+    background-color: #87d068;
+}

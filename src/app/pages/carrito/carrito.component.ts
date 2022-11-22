@@ -19,15 +19,22 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { PerfilInfo } from 'src/app/components/chat/chat.component';
 import { Comment } from '@angular/compiler';
 import { Estado } from 'src/app/interface/estado';
+import { Solution } from 'src/app/interface/solution';
+
+interface SolutionFeedback {
+  'color': "green" | "red",
+  'icon': "check-circle" | "close-circle",
+  'text': "Aprobado" | "Desaprobado"
+}
 
 @Component({
   selector: 'app-carrito',
   templateUrl: './carrito.component.html',
   styleUrls: ['./carrito.component.css']
 })
+
 export class CarritoComponent implements OnInit {
 
-  //pageIndex: number = 1;
   total: number = 0;
   count: number = 2;
   index: number = 0;
@@ -38,6 +45,7 @@ export class CarritoComponent implements OnInit {
   currentPedido: Pedido | undefined; 
   currentFile: FileDB | undefined;
   currentComment: Comentario | undefined;
+  currentSolution: Solution | undefined;
   loadingSearch: boolean = false;
   loading: boolean = false;
   isVisibleModalMoreInfo: boolean = false;
@@ -45,16 +53,9 @@ export class CarritoComponent implements OnInit {
   isVisibleModalFilesChat: boolean = false;
   isVisibleModalFileComments: boolean = false;
   isVisibleModalChatUponAFile: boolean = false;
+  isVisibleModalRevisarSolucion: boolean = false;
   loadingMore: boolean = false;
-  /*
-  indeterminate = true;
-  allChecked = false;
-  checkOptionsOne = [
-    { label: 'Apple', value: 'Apple', checked: true },
-    { label: 'Pear', value: 'Pear', checked: false },
-    { label: 'Orange', value: 'Orange', checked: false }
-  ];
-  */
+
   dateFormat = 'dd/MM/YYYY';
   expanded: boolean = false;
   expandedId: boolean = false;
@@ -63,6 +64,12 @@ export class CarritoComponent implements OnInit {
   fallback: string = fallback;
   time = formatDistance(new Date(), new Date());
   AccionText: String = "Editar"
+
+  solutionFeedback: SolutionFeedback = {
+    "color": "red",
+    "icon": "close-circle",
+    "text": "Desaprobado"
+  }
 
   ChatNoResultMessage: string = showNoResultTextChatFor('Editor'); 
   toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString;
@@ -78,15 +85,20 @@ export class CarritoComponent implements OnInit {
     this.tabs = [
       {
         name: 'Info',
-        icon: 'gift',
+        icon: 'data',
         title: 'Datos'
       },
       {
-        name: 'archivos',
+        name: 'Files',
         icon: 'file',
         title: 'Archivos'
+      },
+      {
+        name: 'Solutions',
+        icon: 'check',
+        title: 'Soluciones'
       }
-    ];
+    ]; 
     this.getPedidos()
   }
 
@@ -100,6 +112,13 @@ export class CarritoComponent implements OnInit {
           ...pedido, 
           expandedId : false,
           expandedTitle: false,
+          solutions : pedido.solutions?.map((sol: Solution) => {
+            return {
+              ...sol, file: {
+               ...sol.file, url: this.generateUrl(sol.file)  
+              }
+            }
+          }),
           files : pedido.files?.map((file: FileDB) => {
             return {
               ...file, url: this.generateUrl(file)
@@ -112,6 +131,13 @@ export class CarritoComponent implements OnInit {
           ...pedido, 
           expandedId: false,
           expandedTitle: false,
+          solutions : pedido.solutions?.map((sol: Solution) => {
+            return {
+              ...sol, file: {
+               ...sol.file, url: this.generateUrl(sol.file)  
+              }
+            }
+          }),
           files : pedido.files?.map((file: FileDB) => {
             return {
               ...file, url: this.generateUrl(file)
@@ -626,29 +652,54 @@ export class CarritoComponent implements OnInit {
     this.isVisibleModalMoreInfo = true   
   }
 
-  /*
-  updateSingleChecked(): void {
-    if (this.checkOptionsOne.every(item => !item.checked)) {
-      this.allChecked = false;
-      this.indeterminate = false;
-    } else if (this.checkOptionsOne.every(item => item.checked)) {
-      this.allChecked = true;
-      this.indeterminate = false;
-    } else {
-      this.indeterminate = true;
+  isPendingRevision = (pedido: Pedido) :boolean => {
+    return pedido?.state?.value === 'pendRevision'
+  }
+
+  determineSolutionFeedback = (solution: Solution) :SolutionFeedback => {
+    let ret: SolutionFeedback = {
+      "color": "red",
+      "icon": "close-circle",
+      "text": "Desaprobado"
+    }
+    if(solution.approved) {
+      ret = {
+        "color": "green",
+        "icon": "check-circle",
+        "text": "Aprobado"
+      }
+    }
+    return ret;
+  };
+
+  showRevisarModal = (solution: Solution) :void => {
+    this.currentSolution = solution
+    this.solutionFeedback = this.determineSolutionFeedback(solution)
+    let pedidoFind: Pedido | undefined = this.pedidos.find((pedido: Pedido) => 
+    pedido.files?.some((file: FileDB) => file.id?.toString() === solution.idFileToSolution))
+    console.log("PEDIDO FIND: ", pedidoFind)
+    this.currentPedido = pedidoFind
+    this.isVisibleModalRevisarSolucion = true
+  };
+
+  closeModalSolution = () => {
+    this.isVisibleModalRevisarSolucion = false;
+  }
+
+  determineImageToSolution = () :string => {
+    // solution.idFileToSolution === item.id?.toString()
+    console.log("CURRENT PEDIDO: ", this.currentPedido)
+    let findFile: FileDB | undefined = this.currentPedido?.files?.find((file: FileDB) => file.id?.toString() === this.currentSolution?.idFileToSolution)
+    console.log("FIND FILE: ", findFile)
+    if(findFile && findFile.url) {
+      console.log("ENCONTRE FILE: ", findFile.url)
+      return findFile.url
+    }
+    else {
+      console.log("SALGO POR FALLBACK")
+      return 'fallback'
     }
   }
-  */
 
-  onClickAccion (pedido: Pedido): void {}
-
-  /*
-  indexChange($event: any){
-    let newIndex = parseInt($event);
-    this.pageIndex = newIndex;
-    let newPedido = this.pedidos[newIndex-1];
-    if(newPedido) this.currentPedido = newPedido;
-  }
-  */
 
 }
