@@ -17,8 +17,12 @@
                     <nz-tabset>
                       <nz-tab *ngFor="let tab of tabs" (nzClick)="onClickTab()" [nzTitle]="titleTemplate">
                         <ng-template #titleTemplate>
-                          <i nz-icon [nzType]="tab.icon"></i>
-                            {{ tab.title }}
+                          <ng-template [ngIf]="pedido.state.value !== 'pendRevision' && tab.name === 'Solutions'" [ngIfElse]="Continue">
+                          </ng-template>
+                          <ng-template #Continue>
+                              <i nz-icon [nzType]="tab.icon"></i>
+                              {{ tab.title }}
+                          </ng-template>
                         </ng-template>
                         <ng-template [ngIf]="tab.name === 'Info' " [ngIfElse]="FilesOrSolutions">
                               <div nz-row nzJustify="center" [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
