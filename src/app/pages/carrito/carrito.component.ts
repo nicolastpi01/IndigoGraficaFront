@@ -656,11 +656,26 @@ export class CarritoComponent implements OnInit {
     return pedido?.state?.value === 'pendRevision'
   }
 
+  /*
+  cardStyle = (file: FileDB) => {
+    if(this.currentFile?.id === file.id) {
+      return {
+        'border-color': 'rgb(179, 172, 172)',
+        'border-width': '2px',
+        'border-style': 'dashed'
+      }
+    }
+    else {
+      return ''
+    }
+  };
+  */
+
   determineSolutionFeedback = (solution: Solution) :SolutionFeedback => {
     let ret: SolutionFeedback = {
-      "color": "red",
-      "icon": "close-circle",
-      "text": "Desaprobado"
+      'color': 'red',
+      'icon': 'close-circle',
+      'text': 'Desaprobado'
     }
     if(solution.approved) {
       ret = {
@@ -672,6 +687,23 @@ export class CarritoComponent implements OnInit {
     return ret;
   };
 
+  determineTagColor = (solution: Solution) :string => {
+    if(solution.approved) {
+      return '#87d068'
+    }
+    else {
+      return '#e41e14'
+    } 
+  }
+  determineTextColor = (solution: Solution) :string => {
+    if(solution.approved) {
+      return 'APROBADO'
+    }
+    else {
+      return 'DESAPROBADO'
+    }  
+  };
+  
   showRevisarModal = (solution: Solution) :void => {
     this.currentSolution = solution
     this.solutionFeedback = this.determineSolutionFeedback(solution)

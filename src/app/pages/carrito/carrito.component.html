@@ -155,8 +155,8 @@
                                             [nzSrc]="solution.file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
                                         </ng-template>
                                         <ng-template #actions>
-                                            <nz-tag class="tag" style="height: 40px; width: 100px;" [nzColor]="'#87d068'">
-                                              <p style="font-size: 15px;">APROBADO</p>
+                                            <nz-tag class="tag" style="height: 40px; width:max-content;" [nzColor]="determineTagColor(solution)">
+                                              <p style="font-size: 15px; font-weight: bold;">{{determineTextColor(solution)}}</p>
                                             </nz-tag>
                                             <br>
                                             <br>
@@ -364,7 +364,7 @@
                               <img nz-image nzDisablePreview="false" [nzFallback]="fallback" alt="" [nzSrc]="currentSolution.file.url" width="400" height="200" >
                             </ng-template>
                             <div style="text-align: center;">
-                              <span [style]="determineSolutionFeedback(currentSolution).color" nz-icon [nzType]="determineSolutionFeedback(currentSolution).icon" nzTheme="outline">
+                              <span [style]="{ 'color': determineSolutionFeedback(currentSolution).color }" nz-icon [nzType]="determineSolutionFeedback(currentSolution).icon" nzTheme="outline">
                                 <p [style]="determineSolutionFeedback(currentSolution).color">{{determineSolutionFeedback(currentSolution).text}}</p>
                               </span>
                             </div>
@@ -374,7 +374,7 @@
                           ES SOLUCIÓN DE: SACO UNA FECHA 
                         </div-->
                         <div nz-col>
-                          <p style="text-align: center;"><b>Imagén base</b></p>
+                          <p style="text-align: center;"><b>Imágen base</b></p>
                           <img nz-image nzDisablePreview="false" [nzSrc]="determineImageToSolution()" width="400" height="200">
                         </div>
                       </div>
