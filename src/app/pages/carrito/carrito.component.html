@@ -375,7 +375,7 @@
                         </div-->
                         <div nz-col>
                           <p style="text-align: center;"><b>Imágen base</b></p>
-                          <img nz-image nzDisablePreview="false" [nzSrc]="determineImageToSolution()" width="400" height="200">
+                          <img nz-image nzDisablePreview="false" [nzFallback]="fallback" alt="" [nzSrc]="determineImageToSolution()" width="400" height="200">
                         </div>
                       </div>
                       <br>
