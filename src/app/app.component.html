@@ -22,7 +22,7 @@
           <li id="nuevo-menu" nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesCliente|| mostrarOpcionesEncargado">
             <a routerLink="/nuevo">Nuevo</a>
           </li>
-          <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesCliente || mostrarOpcionesEncargado">
+          <li nz-menu-item nzMatchRouter *ngIf="(mostrarOpcionesCliente || mostrarOpcionesEncargado) && amountForAll() > 0">
             <a routerLink="/todos">Todos</a>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="amountForAll()" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColorForAll(), color: '#000000' }"></nz-badge>
           </li>
           <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado">
