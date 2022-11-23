@@ -13,7 +13,7 @@ import { fallback } from 'src/app/utils/const/constantes';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { formatDistance } from 'date-fns';
 import { HttpResponse } from '@angular/common/http';
-import { filter } from 'rxjs';
+import { catchError, filter, of } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { PerfilInfo } from 'src/app/components/chat/chat.component';
@@ -720,18 +720,55 @@ export class CarritoComponent implements OnInit {
 
   determineImageToSolution = () :string => {
     // solution.idFileToSolution === item.id?.toString()
-    console.log("CURRENT PEDIDO: ", this.currentPedido)
+    //console.log("CURRENT PEDIDO: ", this.currentPedido)
     let findFile: FileDB | undefined = this.currentPedido?.files?.find((file: FileDB) => file.id?.toString() === this.currentSolution?.idFileToSolution)
-    console.log("FIND FILE: ", findFile)
+    //console.log("FIND FILE: ", findFile)
     if(findFile && findFile.url) {
-      console.log("ENCONTRE FILE: ", findFile.url)
+      //console.log("ENCONTRE FILE: ", findFile.url)
       return findFile.url
     }
     else {
-      console.log("SALGO POR FALLBACK")
+      //console.log("SALGO POR FALLBACK")
       return 'fallback'
     }
   }
+
+  sendApproveSolution = (approved: boolean) :void => {
+    console.log("approved bool: ", approved)
+    console.log("CURRENT PEDIDO: ", this.currentPedido)
+    console.log("CURRENT SOLUTION: ", this.currentSolution)
+
+    //let solCp : Solution = JSON.parse(JSON.stringify(this.currentSolution))
+    let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
+    //solCp = {
+    //  ...solCp, approved: approved
+    //}
+    pedidoCp = {
+      ...pedidoCp, solutions: pedidoCp.solutions?.map((sol: Solution) => {
+        if(this.currentSolution && (sol.id === this.currentSolution.id)) {
+          return {
+            ...sol, approved: approved
+          }
+        }
+        else {
+          return sol
+        }
+      })
+    };
+    let token :string = this.tokenService.getToken()
+    this.service.agreeToTheSolution(pedidoCp, approved, token).pipe(
+      catchError(er => {
+        this.msg.error(er.error.message);
+        return of(er)
+      })
+    )
+      .subscribe((result: any) => {
+        // Si esta todo bien reemplazo el Pedido en Pedidos, CurrentPedido, y CurrentSolution
+        // FALTA ESTO
+        this.msg.success("BIEN")
+        this.currentPedido = result
+      });
+  };
 
 
 }

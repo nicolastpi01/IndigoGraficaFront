@@ -12,6 +12,7 @@ const httpOptions = {
 })
 export class PedidoService {
   
+  
 
   private baseUrl = 'http://localhost:8080'
   private api = "/pedidos";
@@ -99,6 +100,18 @@ export class PedidoService {
   notifyPayment(idPedido: string | undefined, token: string) : Observable<any> {
     httpOptions.headers.append('Authorization', `Bearer ${token}`);
     return this.http.put(`${this.baseUrl}/pedidos/notifyPayment/` + idPedido, this.httpOptions).pipe()
+  };
+
+  agreeToTheSolution(pedido: Pedido, approved: boolean, token: string) : Observable<HttpEvent<Pedido>> {
+    const req = new HttpRequest('PUT', `${this.baseUrl}`+this.api+'/agreeToTheSolution', {
+      'pedido': pedido,
+      'approve': approved
+    }, {
+      reportProgress: true,
+      responseType: 'json',
+      headers: httpOptions.headers.append('Authorization', `Bearer ${token}`)
+    });
+    return this.http.request(req)
   };
 
   resolver(id: string | undefined) :Observable<any> {

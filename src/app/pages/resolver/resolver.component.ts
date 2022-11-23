@@ -520,6 +520,7 @@ export class ResolverComponent implements OnInit {
   )
     .subscribe((pedido: any) => {
       this.msg.success(pedido.message)
+      this.service.toggle()
       setTimeout(() => {
         this.msg.info("redireccionando...");
       }, 500);
