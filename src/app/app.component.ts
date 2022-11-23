@@ -2,7 +2,7 @@ import { Component, HostBinding } from '@angular/core';
 import { Router } from '@angular/router';
 import { PedidoService } from './services/pedido.service';
 import { TokenStorageService } from './services/token-storage.service';
-import { CLEAR, DANGER, FINALIZADOS, NONE, PENDIENTEATENCION, PROPIOS, RESERVADO, RETORNADOS, REVISION, WARNING } from './utils/const/constantes';
+import { CLEAR, DANGER, FINALIZADOS, NONE, PENDIENTEATENCION, PENDIENTEREVISION, PROPIOS, RESERVADO, RETORNADOS, REVISION, WARNING } from './utils/const/constantes';
 import { colorsDefault, colorsForMenusClient, colorsForMenusEditor, MenuColor } from './utils/functions/functions';
 
 @Component({
@@ -25,6 +25,7 @@ export class AppComponent {
   title = 'indigo'
   pendienteAtencion = PENDIENTEATENCION;
   reservado = RESERVADO;
+  pendRevision = PENDIENTEREVISION;
   allStates: string[] = [];
 
   isVisible = false;

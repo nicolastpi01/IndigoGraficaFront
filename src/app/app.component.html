@@ -25,11 +25,11 @@
           <li nz-menu-item nzMatchRouter *ngIf="(mostrarOpcionesCliente || mostrarOpcionesEncargado) && amountForAll() > 0">
             <a routerLink="/todos">Todos</a>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="amountForAll()" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColorForAll(), color: '#000000' }"></nz-badge>
           </li>
-          <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado">
+          <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado && amountByState(reservado) > 0">
             <a routerLink="/reservados">Reservados</a>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="amountByState(reservado)" [nzOverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColor(reservado), color: '#000000' }"></nz-badge>
           </li>
-          <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado">
-            <a routerLink="/revision">En revisión</a>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="cantidadEnRevision" [nzOverflowCount]="99" [nzStyle]="{ backgroundColor: determiteBadgeColor(), color: '#000000' }"></nz-badge>
+          <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado && amountByState(pendRevision) > 0">
+            <a routerLink="/revision">En revisión</a>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="amountByState(pendRevision)" [nzOverflowCount]="99" [nzStyle]="{ backgroundColor: determiteBadgeColor(pendRevision), color: '#000000' }"></nz-badge>
           </li>
           <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado">
             <a routerLink="/retornados">Retornados</a>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="cantidadRetornados" [nzOverflowCount]="99" [nzStyle]="{ backgroundColor: determiteBadgeColor(), color: '#000000' }"></nz-badge>
