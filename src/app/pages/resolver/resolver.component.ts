@@ -12,22 +12,21 @@ import { formatDistance } from 'date-fns';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { badgeColorStyle, getBase64, toLocalDateString, determineIcon, 
   avatarStyle, badgeUponImagePositionStyle, toFullDate, showNoResultTextChatFor } from 'src/app/utils/functions/functions';
-import { ThisReceiver } from '@angular/compiler';
 import { Solution } from 'src/app/interface/solution';
 import { Color } from 'src/app/interface/color';
 import { fallback } from 'src/app/utils/const/constantes';
 import { PerfilInfo } from 'src/app/components/chat/chat.component';
 import { Estado } from 'src/app/interface/estado';
 import { Budget } from 'src/app/interface/Budget';
-import { getCurrencySymbol } from '@angular/common';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { isSuccess } from 'angular-in-memory-web-api';
 
 @Component({
   selector: 'app-resolver',
   templateUrl: './resolver.component.html',
   styleUrls: ['./resolver.component.css']
 })
-
 
 export class ResolverComponent implements OnInit {
 
@@ -53,8 +52,7 @@ export class ResolverComponent implements OnInit {
   isVisibleModalChat = false;
   isVisibleModalPedidoChat = false;
   isVisibleModalFileChat = false;
-  isVisibleModalBudgetChat = false;
-  
+  isVisibleModalBudgetChat = false;  
   panels: Array<{active: boolean, name: string, disabled: boolean}> = [];
   tabs: Array<{ name: string, icon: string, title: string }> = [];
   time = formatDistance(new Date(), new Date());
@@ -63,7 +61,7 @@ export class ResolverComponent implements OnInit {
   currentRol :string = 'EDITOR'; 
 
   constructor(private route: ActivatedRoute, private service :PedidoService, private msg: NzMessageService, 
-    private _router: Router, private modal: NzModalService) {}
+    private _router: Router, private modal: NzModalService, private tokenService: TokenStorageService) {}
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id')
@@ -537,21 +535,32 @@ export class ResolverComponent implements OnInit {
       nzContent: `Está seguro de querer notificar que el Cliente realizo el pago para el Pedido con id: ${this.currentPedido?.id} ?`,
       nzOkText: 'Sí',
       nzOkType: 'primary',
-      nzOnOk: () => this.onOkNotifyPayment(),
+      nzOnOk: () => this.onOkNotifyPayment(this.currentPedido?.id),
       nzCancelText: 'No',
       nzOnCancel: () => {
       }  
     });
   }
 
-  onOkNotifyPayment = () => {
+  onOkNotifyPayment = (pedidoId: string | undefined) => {
     // Llama al servicio para indicar que el Cliente ya pago por la res. del Pedido
+    let token :string = this.tokenService.getToken()
+    this.service.notifyPayment(pedidoId, token).pipe(
+      catchError(er => {
+        this.msg.error(er.error.message);
+        return of(er)
+      })
+    )
+      .subscribe((pedido: any) => {
+        // Si esta todo bien cambio el id del booleano hasPayment to true
+        this.msg.success(pedido.message)
+        this.currentPedido = {
+          ...this.currentPedido, hasPayment: true
+        }
+      });
   };
 
-  notifyPayment = () => {
-    // Levanta un cartel donde se le re-pregunta al Usuario si esta seguro de notificar el Pago del Presupuesto acordado...
-    // Si esta de acuerdo se envia, sino no!
-  };
+  
 
   paymentInfoStyle = () => {
     let retStyle = {

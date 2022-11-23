@@ -322,7 +322,8 @@
       <br>
       <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
         <div nz-col>
-          <button 
+          <button
+            [disabled]="currentPedido && currentPedido.hasPayment"
             nz-button nzType="primary" 
             style="height: 50px; width: 240px;" 
             (click)="showNotifyPayment()"
@@ -331,8 +332,7 @@
           </button>
         </div>
         <div nz-col>
-          <!--button nz-button disabled="{{currentPedido && !currentPedido.hasPayment}}" nzType="primary" style="height: 50px; width: 150px;" (click)="resolver()"-->
-          <button nz-button nzType="primary" style="height: 50px; width: 150px;" (click)="resolver()">
+          <button nz-button disabled="{{currentPedido && !currentPedido.hasPayment}}" nzType="primary" style="height: 50px; width: 150px;" (click)="resolver()">
             <p class="resolverText">Resolver</p>
           </button>
         </div>

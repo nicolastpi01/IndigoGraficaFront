@@ -94,6 +94,19 @@ export class PedidoService {
     return this.http.put(`${this.baseUrl}/pedidos/` + pedido.id, this.httpOptions).pipe()
   }
 
+
+  // Notifica que el Cliente realizo el pago para el Pedido indicado
+  notifyPayment(idPedido: string | undefined, token: string) : Observable<any> {
+    httpOptions.headers.append('Authorization', `Bearer ${token}`);
+    return this.http.put(`${this.baseUrl}/pedidos/notifyPayment/` + idPedido, this.httpOptions).pipe()
+  };
+
+  resolver(id: string | undefined) :Observable<any> {
+    return this.http.put(`${this.baseUrl}/pedidos/resolver/` + id, httpOptions);
+  };
+
+
+
   // Voy a buscar el Pedido con el id, si el Pedido esta Reservado (y no esta Reservado por mi, ergo soy el Editor) entonces
   // lanzo una excepcion 'No puede Editar un Pedido que ya fue reservado --y agrego una Sol. alternativa'
   // Si el Pedido no esta Reservado o esta Reservado pero por mi entonces le permito Editar, y retorno el Pedido con un Estado nuevo
@@ -103,8 +116,6 @@ export class PedidoService {
     return this.http.get<Pedido>(`${this.baseUrl}/pedidos/AllowsEdit/` + idPedido, httpOptions);
   }
 
-  resolver(id: string | undefined) :Observable<any> {
-    return this.http.put(`${this.baseUrl}/pedidos/resolver/` + id, httpOptions);
-  }
+  
 
 }
