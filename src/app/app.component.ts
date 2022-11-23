@@ -26,6 +26,7 @@ export class AppComponent {
   pendienteAtencion = PENDIENTEATENCION;
   reservado = RESERVADO;
   pendRevision = PENDIENTEREVISION;
+  finalizados = FINALIZADOS;
   allStates: string[] = [];
 
   isVisible = false;
