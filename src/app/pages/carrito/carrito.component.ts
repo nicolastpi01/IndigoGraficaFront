@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -7,7 +7,6 @@ import { Comentario, Interaccion } from 'src/app/interface/comentario';
 import { FileDB } from 'src/app/interface/fileDB';
 import { Pedido } from 'src/app/interface/pedido';
 import { PedidoService } from 'src/app/services/pedido.service';
-import { RESERVADO } from 'src/app/utils/const/constantes';
 import { avatarStyle, determineIcon, toLocalDateString, badgeUponImagePositionStyle, badgeColorStyle, toFullDate, showNoResultTextChatFor } from 'src/app/utils/functions/functions';
 import { fallback } from 'src/app/utils/const/constantes';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
@@ -706,7 +705,6 @@ export class CarritoComponent implements OnInit {
     this.solutionFeedback = this.determineSolutionFeedback(solution)
     let pedidoFind: Pedido | undefined = this.pedidos.find((pedido: Pedido) => 
     pedido.files?.some((file: FileDB) => file.id?.toString() === solution.idFileToSolution))
-    console.log("PEDIDO FIND: ", pedidoFind)
     this.currentPedido = pedidoFind
     this.isVisibleModalRevisarSolucion = true
   };
@@ -716,30 +714,17 @@ export class CarritoComponent implements OnInit {
   }
 
   determineImageToSolution = () :string => {
-    // solution.idFileToSolution === item.id?.toString()
-    //console.log("CURRENT PEDIDO: ", this.currentPedido)
     let findFile: FileDB | undefined = this.currentPedido?.files?.find((file: FileDB) => file.id?.toString() === this.currentSolution?.idFileToSolution)
-    //console.log("FIND FILE: ", findFile)
     if(findFile && findFile.url) {
-      //console.log("ENCONTRE FILE: ", findFile.url)
       return findFile.url
     }
     else {
-      //console.log("SALGO POR FALLBACK")
       return 'fallback'
     }
   }
 
   sendApproveSolution = (approved: boolean) :void => {
-    console.log("approved bool: ", approved)
-    console.log("CURRENT PEDIDO: ", this.currentPedido)
-    console.log("CURRENT SOLUTION: ", this.currentSolution)
-
-    //let solCp : Solution = JSON.parse(JSON.stringify(this.currentSolution))
     let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
-    //solCp = {
-    //  ...solCp, approved: approved
-    //}
     pedidoCp = {
       ...pedidoCp, solutions: pedidoCp.solutions?.map((sol: Solution) => {
         if(this.currentSolution && (sol.id === this.currentSolution.id)) {
@@ -760,10 +745,29 @@ export class CarritoComponent implements OnInit {
       })
     )
       .subscribe((result: any) => {
-        // Si esta todo bien reemplazo el Pedido en Pedidos, CurrentPedido, y CurrentSolution
-        // FALTA ESTO
-        this.msg.success("BIEN")
-        this.currentPedido = result
+        if(this.currentSolution) {
+          this.currentSolution = {
+            ...this.currentSolution, approved: approved
+          }
+        };
+        this.currentPedido = {
+          ...this.currentPedido, solutions: this.currentPedido?.solutions?.map((sol: Solution) => {
+            if(this.currentSolution && (sol.id === this.currentSolution.id)) {
+              return this.currentSolution
+            }
+            else {
+              return sol
+            }
+        })}
+        this.pedidos = this.pedidos.map((pedido: Pedido) => {
+          if(pedido.id === this.currentPedido?.id) {
+            return this.currentPedido
+          }
+          else {
+            return pedido
+          }
+        });
+        this.msg.success('bien') // Se está mostrando varias veces!!
       });
   };
 
@@ -775,9 +779,7 @@ export class CarritoComponent implements OnInit {
 
   checkSolutionsDissaproved = () => {
     let solutionDisapproved : Solution[] | undefined = this.currentPedido?.solutions?.filter((sol: Solution) => sol.approved === null)
-    console.log("SOLUTUIONS DISAPPROVED: ", solutionDisapproved)
     let IdsSolutionsDisapproved: (string | undefined)[] = solutionDisapproved ? solutionDisapproved.map((sol: Solution) => sol.id) : []
-    console.log("IDS SOLUTIONS DISAPPROVED: ", IdsSolutionsDisapproved) 
     this.IdsSolutionsDisapproved = IdsSolutionsDisapproved;
   }
 
