@@ -27,6 +27,7 @@ interface SolutionFeedback {
   'text': "Aprobado" | "Desaprobado"
 }
 
+
 @Component({
   selector: 'app-carrito',
   templateUrl: './carrito.component.html',
@@ -78,6 +79,8 @@ export class CarritoComponent implements OnInit {
   colorear :(state: Estado) => string | undefined = colorearEstado;
   currentRol: string = 'CLIENTE'
   IdsSolutionsDisapproved: (string | undefined)[] = []
+
+  contentNotifySolutionText = "Va a enviar la revisión, las Soluciones 'desaprobadas' seran revisadas por el Editor quien corregira las mismas a la brevedad, las soluciones 'aprobadas'desapareceran de la vista, esta seguro de mandar la revisión ?"
   
   constructor(private _router: Router, private service: PedidoService, 
     private fb: FormBuilder, private modal: NzModalService, private msg: NzMessageService, private tokenService: TokenStorageService) { }
@@ -653,21 +656,6 @@ export class CarritoComponent implements OnInit {
     return pedido?.state?.value === 'pendRevision'
   }
 
-  /*
-  cardStyle = (file: FileDB) => {
-    if(this.currentFile?.id === file.id) {
-      return {
-        'border-color': 'rgb(179, 172, 172)',
-        'border-width': '2px',
-        'border-style': 'dashed'
-      }
-    }
-    else {
-      return ''
-    }
-  };
-  */
-
   determineSolutionFeedback = (solution: Solution) :SolutionFeedback => {
     let ret: SolutionFeedback = {
       'color': 'red',
@@ -793,14 +781,28 @@ export class CarritoComponent implements OnInit {
     this.IdsSolutionsDisapproved = IdsSolutionsDisapproved;
   }
 
-  sendRevision = () => {
+  showNotifyRevision = () => {
     if(this.existsSolutionsWithoutFeedback()) {
       this.checkSolutionsDissaproved()
       this.msg.error("Exísten soluciones para las cuáles no se ha brindado una conformidad-- Aprobado o Desaprobado")
     }
     else {
-      // Muestro modal de Confirmación
+      this.modal.warning({
+        nzTitle: `<b style="color: yellow;">Atención!</b>`,
+        nzContent: this.contentNotifySolutionText,
+        nzOkText: 'Sí',
+        nzCentered: true,
+        nzOkType: 'primary',
+        nzOnOk: () => this.onOkNotifyRevision(),
+        nzCancelText: 'No',
+        nzOnCancel: () => {
+        }  
+      });
     }
+  };
+
+  onOkNotifyRevision = () => {
+
   };
 
   existsSolutionsWithoutFeedback = () :boolean => {
