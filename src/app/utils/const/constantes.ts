@@ -8,7 +8,8 @@ export const RESERVADO = "reservado"
 export const PENDIENTEREVISION = 'Pendiente revision'
 export const FINALIZADOS ="Finalizados"
 export const REVISION = "Revision"
-export const RETORNADOS = "Retornado"
+//export const RETORNADOS = "Retornado"
+export const RECHAZADO = 'Rechazado'
 
 export const NONE: string = "#e9f7e2";
 export const CLEAR :string = "#52C41A";

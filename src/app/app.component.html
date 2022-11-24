@@ -31,8 +31,8 @@
           <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado && amountByState(pendRevision) > 0">
             <a routerLink="/revision">En revisión</a>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="amountByState(pendRevision)" [nzOverflowCount]="99" [nzStyle]="{ backgroundColor: determiteBadgeColor(pendRevision), color: '#000000' }"></nz-badge>
           </li>
-          <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado">
-            <a routerLink="/retornados">Retornados</a>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="cantidadRetornados" [nzOverflowCount]="99" [nzStyle]="{ backgroundColor: determiteBadgeColor(), color: '#000000' }"></nz-badge>
+          <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado && amountByState(rechazado) > 0">
+            <a routerLink="/retornados">Retornados</a>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="amountByState(rechazado)" [nzOverflowCount]="99" [nzStyle]="{ backgroundColor: determiteBadgeColor(rechazado), color: '#000000' }"></nz-badge>
           </li>
           <li nz-menu-item nzMatchRouter *ngIf="mostrarOpcionesEncargado && amountByState(finalizados) > 0">
             <a routerLink="/finalizados">Finalizados</a>&nbsp;<i nz-icon nzType="flag" nzTheme="outline"></i>&nbsp;<nz-badge nzShowZero nzStandalone [nzCount]="amountByState(finalizados)" OverflowCount]="99"  [nzStyle]="{ backgroundColor: determiteBadgeColor(finalizados), color: '#000000' }"></nz-badge>

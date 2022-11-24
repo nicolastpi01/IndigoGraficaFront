@@ -2,7 +2,7 @@ import { Component, HostBinding } from '@angular/core';
 import { Router } from '@angular/router';
 import { PedidoService } from './services/pedido.service';
 import { TokenStorageService } from './services/token-storage.service';
-import { CLEAR, DANGER, FINALIZADOS, NONE, PENDIENTEATENCION, PENDIENTEREVISION, PROPIOS, RESERVADO, RETORNADOS, REVISION, WARNING } from './utils/const/constantes';
+import { CLEAR, DANGER, FINALIZADOS, NONE, PENDIENTEATENCION, PENDIENTEREVISION, PROPIOS, RECHAZADO, RESERVADO, REVISION, WARNING } from './utils/const/constantes';
 import { colorsDefault, colorsForMenusClient, colorsForMenusEditor, MenuColor } from './utils/functions/functions';
 
 @Component({
@@ -27,6 +27,7 @@ export class AppComponent {
   reservado = RESERVADO;
   pendRevision = PENDIENTEREVISION;
   finalizados = FINALIZADOS;
+  rechazado = RECHAZADO;
   allStates: string[] = [];
 
   isVisible = false;
@@ -206,6 +207,7 @@ export class AppComponent {
     });
   };
 
+  /*
   buscarTodos = () :void => {
     this.cantidadPedidos()
     this.buscarPedidosReservados()
@@ -238,7 +240,7 @@ export class AppComponent {
     this.service.getPedidos(RETORNADOS)
     .subscribe(pedidos => this.cantidadRetornados = pedidos.length);
   }
-  
+  */
   onClickCart = () => {
     this._router.navigateByUrl('/carrito')
   }
