@@ -77,6 +77,7 @@ export class CarritoComponent implements OnInit {
   avatarStyle: (interaccion: Interaccion) => { 'background-color': string; } = avatarStyle;
   colorear :(state: Estado) => string | undefined = colorearEstado;
   currentRol: string = 'CLIENTE'
+  IdsSolutionsDisapproved: (string | undefined)[] = []
   
   constructor(private _router: Router, private service: PedidoService, 
     private fb: FormBuilder, private modal: NzModalService, private msg: NzMessageService, private tokenService: TokenStorageService) { }
@@ -180,10 +181,6 @@ export class CarritoComponent implements OnInit {
     this.currentFile = file;
     this.currentPedido = pedido;
     this.isVisibleModalChatUponAFile = true;
-  };
-
-  onClickTab = () => {
-    //console.log("Click Tab")
   };
 
   onClickShowFileComments = (event: MouseEvent, item: FileDB, pedido: Pedido) => {
@@ -692,7 +689,13 @@ export class CarritoComponent implements OnInit {
       return '#87d068'
     }
     else {
-      return '#e41e14'
+      if(solution.approved === false) {
+        return '#e41e14'
+      }
+      else {
+        return '#837d7d'
+      }
+      
     } 
   }
   determineTextColor = (solution: Solution) :string => {
@@ -700,7 +703,13 @@ export class CarritoComponent implements OnInit {
       return 'APROBADO'
     }
     else {
-      return 'DESAPROBADO'
+      if(solution.approved === false) {
+        return 'DESAPROBADO'
+      }
+      else {
+        return 'PENDIENTE'
+      }
+      
     }  
   };
   
@@ -768,6 +777,51 @@ export class CarritoComponent implements OnInit {
         this.msg.success("BIEN")
         this.currentPedido = result
       });
+  };
+
+  onClickTab = (tab: { name: string, icon: string, title: string }, pedido: Pedido) => {
+    if(tab.name === 'Solutions') {
+      this.currentPedido = pedido
+    }
+  };
+
+  checkSolutionsDissaproved = () => {
+    let solutionDisapproved : Solution[] | undefined = this.currentPedido?.solutions?.filter((sol: Solution) => sol.approved === null)
+    console.log("SOLUTUIONS DISAPPROVED: ", solutionDisapproved)
+    let IdsSolutionsDisapproved: (string | undefined)[] = solutionDisapproved ? solutionDisapproved.map((sol: Solution) => sol.id) : []
+    console.log("IDS SOLUTIONS DISAPPROVED: ", IdsSolutionsDisapproved) 
+    this.IdsSolutionsDisapproved = IdsSolutionsDisapproved;
+  }
+
+  sendRevision = () => {
+    if(this.existsSolutionsWithoutFeedback()) {
+      this.checkSolutionsDissaproved()
+      this.msg.error("Exísten soluciones para las cuáles no se ha brindado una conformidad-- Aprobado o Desaprobado")
+    }
+    else {
+      // Muestro modal de Confirmación
+    }
+  };
+
+  existsSolutionsWithoutFeedback = () :boolean => {
+    let ret: boolean = false
+    if(this.currentPedido && this.currentPedido.solutions) {
+      ret = ret || this.currentPedido.solutions.some((sol: Solution) => sol.approved === null)
+    }
+    return ret
+  };
+
+  cardStyle = (solution: Solution) => {
+    if( this.IdsSolutionsDisapproved.includes((solution.id) ) ) {
+      return {
+        'border-color': 'rgb(237, 27, 27)',
+        'border-width': '2px',
+        'border-style': 'dashed'
+      }
+    }
+    else {
+      return ''
+    }
   };
 
 

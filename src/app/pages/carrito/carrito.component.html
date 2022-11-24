@@ -15,7 +15,7 @@
                   <nz-list-item *ngFor="let pedido of pedidos">
                     <div nz-col class="algo" style="border: 5px solid #FFFF00" nzSpan="24">
                     <nz-tabset>
-                      <nz-tab *ngFor="let tab of tabs" (nzClick)="onClickTab()" [nzTitle]="titleTemplate">
+                      <nz-tab *ngFor="let tab of tabs" (nzClick)="onClickTab(tab, pedido)" [nzTitle]="titleTemplate">
                         <ng-template #titleTemplate>
                           <ng-template [ngIf]="pedido.state.value !== 'pendRevision' && tab.name === 'Solutions'" [ngIfElse]="Continue">
                           </ng-template>
@@ -149,7 +149,7 @@
                                 <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="pedido.solutions">
                                   <div nz-col *ngFor="let solution of pedido.solutions">
                                     <nz-list-item>
-                                      <nz-card [nzCover]="coverTemplate" [nzActions]="[actions]">
+                                      <nz-card [style]="cardStyle(solution)" [nzCover]="coverTemplate" [nzActions]="[actions]">
                                         <nz-card-meta
                                           [nzTitle]="solution.file.name"
                                           nzDescription=""
@@ -173,6 +173,16 @@
                                   </div>
                                 </div>
                               </nz-list>
+                              <div class="loadmore">
+                                <button
+                                  *ngIf="isPendingRevision(pedido)"
+                                  nz-button 
+                                  (click)="sendRevision()" 
+                                  nzType="primary">Enviar revisión
+                                </button>
+                              </div>
+                              <br>
+                              <!--br-->
                           </ng-template> 
                       </ng-template>
                         <div nz-row class="buttonGroup" [nzGutter]="16">
@@ -199,14 +209,6 @@
                               class="actions" 
                               (click)="onClickEdit(pedido)" 
                               nzType="primary">Editar
-                            </button>
-                          </div>
-                          <div nz-col>
-                            <button
-                              *ngIf="isPendingRevision(pedido)"
-                              nz-button 
-                              (click)="undefined" 
-                              nzType="primary">Enviar revisión
                             </button>
                           </div>
                         </div>
@@ -367,7 +369,7 @@
                             <ng-template #coverTemplate>
                               <img nz-image nzDisablePreview="false" [nzFallback]="fallback" alt="" [nzSrc]="currentSolution.file.url" width="400" height="200" >
                             </ng-template>
-                            <div style="text-align: center;">
+                            <div style="text-align: center;" *ngIf="currentSolution.approved !== null">
                               <span [style]="{ 'color': determineSolutionFeedback(currentSolution).color }" nz-icon [nzType]="determineSolutionFeedback(currentSolution).icon" nzTheme="outline">
                                 <p [style]="determineSolutionFeedback(currentSolution).color">{{determineSolutionFeedback(currentSolution).text}}</p>
                               </span>
