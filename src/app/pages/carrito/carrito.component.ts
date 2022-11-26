@@ -722,13 +722,6 @@ export class CarritoComponent implements OnInit {
     }
   }
 
-  sendApproveSolutionA = () :void => {
-    this.sendApproveSolution(true)
-  }
-  sendApproveSolutionB = () :void => {
-    this.sendApproveSolution(false)
-  }
-
   sendApproveSolution = (approved: boolean) :void => {
     console.log("CURRENT PEDIDO: ", this.currentPedido)
     let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
@@ -753,7 +746,10 @@ export class CarritoComponent implements OnInit {
     ).
       pipe(filter(e => e instanceof HttpResponse))
       .subscribe(async (e: any) => {
-        this.msg.success('bien') 
+        this.msg.success('bien')
+        console.log("IDS ANTES: ", this.IdsSolutionsDisapproved)
+        this.IdsSolutionsDisapproved = this.IdsSolutionsDisapproved.filter((id: string  | undefined) => id !== this.currentSolution?.id)
+        console.log("IDS DESPUES: ", this.IdsSolutionsDisapproved)
         if(this.currentSolution) {
           this.currentSolution = {
             ...this.currentSolution, approved: approved
