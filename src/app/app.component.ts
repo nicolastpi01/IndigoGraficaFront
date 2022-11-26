@@ -200,6 +200,7 @@ export class AppComponent {
   };
   
   findResume = () :void => {
+    console.log("Llamo a findResume!!!")
     let token :string = this.tokenStorageService.getToken()
     this.service.getResume(token)
     .subscribe(resume => {

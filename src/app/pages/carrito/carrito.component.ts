@@ -7,7 +7,7 @@ import { Comentario, Interaccion } from 'src/app/interface/comentario';
 import { FileDB } from 'src/app/interface/fileDB';
 import { Pedido } from 'src/app/interface/pedido';
 import { PedidoService } from 'src/app/services/pedido.service';
-import { avatarStyle, determineIcon, toLocalDateString, badgeUponImagePositionStyle, badgeColorStyle, toFullDate, showNoResultTextChatFor } from 'src/app/utils/functions/functions';
+import { avatarStyle, determineIcon, toLocalDateString, showNoResultTextChatFor } from 'src/app/utils/functions/functions';
 import { fallback } from 'src/app/utils/const/constantes';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { formatDistance } from 'date-fns';
@@ -16,7 +16,6 @@ import { catchError, filter, of } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { PerfilInfo } from 'src/app/components/chat/chat.component';
-import { Comment } from '@angular/compiler';
 import { Estado } from 'src/app/interface/estado';
 import { Solution } from 'src/app/interface/solution';
 
@@ -25,7 +24,6 @@ interface SolutionFeedback {
   'icon': "check-circle" | "close-circle",
   'text': "Aprobado" | "Desaprobado"
 }
-
 
 @Component({
   selector: 'app-carrito',
@@ -701,11 +699,12 @@ export class CarritoComponent implements OnInit {
   };
   
   showRevisarModal = (solution: Solution) :void => {
+    console.log("PEDIDO EN TAB SOLUTIONS: ", this.currentPedido)
     this.currentSolution = solution
     this.solutionFeedback = this.determineSolutionFeedback(solution)
     let pedidoFind: Pedido | undefined = this.pedidos.find((pedido: Pedido) => 
     pedido.files?.some((file: FileDB) => file.id?.toString() === solution.idFileToSolution))
-    this.currentPedido = pedidoFind
+    if(pedidoFind) this.currentPedido = pedidoFind // sino se queda como esta el CurrentFile 
     this.isVisibleModalRevisarSolucion = true
   };
 
@@ -724,6 +723,7 @@ export class CarritoComponent implements OnInit {
   }
 
   sendApproveSolution = (approved: boolean) :void => {
+    console.log("CURRENT PEDIDO: ", this.currentPedido)
     let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
     pedidoCp = {
       ...pedidoCp, solutions: pedidoCp.solutions?.map((sol: Solution) => {
@@ -773,6 +773,7 @@ export class CarritoComponent implements OnInit {
 
   onClickTab = (tab: { name: string, icon: string, title: string }, pedido: Pedido) => {
     if(tab.name === 'Solutions') {
+      console.log("ON CLICK TAB PEDIDO: ", pedido)
       this.currentPedido = pedido
     }
   };
@@ -804,6 +805,10 @@ export class CarritoComponent implements OnInit {
     }
   };
 
+  refreshPage() {
+    window.location.reload();
+  }
+
   onOkNotifyRevision = () => {
     this.service.sendRevision(this.currentPedido?.id).pipe(
       catchError(er => {
@@ -812,8 +817,12 @@ export class CarritoComponent implements OnInit {
       })
     )
       .subscribe((result: any) => {
-        console.log("CALL RESULT: ", result)
-        this.msg.success('bien') 
+        this.service.toggle()
+        this.msg.success(result.message)  
+        setTimeout(() => {
+          this.msg.loading("recargando...");
+          this.refreshPage()
+        }, 1500);         
       });
   };
 

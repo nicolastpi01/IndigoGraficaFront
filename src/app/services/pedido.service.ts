@@ -10,14 +10,11 @@ const httpOptions = {
 @Injectable({
   providedIn: 'root'
 })
+
 export class PedidoService {
-  
-  
 
   private baseUrl = 'http://localhost:8080'
   private api = "/pedidos";
-
-  
 
   @Output() change: EventEmitter<boolean> = new EventEmitter();
   isOpen = false;
