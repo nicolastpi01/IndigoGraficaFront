@@ -12,7 +12,7 @@ import { fallback } from 'src/app/utils/const/constantes';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { formatDistance } from 'date-fns';
 import { HttpResponse } from '@angular/common/http';
-import { catchError, filter, of } from 'rxjs';
+import { catchError, filter, of, pipe } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { PerfilInfo } from 'src/app/components/chat/chat.component';
@@ -722,6 +722,13 @@ export class CarritoComponent implements OnInit {
     }
   }
 
+  sendApproveSolutionA = () :void => {
+    this.sendApproveSolution(true)
+  }
+  sendApproveSolutionB = () :void => {
+    this.sendApproveSolution(false)
+  }
+
   sendApproveSolution = (approved: boolean) :void => {
     console.log("CURRENT PEDIDO: ", this.currentPedido)
     let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
@@ -743,8 +750,10 @@ export class CarritoComponent implements OnInit {
         this.msg.error(er.error.message);
         return of(er)
       })
-    )
-      .subscribe((result: any) => {
+    ).
+      pipe(filter(e => e instanceof HttpResponse))
+      .subscribe(async (e: any) => {
+        this.msg.success('bien') 
         if(this.currentSolution) {
           this.currentSolution = {
             ...this.currentSolution, approved: approved
@@ -767,7 +776,7 @@ export class CarritoComponent implements OnInit {
             return pedido
           }
         });
-        this.msg.success('bien') // Se está mostrando varias veces!!
+        
       });
   };
 
