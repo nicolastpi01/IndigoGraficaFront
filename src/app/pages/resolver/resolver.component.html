@@ -366,7 +366,18 @@
     <button nz-button nzType="primary" style="width: 120px;" (click)="onClickPedidoChat($event)">Chat<i nz-icon nzType="message" nzTheme="outline"></i></button>
   </div>
   <div nz-col>
-    <button nz-button nzType="primary" (click)="undefined">Enviar presupuesto</button>
+    <nz-upload
+      nzAction="http://localhost:8080/files/upload"
+      (nzChange)="handleChangeBudget($event)">
+      <button nz-button nzType="primary">
+        Cargar Presupuesto<span nz-icon nzType="upload" nzTheme="outline"></span>
+      </button>
+    </nz-upload>
+  </div>
+  <div nz-col>
+    <button nz-button nzType="primary" (click)="handleSendBudget()">Enviar presupuesto
+      <span nz-icon nzType="mail" nzTheme="outline"></span>
+    </button>
   </div>
 </div>
 

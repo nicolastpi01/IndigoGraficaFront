@@ -21,6 +21,7 @@ import { Budget } from 'src/app/interface/Budget';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { isSuccess } from 'angular-in-memory-web-api';
+import { MailService } from 'src/app/services/mail.service';
 
 @Component({
   selector: 'app-resolver',
@@ -43,6 +44,7 @@ export class ResolverComponent implements OnInit {
   currentFile: FileDB | undefined;
   currentComment: Comentario | undefined;
   currentSolution: FileDB | undefined;
+  currentbudget: FileDB | undefined;
   currentBudget: Budget | undefined; // Cargarlo en el OnInit si existe
   showFallbackBudget: boolean = false;
   showFallback: boolean = false;
@@ -60,7 +62,7 @@ export class ResolverComponent implements OnInit {
   ChatNoResultMessage: string = showNoResultTextChatFor('Cliente');
   currentRol :string = 'EDITOR'; 
 
-  constructor(private route: ActivatedRoute, private service :PedidoService, private msg: NzMessageService, 
+  constructor(private route: ActivatedRoute, private service :PedidoService, private mailService : MailService, private msg: NzMessageService, 
     private _router: Router, private modal: NzModalService, private tokenService: TokenStorageService) {}
 
   ngOnInit(): void {
@@ -617,8 +619,60 @@ export class ResolverComponent implements OnInit {
     //this.currentPedido?.files
   };
 
-  handleChangeBudget = ({ file, fileList }: NzUploadChangeParam) => {
-    
+  handleSendBudget = () => {
+    this.mailService.sendBudget(this.currentPedido!.id!)
+    .pipe(filter(e => e instanceof HttpResponse)).subscribe(async (e: any) => {
+      this.msg.success(`Presupuesto enviado.`);
+    }), () => {
+      this.msg.error('Sucedió un error durante el envio del presupuesto.');
+    }
+  }
+
+  async handleChangeBudget({ file, fileList }: NzUploadChangeParam): Promise<void> {
+    if (file.status !== 'uploading') {
+      
+    }
+    if (file.status === 'done') {
+      file['preview'] = await getBase64(file.originFileObj!);
+
+      let newFileDB: FileDB = {
+        id: file.response.id,
+        name: file.response.name,
+        type: file.response.type,
+        data: file.response.data,
+        url: file.url || file['preview'],
+        comentarios : []
+      }
+
+      this.currentbudget = newFileDB;
+
+      let newBudget: Budget = {
+        file: newFileDB, 
+      };
+      // No setear el current Solution mandar una copia o algo asi
+      
+      this.currentPedido = {
+        ...this.currentPedido, presupuesto : [ newBudget ]
+      };
+
+      this.service.update(this.currentPedido).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe(async (e: any) => { // revisar el any
+            let pedido = (e.body as Pedido)
+            this.currentPedido = {...pedido, files: this.currentPedido?.files?.map((file: FileDB) => {
+              return {
+                ...file, url: this.generateUrl(file)
+              }
+            })};
+            this.msg.success(`Presupuesto ingresado exitosamente.`); 
+        }),
+        () => {
+            this.msg.error('Fallo la generación del pedido!');
+        }
+
+    } else if (file.status === 'error') {
+        this.msg.error(`${file.name} file upload failed.`);
+    }
   };
 
   onClickDeleteBudget = (event: MouseEvent) => {
