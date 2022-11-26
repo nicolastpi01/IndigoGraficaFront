@@ -118,6 +118,10 @@ export class PedidoService {
     return this.http.put(`${this.baseUrl}/pedidos/resolver/` + id, httpOptions);
   };
 
+  sendRevision(id: string | undefined) :Observable<any> {
+    return this.http.put(`${this.baseUrl}/pedidos/revisar/` + id, httpOptions);
+  };
+
 
 
   // Voy a buscar el Pedido con el id, si el Pedido esta Reservado (y no esta Reservado por mi, ergo soy el Editor) entonces

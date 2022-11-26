@@ -26,7 +26,7 @@ export class AppComponent {
   pendienteAtencion = PENDIENTEATENCION;
   reservado = RESERVADO;
   pendRevision = PENDIENTEREVISION;
-  finalizados = FINALIZADOS;
+  finalizado = FINALIZADOS;
   rechazado = RECHAZADO;
   allStates: string[] = [];
 

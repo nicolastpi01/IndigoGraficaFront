@@ -783,6 +783,7 @@ export class CarritoComponent implements OnInit {
     this.IdsSolutionsDisapproved = IdsSolutionsDisapproved;
   }
 
+  // Estaria bueno mostrar el id del Pedido que se quiere enviar a revisión
   showNotifyRevision = () => {
     if(this.existsSolutionsWithoutFeedback()) {
       this.checkSolutionsDissaproved()
@@ -804,7 +805,16 @@ export class CarritoComponent implements OnInit {
   };
 
   onOkNotifyRevision = () => {
-
+    this.service.sendRevision(this.currentPedido?.id).pipe(
+      catchError(er => {
+        this.msg.error(er.error.message);
+        return of(er)
+      })
+    )
+      .subscribe((result: any) => {
+        console.log("CALL RESULT: ", result)
+        this.msg.success('bien') 
+      });
   };
 
   existsSolutionsWithoutFeedback = () :boolean => {
