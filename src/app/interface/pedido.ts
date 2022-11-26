@@ -1,3 +1,4 @@
+import { Budget } from "./Budget";
 import { Color } from "./color";
 import { Interaccion } from "./comentario";
 import { Estado } from "./estado";
@@ -26,6 +27,7 @@ export interface Pedido {
     files?:  Array<FileDB>;
     interacciones?: Array<Interaccion>, // Interacciones entre usuario y Editor (Es el ida y vuelta) o el chat
     solutions?:  Array<Solution>;
+    presupuesto?: Array<Budget>
 
 }
 
