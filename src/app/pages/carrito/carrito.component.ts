@@ -746,7 +746,7 @@ export class CarritoComponent implements OnInit {
     ).
       pipe(filter(e => e instanceof HttpResponse))
       .subscribe(async (e: any) => {
-        this.msg.success('bien')
+        this.msg.success(`Solución ${approved ? 'aprobada' : 'desaprobada'} satisfactoriamente!`)
         console.log("IDS ANTES: ", this.IdsSolutionsDisapproved)
         this.IdsSolutionsDisapproved = this.IdsSolutionsDisapproved.filter((id: string  | undefined) => id !== this.currentSolution?.id)
         console.log("IDS DESPUES: ", this.IdsSolutionsDisapproved)
