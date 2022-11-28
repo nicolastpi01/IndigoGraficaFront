@@ -86,11 +86,6 @@ export class PedidosComponent implements OnInit {
     }
   };
 
-  showTotal = (total: number) => {
-    if(total > 0) return `#Total: ${total}`
-    else return ''
-  };
-
   cleanPedidoAndFile(myPackage: {pedido: Pedido | undefined, file: FileDB | undefined}) {
     this.currentFile = myPackage.file
     this.currentPedido = myPackage.pedido

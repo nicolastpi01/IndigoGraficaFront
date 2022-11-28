@@ -1,1 +1,11 @@
-<p>revision works!</p>
+
+<app-pedidosList
+    [pedidos]="pedidos"
+    [loading]="loading"
+    [roles]="roles"
+    [onClickActionText]="actionText"
+    (onClickCancelModal)="cleanPedidoAndFile($event)"
+    (onClickShowFiles)="cleanPedidoAndFile($event)"
+    (onClickWatch)="manageOuputOnClickWatch($event)"
+>
+</app-pedidosList>
