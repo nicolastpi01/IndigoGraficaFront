@@ -24,9 +24,9 @@ export interface Pedido {
     descripcion?: string; 
     colores?: Color[]; 
     encargado?: Usuario; // El encargado de darle resolución al Pedido (siempre es un Editor --único)
-    files?:  Array<FileDB>;
+    files?: Array<FileDB>;
     interacciones?: Array<Interaccion>, // Interacciones entre usuario y Editor (Es el ida y vuelta) o el chat
-    solutions?:  Array<Solution>;
+    solutions?: Array<Solution>;
     presupuesto?: Array<Budget>
 
 }

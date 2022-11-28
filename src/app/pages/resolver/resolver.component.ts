@@ -552,8 +552,8 @@ export class ResolverComponent implements OnInit {
         this.msg.error(er.error.message);
         return of(er)
       })
-    )
-      .subscribe((pedido: any) => {
+    ).pipe(filter(e => e instanceof HttpResponse))
+      .subscribe(async (pedido: any) => {
         // Si esta todo bien cambio el id del booleano hasPayment to true
         this.msg.success(pedido.message)
         this.currentPedido = {
@@ -561,8 +561,6 @@ export class ResolverComponent implements OnInit {
         }
       });
   };
-
-  
 
   paymentInfoStyle = () => {
     let retStyle = {
@@ -626,11 +624,10 @@ export class ResolverComponent implements OnInit {
     }), () => {
       this.msg.error('Sucedió un error durante el envio del presupuesto.');
     }
-  }
+  };
 
   async handleChangeBudget({ file, fileList }: NzUploadChangeParam): Promise<void> {
-    if (file.status !== 'uploading') {
-      
+    if (file.status !== 'uploading') { 
     }
     if (file.status === 'done') {
       file['preview'] = await getBase64(file.originFileObj!);
@@ -644,13 +641,13 @@ export class ResolverComponent implements OnInit {
         comentarios : []
       }
 
-      this.currentbudget = newFileDB;
+      this.currentbudget = newFileDB; // Esta mal, esto va despues que la llamada al servicio es correcta
 
       let newBudget: Budget = {
         file: newFileDB, 
       };
       // No setear el current Solution mandar una copia o algo asi
-      
+      // Esta mal, el currentPedido se debe actualizar despues, mandar una copia en este momento!
       this.currentPedido = {
         ...this.currentPedido, presupuesto : [ newBudget ]
       };
