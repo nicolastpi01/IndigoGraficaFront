@@ -1,4 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { FileDB } from 'src/app/interface/fileDB';
+import { Pedido } from 'src/app/interface/pedido';
+import { PedidoService } from 'src/app/services/pedido.service';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
 
 @Component({
   selector: 'app-terminados',
@@ -7,9 +13,48 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TerminadosComponent implements OnInit {
 
-  constructor() { }
+  FINALIZADOS: string = 'finalizados'
+  allData: Array<any> = []
+  total: number = 0
+  currentPedido: Pedido | undefined
+  currentFile: FileDB | undefined
+  loading: boolean = false
+  pedidos: Array<any> = []
+  roles: string[] = []
+  isLoggedIn = false
+
+  constructor(private service: PedidoService, private msg: NzMessageService, private _router: Router, 
+    private tokenService: TokenStorageService) { }
 
   ngOnInit(): void {
-  }
+    this.isLoggedIn = !!this.tokenService.getToken()
+    if(this.isLoggedIn) {
+      this.getPedidos()
+      const user = this.tokenService.getUser()
+      this.roles = user.roles
+    }
+  };
+
+  getPedidos(): void {
+    this.loading = true
+    let token :string = this.tokenService.getToken()
+    this.service.getPedidos(this.FINALIZADOS)
+    .subscribe(pedidos => {
+      this.allData = pedidos
+      this.total = pedidos.length
+      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false }))
+      //this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2);        
+      this.loading = false
+    })
+  };
+
+  cleanPedidoAndFile(myPackage: {pedido: Pedido | undefined, file: FileDB | undefined}) {
+    this.currentFile = myPackage.file
+    this.currentPedido = myPackage.pedido
+  };
+
+  manageOuputOnClickWatch = (item: any) => {
+    this.currentFile = item; 
+  };
 
 }

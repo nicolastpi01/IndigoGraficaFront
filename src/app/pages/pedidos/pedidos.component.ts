@@ -34,7 +34,6 @@ export class PedidosComponent implements OnInit {
   loading: boolean = false
   pedidos: Array<any> = []
   roles: string[] = []
-
   isLoggedIn = false
   
   constructor(private service: PedidoService, private msg: NzMessageService, private _router: Router, 
