@@ -5,6 +5,7 @@ import { Comentario } from "src/app/interface/comentario";
 import { Estado } from "src/app/interface/estado";
 import { FileDB } from "src/app/interface/fileDB";
 import { Pedido } from "src/app/interface/pedido";
+import { PedidoService } from "src/app/services/pedido.service";
 import { TokenStorageService } from "src/app/services/token-storage.service";
 import { toLocalDateString } from "src/app/utils/functions/functions";
 import { getValueOrNot, HeadingData, userData } from "src/app/utils/functions/pedidosData/functions";
@@ -20,7 +21,7 @@ import { colorearEstado } from "src/app/utils/pedidos-component-utils";
     allData: Array<any> = []
     isLoggedIn: boolean = false
 
-    @Input() elements: Array<any> = []
+    @Input() pedidos: Array<any> = []
     @Input() total: number = 0
     @Input() loading: boolean = false
     @Input() roles: string[] = []
@@ -40,7 +41,8 @@ import { colorearEstado } from "src/app/utils/pedidos-component-utils";
     userData: HeadingData[] = userData
     getValueOrNot : (headData: HeadingData, pedido: any) => any = getValueOrNot
 
-    constructor(private msgService: NzMessageService, private _router: Router, 
+    // No tocar el constructor
+    constructor(private service: PedidoService, private msg: NzMessageService, private _router: Router, 
       private tokenService: TokenStorageService) {}
 
     showTotal = (total: number) => {

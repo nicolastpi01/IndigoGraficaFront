@@ -1,12 +1,12 @@
 
 <app-pedidosList
-  [elements]="pedidos"
+  [pedidos]="pedidos"
   [loading]="loading"
   [roles]="roles"
   [onClickAction]="onClickAction"
   [onClickActionText]="actionText"
-  (onClickCancelModal)="manageOuputOnClickCancelModal($event)"
-  (onClickShowFiles)="manageOuputOnClickShowFiles($event)"
+  (onClickCancelModal)="cleanPedidoAndFile($event)"
+  (onClickShowFiles)="cleanPedidoAndFile($event)"
   (onClickWatch)="manageOuputOnClickWatch($event)"
 >
 </app-pedidosList>

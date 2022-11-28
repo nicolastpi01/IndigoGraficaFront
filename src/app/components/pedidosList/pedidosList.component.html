@@ -4,9 +4,9 @@
 <ng-template #ifElse>
     <h3 nz-typography style="text-align: center;">Pedidos</h3>
     <p class="amount">{{ showTotal(total) }}</p>
-    <ng-template [ngIf]="elements && elements.length  > 0" [ngIfElse]="NoElements">
+    <ng-template [ngIf]="pedidos && pedidos.length  > 0" [ngIfElse]="NoElements">
         <nz-list>
-            <nz-list-item *ngFor="let pedido of elements">
+            <nz-list-item *ngFor="let pedido of pedidos">
                 <nz-col [nzSpan]="24">
                     <nz-card class="border">
                       <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">

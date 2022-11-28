@@ -25,6 +25,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzCommentModule } from 'ng-zorro-antd/comment';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NoElementsModule } from "src/app/components/noElements/noelements.module";
+import { PedidosListModule } from "src/app/components/pedidosList/pedidosList.module";
 
 @NgModule({
     imports: [
@@ -52,7 +53,8 @@ import { NoElementsModule } from "src/app/components/noElements/noelements.modul
       NzDividerModule,
       NzCommentModule,
       NzTypographyModule,
-      NoElementsModule
+      NoElementsModule,
+      PedidosListModule
     ],
     declarations: [PedidosComponent],
     exports: [PedidosComponent]

@@ -1,5 +1,23 @@
 
-<ng-template [ngIf]="loading" [ngIfElse]="ifElse">
+
+<app-pedidosList
+  [pedidos]="pedidos"
+  [loading]="loading"
+  [roles]="roles"
+  [onClickAction]="onClickAction"
+  [onClickActionText]="actionText"
+  (onClickCancelModal)="cleanPedidoAndFile($event)"
+  (onClickShowFiles)="cleanPedidoAndFile($event)"
+  (onClickWatch)="manageOuputOnClickWatch($event)"
+>
+</app-pedidosList>
+
+
+
+
+
+
+<!--ng-template [ngIf]="loading" [ngIfElse]="ifElse">
   <nz-spin class="spinning" nzTip="Espere..." ></nz-spin>
 </ng-template>
 <ng-template #ifElse>
@@ -188,7 +206,7 @@
     <!--div class="loadmore" nz-list-load-more>
       <button nz-button *ngIf="!loadingMore" (click)="onLoadMore($event)">Cargar más</button>
     </div-->
-    </nz-list>
+    <!--/nz-list>
   </ng-template>
   <ng-template #NoElements>
     <app-noelements
@@ -196,7 +214,7 @@
       bottomText=" "
     ></app-noelements>
   </ng-template>
-</ng-template>  
+</ng-template-->  
 
 
 

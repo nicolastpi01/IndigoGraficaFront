@@ -54,15 +54,10 @@ export class ReservadosComponent implements OnInit {
     this.currentFile = item; 
   };
 
-  manageOuputOnClickCancelModal = (myPackage: {pedido: Pedido | undefined, file: FileDB | undefined}) => {
+  cleanPedidoAndFile = (myPackage: {pedido: Pedido | undefined, file: FileDB | undefined}) => {
     this.currentPedido = myPackage.pedido,
     this.currentFile = myPackage.file
   };
-
-  manageOuputOnClickShowFiles(myPackage: {pedido: Pedido | undefined, file: FileDB | undefined}) {
-    this.currentPedido = myPackage.pedido
-    this.currentFile = myPackage.file
-  }
 
   /*
   onLoadMore = (event: MouseEvent) => {
