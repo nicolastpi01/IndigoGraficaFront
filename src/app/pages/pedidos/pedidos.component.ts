@@ -53,7 +53,7 @@ export class PedidosComponent implements OnInit {
 
   ngOnInit() {
     this.isLoggedIn = !!this.tokenService.getToken()
-    if (this.isLoggedIn) {
+    if(this.isLoggedIn) {
       this.getPedidos();
       const user = this.tokenService.getUser()
       this.roles = user.roles;
@@ -77,7 +77,6 @@ export class PedidosComponent implements OnInit {
     })
   };
 
- // `Está seguro de querer eliminar el pedido con id: ${pedido.id} ?.`
   showTotal = (total: number) => {
     if(total > 0) return `#Total: ${total}`
     else return ''

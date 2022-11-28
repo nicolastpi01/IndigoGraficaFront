@@ -1,7 +1,5 @@
-import { NgModule } from "@angular/core";
-import { ReservadosRoutingModule } from "./reservados-routing.module";
-import { ReservadosComponent } from "./reservados.component";
 import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzTableModule } from "ng-zorro-antd/table";
@@ -15,18 +13,22 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
-import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzSliderModule } from 'ng-zorro-antd/slider';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzImageModule } from 'ng-zorro-antd/image';
+import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzCommentModule } from 'ng-zorro-antd/comment';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NoElementsModule } from "src/app/components/noElements/noelements.module";
-import { PedidosListModule } from "src/app/components/pedidosList/pedidosList.module";
+import { PedidosListComponent } from "./pedidosList.component";
+import { PedidosListRoutingModule } from "./pedidos-routing.module";
 
 @NgModule({
     imports: [
-      ReservadosRoutingModule,
+      PedidosListRoutingModule,
       NzTableModule,
       CommonModule,
       NzTagModule,
@@ -41,16 +43,18 @@ import { PedidosListModule } from "src/app/components/pedidosList/pedidosList.mo
       NzMessageModule,
       NzSelectModule,
       ScrollingModule,
-      NzDescriptionsModule,
-      NzPaginationModule,
       NzSpinModule,
+      NzAvatarModule,
+      NzSliderModule,
       NzModalModule,
       NzImageModule,
+      NzSkeletonModule,
+      NzDividerModule,
+      NzCommentModule,
       NzTypographyModule,
-      NoElementsModule,
-      PedidosListModule 
+      NoElementsModule
     ],
-    declarations: [ReservadosComponent],
-    exports: [ReservadosComponent]
+    declarations: [PedidosListComponent],
+    exports: [PedidosListComponent]
   })
-  export class ReservadosModule { }
+  export class PedidosListModule { }
