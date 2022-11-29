@@ -27,7 +27,8 @@ export interface Pedido {
     files?: Array<FileDB>;
     interacciones?: Array<Interaccion>, // Interacciones entre usuario y Editor (Es el ida y vuelta) o el chat
     solutions?: Array<Solution>;
-    presupuesto?: Array<Budget>
+    presupuesto?: Array<Budget>;
+    sendBudgetMail?: boolean;
 
 }
 

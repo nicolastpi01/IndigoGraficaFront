@@ -44,7 +44,7 @@ export class ResolverComponent implements OnInit {
   currentFile: FileDB | undefined;
   currentComment: Comentario | undefined;
   currentSolution: FileDB | undefined;
-  currentbudget: FileDB | undefined;
+  currentbudget: Budget | undefined;
   currentBudget: Budget | undefined; // Cargarlo en el OnInit si existe
   showFallbackBudget: boolean = false;
   showFallback: boolean = false;
@@ -596,10 +596,33 @@ export class ResolverComponent implements OnInit {
     } 
   };
 
-  onClickSendBudgetButton = () => {
-    this.isVisibleModalBudgetChat = true
-    this.showFallbackBudget = true
+  hasBudget(pedido: Pedido | undefined) {
+    return pedido && pedido.presupuesto && pedido.presupuesto.length > 0
   }
+
+  hasBeenSendBudget() {
+    return this.currentPedido && this.currentPedido.presupuesto && this.currentPedido.presupuesto.length > 0 &&
+    this.currentPedido.sendBudgetMail
+  }
+
+
+  onClickSendBudgetButton = () => {
+    if(this.hasBudget(this.currentPedido)) {
+      let budgests: Budget[] = JSON.parse(JSON.stringify(this.currentPedido?.presupuesto))
+      let budget: Budget | undefined = budgests.pop()
+      if(budget && budget.file) {
+        this.currentBudget = {
+        ...budget, file: {
+          ...budget.file, url: this.generateUrl(budget.file) 
+          }
+        }
+      };
+    }
+    else {
+      this.showFallbackBudget = true
+    }
+    this.isVisibleModalBudgetChat = true
+  };
 
   handleCancelBudget = () => {
     this.goOutModalBudget()
@@ -626,8 +649,20 @@ export class ResolverComponent implements OnInit {
     }
   };
 
+  messageTitle = () => {
+    if(this.hasBeenSendBudget()) {
+      return 'Ya has enviado el presupuesto'
+    }
+    else {
+      return ''
+    }
+  }
+
   async handleChangeBudget({ file, fileList }: NzUploadChangeParam): Promise<void> {
-    if (file.status !== 'uploading') { 
+    // Se puede subir un Presupuesto siempre y cuando no se haya enviado el Presupuesto al Cliente
+    // además, el efecto es que se 'pisa' el anterior presupuesto. Hay que notificar al Usuario de esto
+    if (file.status === 'uploading') {
+      //this.msg.loading("subiendo...")
     }
     if (file.status === 'done') {
       file['preview'] = await getBase64(file.originFileObj!);
@@ -640,19 +675,14 @@ export class ResolverComponent implements OnInit {
         url: file.url || file['preview'],
         comentarios : []
       }
-
-      this.currentbudget = newFileDB; // Esta mal, esto va despues que la llamada al servicio es correcta
-
       let newBudget: Budget = {
         file: newFileDB, 
       };
-      // No setear el current Solution mandar una copia o algo asi
-      // Esta mal, el currentPedido se debe actualizar despues, mandar una copia en este momento!
-      this.currentPedido = {
-        ...this.currentPedido, presupuesto : [ newBudget ]
+      let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido));
+      pedidoCp = {
+        ...pedidoCp, presupuesto: [newBudget]
       };
-
-      this.service.update(this.currentPedido).
+      this.service.update(pedidoCp).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe(async (e: any) => { // revisar el any
             let pedido = (e.body as Pedido)
@@ -661,19 +691,39 @@ export class ResolverComponent implements OnInit {
                 ...file, url: this.generateUrl(file)
               }
             })};
+            /*
+            this.currentPedido = {...pedido, presupuesto: this.currentPedido?.presupuesto?.map((budget: Budget) => {
+              return {
+                ...budget, file: {
+                  ...file, url: this.generateUrl(budget.file)
+                }
+              }
+            })};
+            */
+            if(this.currentPedido.presupuesto) {
+              let budgests: Budget[] = JSON.parse(JSON.stringify(this.currentPedido.presupuesto))
+              let budget: Budget | undefined = budgests.pop()
+              if(budget && budget.file) {
+                this.currentBudget = {
+                  ...budget, file: {
+                    ...budget.file, url: this.generateUrl(budget.file) 
+                  }
+                }
+              };
+            } 
             this.msg.success(`Presupuesto ingresado exitosamente.`); 
         }),
         () => {
-            this.msg.error('Fallo la generación del pedido!');
+            this.msg.error('Fallo el envio del presupuesto!');
         }
 
     } else if (file.status === 'error') {
-        this.msg.error(`${file.name} file upload failed.`);
+        this.msg.error(`${file.name} Fallo el envío del presupuesto!`);
     }
   };
 
   onClickDeleteBudget = (event: MouseEvent) => {
-    
+    // Se puede eliminar un presupuesto siempre y cuando no se haya enviado al Cliente
   }; 
 
   handleSendMarkups = (comments: Comentario[]) => {
