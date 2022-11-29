@@ -175,8 +175,8 @@
         >
           <ng-container *nzModalContent>
             <!--p *ngIf="currentSolution || showFallback || !tieneDimension()" style="text-align: center;"><b>Solución</b></p-->
-            <p style="text-align: center;"><b>Suba el presupuesto!</b></p>
-            <p style="text-align: center;">Una vez subido el presupuesto puede enviarlo al cliente presionado el botón 'Enviar presupuesto'</p>
+            <p style="text-align: center;"><b>{{ budgetTitle() ? 'Ya enviaste el presupuesto!' : 'Suba el presupuesto!' }}</b></p>
+            <p style="text-align: center;">{{ budgetTitle() ? '' : "Una vez subido el presupuesto puede enviarlo al cliente presionado el botón 'Enviar presupuesto' " }}</p>
             <!--div nz-col>
                 <nz-upload
                   nzAction="http://localhost:8080/files/upload"
@@ -204,7 +204,7 @@
                     </ng-template>  
                   </ng-template>
                   <ng-template #actionDeleteBudget>
-                    <button nz-button [disabled]="!currentBudget" (click)="onClickDeleteBudget($event)">
+                    <button nz-button [disabled]="disabledDeletedBudget()" (click)="onClickDeleteBudget($event)">
                       <span nz-icon nzType="delete" nzTheme="outline"></span>Eliminar
                     </button>
                   </ng-template>
@@ -213,8 +213,10 @@
                       nzAction="http://localhost:8080/files/upload"
                       (nzChange)="handleChangeBudget($event)"
                     >
-                    <button nz-button>
-                      <span nz-icon nzType="upload" nzTheme="outline"></span>Subir
+                    <button 
+                      nz-button
+                      [disabled]="disabledUploadBudget()"
+                      ><span nz-icon nzType="upload" nzTheme="outline"></span>Subir
                     </button>
                     </nz-upload>
                   </ng-template>
@@ -224,7 +226,7 @@
             <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
               <div nz-col>
                 <button
-                  [disabled]="!currentBudget"
+                  [disabled]="disabledSendBudget()"
                   nz-button nzType="primary" 
                   style="height: 50px; width: 270px;" 
                   (click)="handleSendBudget()">

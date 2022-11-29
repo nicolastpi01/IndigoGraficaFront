@@ -637,15 +637,35 @@ export class ResolverComponent implements OnInit {
   }
   
   disabledSendBudget = () => {
-    //this.currentPedido?.files
+    return !this.currentBudget || (this.currentPedido && this.currentPedido.sendBudgetMail)
+  }
+
+  disabledUploadBudget = () => {
+    return this.currentPedido && this.currentPedido.sendBudgetMail
+  };
+
+  disabledDeletedBudget = () => {
+    return (this.currentPedido && this.currentPedido.sendBudgetMail) || !this.currentBudget
   };
 
   handleSendBudget = () => {
+    // COMPORTAMIENTO CUANDO EL SERVER DA OK
+    this.currentPedido = {
+      ...this.currentPedido, sendBudgetMail: true
+    };
+    this.msg.success("Presupuesto enviado.")
+    setTimeout(() => {
+      //this.msg.loading("recargando...");
+      //this.refreshPage() F5
+      this.goOutModalBudget()
+    }, 1500);
+     // Cuando este ok reemplazar esto por hacer un F5 con un loading
     this.mailService.sendBudget(this.currentPedido!.id!)
     .pipe(filter(e => e instanceof HttpResponse)).subscribe(async (e: any) => {
       this.msg.success(`Presupuesto enviado.`);
     }), () => {
       this.msg.error('Sucedió un error durante el envio del presupuesto.');
+      // y cierra el Modal
     }
   };
 
@@ -656,6 +676,10 @@ export class ResolverComponent implements OnInit {
     else {
       return ''
     }
+  }
+
+  budgetTitle = () => {
+    return this.currentPedido && this.currentPedido.sendBudgetMail
   }
 
   async handleChangeBudget({ file, fileList }: NzUploadChangeParam): Promise<void> {
