@@ -750,7 +750,7 @@ export class ResolverComponent implements OnInit {
     // Se puede eliminar un presupuesto siempre y cuando no se haya enviado al Cliente
     let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
     pedidoCp = {
-      ...pedidoCp, presupuesto: pedidoCp.presupuesto?.filter((budget: Budget) => budget.id !== item?.file.id)
+      ...pedidoCp, presupuesto: pedidoCp.presupuesto?.filter((budget: Budget) => budget.id !== item?.id)
     }
     this.service.update(pedidoCp).
         pipe(filter(e => e instanceof HttpResponse))
