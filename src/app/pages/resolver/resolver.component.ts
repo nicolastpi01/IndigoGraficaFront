@@ -746,8 +746,28 @@ export class ResolverComponent implements OnInit {
     }
   };
 
-  onClickDeleteBudget = (event: MouseEvent) => {
+  onClickDeleteBudget = (item: Budget | undefined) => {
     // Se puede eliminar un presupuesto siempre y cuando no se haya enviado al Cliente
+    let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
+    pedidoCp = {
+      ...pedidoCp, presupuesto: pedidoCp.presupuesto?.filter((budget: Budget) => budget.id !== item?.file.id)
+    }
+    this.service.update(pedidoCp).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe(async (e: any) => { // revisar el any
+            this.currentPedido = (e.body as Pedido);
+            this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
+              return {
+                ...file, url: this.generateUrl(file)
+              }
+            });
+            this.currentBudget = undefined // Elimino el Budget
+            this.showFallbackBudget = true // ya que no tiene Budget debo poner el showFallbackBudget en true!
+            this.msg.success('Presupuesto eliminado correctamente!');
+        }),
+        () => {
+            this.msg.error('No se pudo eliminar el Presupuesto. Intente de nuevo!');
+        }
   }; 
 
   handleSendMarkups = (comments: Comentario[]) => {

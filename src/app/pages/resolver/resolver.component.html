@@ -195,6 +195,9 @@
               <div nz-col>
                 <nz-card [nzCover]="coverTemplate" *ngIf="(currentBudget && currentBudget.file && currentBudget.file.url) || showFallbackBudget" 
                   [nzActions]="[actionDeleteBudget, actionUploadBudget]">
+                  <!--nz-card-meta>
+                    <span nz-icon nzType="check" nzTheme="outline"></span>Aprobado
+                  </nz-card-meta-->
                   <ng-template #coverTemplate>
                     <ng-template [ngIf]="currentBudget && currentBudget.file && currentBudget.file.url" [ngIfElse]="Fallback">
                       <img nz-image [nzFallback]="fallback" alt="" [nzSrc]="currentBudget.file.url" width="400" height="300" >
@@ -204,7 +207,7 @@
                     </ng-template>  
                   </ng-template>
                   <ng-template #actionDeleteBudget>
-                    <button nz-button [disabled]="disabledDeletedBudget()" (click)="onClickDeleteBudget($event)">
+                    <button nz-button [disabled]="disabledDeletedBudget()" (click)="onClickDeleteBudget(currentBudget)">
                       <span nz-icon nzType="delete" nzTheme="outline"></span>Eliminar
                     </button>
                   </ng-template>
