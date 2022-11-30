@@ -127,7 +127,7 @@
                               <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
                             </ng-template>
                             <ng-template #actionAddComment>
-                              <button nz-button (click)="onClickComment($event, file)">
+                              <button nz-button [disabled]="file.comentarios.length == 0" (click)="onClickComment($event, file)">
                                 <p style="font-size: 10px;">Comentarios</p>
                               </button>
                               <!--i nz-icon nzType="comment" (click)="onClickComment($event, file)" nzTheme="outline"></i-->
