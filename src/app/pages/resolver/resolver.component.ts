@@ -568,6 +568,7 @@ export class ResolverComponent implements OnInit {
   }
 
   onOkNotifyPayment = (pedidoId: string | undefined) => {
+    // No está capturando bien la excepción cuando falla la llamada al servicio!!
     // Llama al servicio para indicar que el Cliente ya pago por la res. del Pedido
     let token :string = this.tokenService.getToken()
     this.service.notifyPayment(pedidoId, token).pipe(
@@ -575,8 +576,8 @@ export class ResolverComponent implements OnInit {
         this.msg.error(er.error.message);
         return of(er)
       })
-    ).pipe(filter(e => e instanceof HttpResponse))
-      .subscribe(async (pedido: any) => {
+    )
+    .subscribe(async (pedido: any) => {
         // Si esta todo bien cambio el id del booleano hasPayment to true
         this.msg.success(pedido.message)
         this.currentPedido = {
@@ -868,7 +869,7 @@ export class ResolverComponent implements OnInit {
     .subscribe((pedido) => { // revisar el any
         this.currentPedido = pedido;
         if(pedido.files === undefined || pedido.files.length === 0) {
-          let file : FileDB | undefined = pedido.solutions ? pedido.solutions[0].file : undefined
+          let file : FileDB | undefined = pedido.solutions ? pedido.solutions[0]?.file : undefined
           if(file) this.currentSolution = {...file, url: this.generateUrl(file) }
         };
         this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
