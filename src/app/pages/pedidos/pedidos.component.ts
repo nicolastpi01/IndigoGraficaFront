@@ -74,6 +74,12 @@ export class PedidosComponent implements OnInit {
         this.msg.success('Reservado exitosamente!');
         this.service.toggle()
         this.pedidos = this.pedidos.filter((p: Pedido) => p.id !== pedido.id) // Saco el que se reservo!
+        if(this.pedidos.length === 0) {
+          this.msg.loading("redireccionando...");
+          setTimeout(() => {
+            this._router.navigateByUrl("/reservados")
+          }, 1000);
+        }
         //this.getPedidos()
         //this.loadingAccion = false feedback del front
         /*
