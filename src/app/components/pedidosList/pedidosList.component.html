@@ -78,7 +78,8 @@
                           <button 
                             nz-button 
                             nzType="default" 
-                            (click)="onClickShowFiles(pedido)">Ver archivos
+                            (click)="onClickShowFiles(pedido)">
+                            {{ verArchivos(pedido) }}
                           </button>
                         </div>
                         <div nz-col *ngIf="isEditor() && onClickAction">
@@ -102,7 +103,7 @@
                 (nzOnOk)="onCancelModal()"
             >
                 <ng-container *nzModalContent>
-                    <ng-template [ngIf]="currentPedido && currentPedido.files && currentPedido.files.length > 0" [ngIfElse]="NoFiles">
+                    <ng-template [ngIf]="currentPedido && currentPedido.files && currentPedido.files.length > 0">
                         <nz-list nzGrid>
                           <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="currentPedido && currentPedido.files">
                             <div nz-col [nzSpan]="3" *ngFor="let file of currentPedido.files">
@@ -169,12 +170,6 @@
                             </div>
                           </div>
                         </div>
-                      </ng-template>
-                      <ng-template #NoFiles>
-                        <app-noelements
-                          topText="No cuenta con imagenes para este Pedido"
-                          bottomText=" "
-                        ></app-noelements>
                       </ng-template>
                 </ng-container>
             </nz-modal>

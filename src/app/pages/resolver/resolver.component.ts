@@ -754,7 +754,7 @@ export class ResolverComponent implements OnInit {
     }
     this.service.update(pedidoCp).
         pipe(filter(e => e instanceof HttpResponse))
-        .subscribe(async (e: any) => { // revisar el any
+        .subscribe(async (e: any) => {
             this.currentPedido = (e.body as Pedido);
             this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
               return {

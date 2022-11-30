@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { Router } from "@angular/router";
 import { NzMessageService } from "ng-zorro-antd/message";
+import { NzModalService } from "ng-zorro-antd/modal";
 import { Comentario } from "src/app/interface/comentario";
 import { Estado } from "src/app/interface/estado";
 import { FileDB } from "src/app/interface/fileDB";
@@ -43,12 +44,21 @@ import { colorearEstado } from "src/app/utils/pedidos-component-utils";
 
     // No tocar el constructor
     constructor(private service: PedidoService, private msg: NzMessageService, private _router: Router, 
-      private tokenService: TokenStorageService) {}
+      private tokenService: TokenStorageService, private modal: NzModalService) {}
 
     showTotal = (total: number) => {
       if(total > 0) return `#Total: ${total}`
       else return ''
     }
+
+    verArchivos = (pedido: Pedido) => {
+      if(pedido.files) {
+        return `Ver archivos (${pedido.files?.length})`
+      }
+      else {
+        return "Ver archivos"
+      }
+    };
 
     onClickShowMore(pedido: any) {
       pedido.showMore = !pedido.showMore
@@ -58,6 +68,14 @@ import { colorearEstado } from "src/app/utils/pedidos-component-utils";
       return this.roles.includes('ROLE_ENCARGADO')
     }
 
+    /*
+    isPendingAtention = () :boolean => {
+      return (this.currentPedido !== undefined) &&
+      (this.currentPedido.state !== undefined) &&
+      (this.currentPedido.state.value === 'pendAtencion')
+    }
+    */
+
     onClickWatch = (file: any) => {
       this.currentFile = file;
       console.log("CURRENT FILE: ", this.currentFile)
@@ -65,18 +83,28 @@ import { colorearEstado } from "src/app/utils/pedidos-component-utils";
     };
 
     onClickShowFiles = (pedido: Pedido) => {
-      this.isVisibleFilesModal = true
-      this.currentPedido = pedido;
-      this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
-        return {
-          ...file, url: this.generateUrl(file)  //this.blodToUrl(file) -> Mejorar este metodo, por ahora lo dejo asi
-        }
-      });
-      this.currentFile = this.currentPedido.files? this.currentPedido.files[0] : undefined 
-      this.emitOnClickShowFiles.emit({
-        pedido: this.currentPedido, 
-        file: this.currentFile
-      }) 
+      if(pedido.files && pedido.files.length > 0) {
+        this.isVisibleFilesModal = true
+        this.currentPedido = pedido;
+        this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
+          return {
+            ...file, url: this.generateUrl(file)  //this.blodToUrl(file) -> Mejorar este metodo, por ahora lo dejo asi
+          }
+        });
+        this.currentFile = this.currentPedido.files? this.currentPedido.files[0] : undefined 
+        this.emitOnClickShowFiles.emit({
+          pedido: this.currentPedido, 
+          file: this.currentFile
+        })
+      }
+      else {
+        //let content: string = !this.isEditor() && this.isPendingAtention() ? "Puede agregar imágenes al Pedido si ingresa a 'Editar' la misma desde el Carrito" : '' 
+        this.modal.info({
+          nzTitle: 'Este Pedido no cuenta con imágenes de referencia',
+          nzContent: '<p>&nbsp;&nbsp;&nbsp;</p>',
+          nzOnOk: () => {}
+        });
+      }
     };
 
     generateUrl = (file: FileDB) :string => {
