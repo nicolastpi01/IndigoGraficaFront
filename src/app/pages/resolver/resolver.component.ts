@@ -55,7 +55,7 @@ export class ResolverComponent implements OnInit {
   isVisibleModalPedidoChat = false;
   isVisibleModalFileChat = false;
   isVisibleModalBudgetChat = false;  
-  panels: Array<{active: boolean, name: string, disabled: boolean}> = [];
+  panels: Array<{active: boolean, name: string, disabled: (() => boolean) }> = [];
   tabs: Array<{ name: string, icon: string, title: string }> = [];
   time = formatDistance(new Date(), new Date());
   now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
@@ -72,17 +72,17 @@ export class ResolverComponent implements OnInit {
       {
         active: true,
         name: 'Datos',
-        disabled: false
+        disabled: () => false 
       },
       {
         active: false,
-        disabled: false,
-        name: 'Comentarios'
+        name: 'Comentarios',
+        disabled: () =>  !this.hasFiles()
       },
       {
         active: false,
-        disabled: false,
-        name: 'Resolver'
+        name: 'Resolver',
+        disabled: () => false
       }
     ];
     this.tabs = [
@@ -529,6 +529,29 @@ export class ResolverComponent implements OnInit {
         this._router.navigateByUrl("/revision") // redireccionar a otro lado...
       }, 2500);
     }); 
+  };
+
+  hasFiles = () => {
+    return this.currentPedido && this.currentPedido.files && this.currentPedido.files.length > 0
+  }
+
+  hasComments = () => {
+    let ret: boolean = false
+    this.currentPedido?.files?.map((file: FileDB) => {
+      ret = ret || (file.comentarios.length > 0)
+    });
+    return ret
+  };
+
+  panelHeader = (panel: {active: boolean, name: string, disabled: () => boolean}) :string => {
+    if(panel.name === 'Comentarios') { 
+      return `${panel.name} ${!this.hasFiles() ? '(no cuenta con archivos)' : (
+        !this.hasComments() ? '(no cuenta con comentarios para ningún archivo)' : ''
+      )}`
+    }
+    else {
+      return panel.name
+    }
   };
 
   showNotifyPayment(): void {
