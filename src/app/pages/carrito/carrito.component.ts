@@ -791,11 +791,13 @@ export class CarritoComponent implements OnInit {
 
   // Estaria bueno mostrar el id del Pedido que se quiere enviar a revisión
   showNotifyRevision = () => {
+    /*
     if(this.existsSolutionsWithoutFeedback()) {
       this.checkSolutionsDissaproved()
       this.msg.error("Exísten soluciones para las cuáles no se ha brindado una conformidad-- Aprobado o Desaprobado")
     }
-    else {
+    */
+    //else {
       this.modal.warning({
         nzTitle: `<b style="color: yellow;">Atención!</b>`,
         nzContent: this.contentNotifySolutionText,
@@ -807,7 +809,7 @@ export class CarritoComponent implements OnInit {
         nzOnCancel: () => {
         }  
       });
-    }
+    //}
   };
 
   refreshPage() {
@@ -815,20 +817,19 @@ export class CarritoComponent implements OnInit {
   }
 
   onOkNotifyRevision = () => {
-    this.service.sendRevision(this.currentPedido?.id).pipe(
-      catchError(er => {
-        this.msg.error(er.error.message);
-        return of(er)
-      })
-    )
-      .subscribe((result: any) => {
+    this.service.sendRevision(this.currentPedido?.id).subscribe({
+      next: (result) => {
         this.service.toggle()
         this.msg.success(result.message)  
         setTimeout(() => {
-          this.msg.loading("recargando...");
+          this.msg.loading("recargando...")
           this.refreshPage()
-        }, 1500);         
-      });
+        }, 1500);
+      },
+      error: (err) => {
+        this.msg.error(err.error.message)
+      }
+    });
   };
 
   existsSolutionsWithoutFeedback = () :boolean => {
