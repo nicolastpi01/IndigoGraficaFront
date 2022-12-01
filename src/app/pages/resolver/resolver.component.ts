@@ -513,22 +513,21 @@ export class ResolverComponent implements OnInit {
   };
 
   resolver = () => {
-   this.service.resolver(this.currentPedido?.id).pipe(
-    catchError(er => {
-      this.msg.error(er.error.message);
-      return of(er)
-    })
-  )
-    .subscribe((pedido: any) => {
+   this.service.resolver(this.currentPedido?.id).subscribe({
+    next: ((pedido: any) => {
       this.msg.success(pedido.message)
       this.service.toggle()
       setTimeout(() => {
         this.msg.info("redireccionando...");
       }, 500);
       setTimeout(() => {
-        this._router.navigateByUrl("/revision") // redireccionar a otro lado...
+        this._router.navigateByUrl("/revision") // redireccionar a otro lado vista...
       }, 2500);
-    }); 
+    }),
+    error: ((er: any) => {
+      this.msg.error(er.error.message);
+    })
+   }) 
   };
 
   hasFiles = () => {
@@ -568,22 +567,20 @@ export class ResolverComponent implements OnInit {
   }
 
   onOkNotifyPayment = (pedidoId: string | undefined) => {
-    // No está capturando bien la excepción cuando falla la llamada al servicio!!
     // Llama al servicio para indicar que el Cliente ya pago por la res. del Pedido
     let token :string = this.tokenService.getToken()
-    this.service.notifyPayment(pedidoId, token).pipe(
-      catchError(er => {
-        this.msg.error(er.error.message);
-        return of(er)
-      })
-    )
-    .subscribe(async (pedido: any) => {
-        // Si esta todo bien cambio el id del booleano hasPayment to true
+    this.service.notifyPayment(pedidoId, token)
+    .subscribe({
+      next: (pedido: any) => {
         this.msg.success(pedido.message)
         this.currentPedido = {
           ...this.currentPedido, hasPayment: true
         }
-      });
+      },
+      error: (err: any) => {
+        this.msg.error(err.error.message)
+      }
+    })
   };
 
   paymentInfoStyle = () => {

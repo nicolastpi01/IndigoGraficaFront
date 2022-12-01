@@ -791,13 +791,12 @@ export class CarritoComponent implements OnInit {
 
   // Estaria bueno mostrar el id del Pedido que se quiere enviar a revisión
   showNotifyRevision = () => {
-    /*
     if(this.existsSolutionsWithoutFeedback()) {
       this.checkSolutionsDissaproved()
+      // Lanza la excepción desde el front
       this.msg.error("Exísten soluciones para las cuáles no se ha brindado una conformidad-- Aprobado o Desaprobado")
     }
-    */
-    //else {
+    else {
       this.modal.warning({
         nzTitle: `<b style="color: yellow;">Atención!</b>`,
         nzContent: this.contentNotifySolutionText,
@@ -809,7 +808,7 @@ export class CarritoComponent implements OnInit {
         nzOnCancel: () => {
         }  
       });
-    //}
+    }
   };
 
   refreshPage() {
