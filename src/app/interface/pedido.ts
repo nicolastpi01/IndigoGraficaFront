@@ -20,7 +20,8 @@ export interface Pedido {
     tipografia?: string;
     state?: Estado; 
     fechaEntrega?: Date | string;
-    tipo?: Tipo; 
+    tipo?: Tipo;
+    isEditing?: boolean, 
     descripcion?: string; 
     colores?: Color[]; 
     encargado?: Usuario; // El encargado de darle resolución al Pedido (siempre es un Editor --único)
