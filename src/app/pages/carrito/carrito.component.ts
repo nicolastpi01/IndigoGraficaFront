@@ -630,7 +630,16 @@ export class CarritoComponent implements OnInit {
   }
 
   onClickEdit(pedido: Pedido) : void {
-    this._router.navigateByUrl('/editar' + `/${pedido.id}`)
+    
+    // Comportamiento si el Servicio esta todo OK
+    this.service.allowsEdit(pedido.id).subscribe({
+      next: (result) => {
+        this._router.navigateByUrl('/editar' + `/${pedido.id}`)
+      },
+      error: (err) => {
+        this.msg.error(err.error.message)
+      }
+    });
   };
 
   handleOkMoreInfo() : void {
