@@ -70,16 +70,22 @@ export class PedidosComponent implements OnInit {
       //this.loadingAccion = true
       let token :string = this.tokenService.getToken()
       this.service.reservar(pedido, token)
-      .subscribe((_) => {
-        this.msg.success('Reservado exitosamente!');
-        this.service.toggle()
-        this.pedidos = this.pedidos.filter((p: Pedido) => p.id !== pedido.id) // Saco el que se reservo!
-        if(this.pedidos.length === 0) {
-          this.msg.loading("redireccionando...");
-          setTimeout(() => {
-            this._router.navigateByUrl("/reservados")
-          }, 1000);
+      .subscribe({
+        next: (_) => {
+          this.msg.success('Reservado exitosamente!');
+          this.service.toggle()
+          this.pedidos = this.pedidos.filter((p: Pedido) => p.id !== pedido.id) // Saco el que se reservo!
+          if(this.pedidos.length === 0) {
+            this.msg.loading("redireccionando...");
+            setTimeout(() => {
+              this._router.navigateByUrl("/reservados")
+            }, 1000);
+          }
+        },
+        error: (err) => {
+          this.msg.error(err.error.message)
         }
+      })
         //this.getPedidos()
         //this.loadingAccion = false feedback del front
         /*
@@ -87,7 +93,6 @@ export class PedidosComponent implements OnInit {
           this._router.navigateByUrl("/reservados")
         }, 2000);
         */
-      })
     }
   };
 
