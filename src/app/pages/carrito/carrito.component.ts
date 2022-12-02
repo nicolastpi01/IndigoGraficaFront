@@ -86,7 +86,7 @@ export class CarritoComponent implements OnInit {
     this.tabs = [
       {
         name: 'Info',
-        icon: 'data',
+        icon: 'folder',
         title: 'Datos'
       },
       {
@@ -814,6 +814,10 @@ export class CarritoComponent implements OnInit {
   refreshPage() {
     window.location.reload();
   }
+
+  isPendAtention = (pedido: Pedido) => {
+    return pedido.state && pedido.state.value === 'pendAtencion'
+  };
 
   onOkNotifyRevision = () => {
     this.service.sendRevision(this.currentPedido?.id).subscribe({
