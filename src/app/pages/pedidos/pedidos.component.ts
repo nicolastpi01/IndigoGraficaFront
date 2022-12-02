@@ -66,11 +66,7 @@ export class PedidosComponent implements OnInit {
   };
 
   onClickAction (pedido: Pedido): void {
-      if(pedido.isEditing) {
-        this.msg.error("No puede reservar el Pedido en este momento, ya que el Cliente lo esta Editando")
-      }
-    else {
-      if(this.isEditor()) {
+    if(this.isEditor()) {
         //this.loadingAccion = true
         let token :string = this.tokenService.getToken()
         this.service.reservar(pedido, token)
@@ -98,7 +94,6 @@ export class PedidosComponent implements OnInit {
           }, 2000);
           */
       }  
-    }  
   };
 
   cleanPedidoAndFile(myPackage: {pedido: Pedido | undefined, file: FileDB | undefined}) {

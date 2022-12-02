@@ -254,6 +254,7 @@ export class NuevoComponent implements OnInit {
         username: this.currentUser.username,
         email: this.currentUser.email
       },
+      isEditing: false, // Sea el Alta o posterior (se esta Editando el Pedido) es correcto el comportamiento
       // encargado no va a tener nunca porque un Pedido Reservado no puede ser Editado por el Cliente
       fechaEntrega: form.value.datePicker,
       tipo: this.tipoPedidosData.find((tipoPedido: Tipo) => tipoPedido.nombre === form.value.tipo),
