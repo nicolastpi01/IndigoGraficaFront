@@ -66,34 +66,39 @@ export class PedidosComponent implements OnInit {
   };
 
   onClickAction (pedido: Pedido): void {
-    if(this.isEditor()) {
-      //this.loadingAccion = true
-      let token :string = this.tokenService.getToken()
-      this.service.reservar(pedido, token)
-      .subscribe({
-        next: (_) => {
-          this.msg.success('Reservado exitosamente!');
-          this.service.toggle()
-          this.pedidos = this.pedidos.filter((p: Pedido) => p.id !== pedido.id) // Saco el que se reservo!
-          if(this.pedidos.length === 0) {
-            this.msg.loading("redireccionando...");
-            setTimeout(() => {
-              this._router.navigateByUrl("/reservados")
-            }, 1000);
+      if(pedido.isEditing) {
+        this.msg.error("No puede reservar el Pedido en este momento, ya que el Cliente lo esta Editando")
+      }
+    else {
+      if(this.isEditor()) {
+        //this.loadingAccion = true
+        let token :string = this.tokenService.getToken()
+        this.service.reservar(pedido, token)
+        .subscribe({
+          next: (_) => {
+            this.msg.success('Reservado exitosamente!');
+            this.service.toggle()
+            this.pedidos = this.pedidos.filter((p: Pedido) => p.id !== pedido.id) // Saco el que se reservo!
+            if(this.pedidos.length === 0) {
+              this.msg.loading("redireccionando...");
+              setTimeout(() => {
+                this._router.navigateByUrl("/reservados")
+              }, 1000);
+            }
+          },
+          error: (err) => {
+            this.msg.error(err.error.message)
           }
-        },
-        error: (err) => {
-          this.msg.error(err.error.message)
-        }
-      })
-        //this.getPedidos()
-        //this.loadingAccion = false feedback del front
-        /*
-        setTimeout(() => {
-          this._router.navigateByUrl("/reservados")
-        }, 2000);
-        */
-    }
+        })
+          //this.getPedidos()
+          //this.loadingAccion = false feedback del front
+          /*
+          setTimeout(() => {
+            this._router.navigateByUrl("/reservados")
+          }, 2000);
+          */
+      }  
+    }  
   };
 
   cleanPedidoAndFile(myPackage: {pedido: Pedido | undefined, file: FileDB | undefined}) {
