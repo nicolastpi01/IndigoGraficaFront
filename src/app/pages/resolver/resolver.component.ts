@@ -44,7 +44,7 @@ export class ResolverComponent implements OnInit {
   currentFile: FileDB | undefined;
   currentComment: Comentario | undefined;
   currentSolution: FileDB | undefined;
-  currentbudget: FileDB | undefined;
+  currentbudget: Budget | undefined;
   currentBudget: Budget | undefined; // Cargarlo en el OnInit si existe
   showFallbackBudget: boolean = false;
   showFallback: boolean = false;
@@ -55,7 +55,7 @@ export class ResolverComponent implements OnInit {
   isVisibleModalPedidoChat = false;
   isVisibleModalFileChat = false;
   isVisibleModalBudgetChat = false;  
-  panels: Array<{active: boolean, name: string, disabled: boolean}> = [];
+  panels: Array<{active: boolean, name: string, disabled: (() => boolean) }> = [];
   tabs: Array<{ name: string, icon: string, title: string }> = [];
   time = formatDistance(new Date(), new Date());
   now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
@@ -72,17 +72,17 @@ export class ResolverComponent implements OnInit {
       {
         active: true,
         name: 'Datos',
-        disabled: false
+        disabled: () => false 
       },
       {
         active: false,
-        disabled: false,
-        name: 'Comentarios'
+        name: 'Comentarios',
+        disabled: () =>  !this.hasFiles()
       },
       {
         active: false,
-        disabled: false,
-        name: 'Resolver'
+        name: 'Resolver',
+        disabled: () => false
       }
     ];
     this.tabs = [
@@ -513,22 +513,44 @@ export class ResolverComponent implements OnInit {
   };
 
   resolver = () => {
-   this.service.resolver(this.currentPedido?.id).pipe(
-    catchError(er => {
-      this.msg.error(er.error.message);
-      return of(er)
-    })
-  )
-    .subscribe((pedido: any) => {
+   this.service.resolver(this.currentPedido?.id).subscribe({
+    next: ((pedido: any) => {
       this.msg.success(pedido.message)
       this.service.toggle()
       setTimeout(() => {
         this.msg.info("redireccionando...");
       }, 500);
       setTimeout(() => {
-        this._router.navigateByUrl("/revision") // redireccionar a otro lado...
+        this._router.navigateByUrl("/revision") // redireccionar a otro lado vista...
       }, 2500);
-    }); 
+    }),
+    error: ((er: any) => {
+      this.msg.error(er.error.message);
+    })
+   }) 
+  };
+
+  hasFiles = () => {
+    return this.currentPedido && this.currentPedido.files && this.currentPedido.files.length > 0
+  }
+
+  hasComments = () => {
+    let ret: boolean = false
+    this.currentPedido?.files?.map((file: FileDB) => {
+      ret = ret || (file.comentarios.length > 0)
+    });
+    return ret
+  };
+
+  panelHeader = (panel: {active: boolean, name: string, disabled: () => boolean}) :string => {
+    if(panel.name === 'Comentarios') { 
+      return `${panel.name} ${!this.hasFiles() ? '(no cuenta con archivos)' : (
+        !this.hasComments() ? '(no cuenta con comentarios para ningún archivo)' : ''
+      )}`
+    }
+    else {
+      return panel.name
+    }
   };
 
   showNotifyPayment(): void {
@@ -547,22 +569,19 @@ export class ResolverComponent implements OnInit {
   onOkNotifyPayment = (pedidoId: string | undefined) => {
     // Llama al servicio para indicar que el Cliente ya pago por la res. del Pedido
     let token :string = this.tokenService.getToken()
-    this.service.notifyPayment(pedidoId, token).pipe(
-      catchError(er => {
-        this.msg.error(er.error.message);
-        return of(er)
-      })
-    )
-      .subscribe((pedido: any) => {
-        // Si esta todo bien cambio el id del booleano hasPayment to true
+    this.service.notifyPayment(pedidoId, token)
+    .subscribe({
+      next: (pedido: any) => {
         this.msg.success(pedido.message)
         this.currentPedido = {
           ...this.currentPedido, hasPayment: true
         }
-      });
+      },
+      error: (err: any) => {
+        this.msg.error(err.error.message)
+      }
+    })
   };
-
-  
 
   paymentInfoStyle = () => {
     let retStyle = {
@@ -598,10 +617,33 @@ export class ResolverComponent implements OnInit {
     } 
   };
 
-  onClickSendBudgetButton = () => {
-    this.isVisibleModalBudgetChat = true
-    this.showFallbackBudget = true
+  hasBudget(pedido: Pedido | undefined) {
+    return pedido && pedido.presupuesto && pedido.presupuesto.length > 0
   }
+
+  hasBeenSendBudget() {
+    return this.currentPedido && this.currentPedido.presupuesto && this.currentPedido.presupuesto.length > 0 &&
+    this.currentPedido.sendBudgetMail
+  }
+
+
+  onClickSendBudgetButton = () => {
+    if(this.hasBudget(this.currentPedido)) {
+      let budgests: Budget[] = JSON.parse(JSON.stringify(this.currentPedido?.presupuesto))
+      let budget: Budget | undefined = budgests.pop()
+      if(budget && budget.file) {
+        this.currentBudget = {
+        ...budget, file: {
+          ...budget.file, url: this.generateUrl(budget.file) 
+          }
+        }
+      };
+    }
+    else {
+      this.showFallbackBudget = true
+    }
+    this.isVisibleModalBudgetChat = true
+  };
 
   handleCancelBudget = () => {
     this.goOutModalBudget()
@@ -616,21 +658,56 @@ export class ResolverComponent implements OnInit {
   }
   
   disabledSendBudget = () => {
-    //this.currentPedido?.files
+    return !this.currentBudget || (this.currentPedido && this.currentPedido.sendBudgetMail)
+  }
+
+  disabledUploadBudget = () => {
+    return this.currentPedido && this.currentPedido.sendBudgetMail
+  };
+
+  disabledDeletedBudget = () => {
+    return (this.currentPedido && this.currentPedido.sendBudgetMail) || !this.currentBudget
   };
 
   handleSendBudget = () => {
+    // COMPORTAMIENTO CUANDO EL SERVER DA OK
+    this.currentPedido = {
+      ...this.currentPedido, sendBudgetMail: true
+    };
+    this.msg.success("Presupuesto enviado.")
+    setTimeout(() => {
+      //this.msg.loading("recargando...");
+      //this.refreshPage() F5
+      this.goOutModalBudget()
+    }, 1500);
+     // Cuando este ok reemplazar esto por hacer un F5 con un loading
     this.mailService.sendBudget(this.currentPedido!.id!)
     .pipe(filter(e => e instanceof HttpResponse)).subscribe(async (e: any) => {
       this.msg.success(`Presupuesto enviado.`);
     }), () => {
       this.msg.error('Sucedió un error durante el envio del presupuesto.');
+      // y cierra el Modal
+    }
+  };
+
+  messageTitle = () => {
+    if(this.hasBeenSendBudget()) {
+      return 'Ya has enviado el presupuesto'
+    }
+    else {
+      return ''
     }
   }
 
+  budgetTitle = () => {
+    return this.currentPedido && this.currentPedido.sendBudgetMail
+  }
+
   async handleChangeBudget({ file, fileList }: NzUploadChangeParam): Promise<void> {
-    if (file.status !== 'uploading') {
-      
+    // Se puede subir un Presupuesto siempre y cuando no se haya enviado el Presupuesto al Cliente
+    // además, el efecto es que se 'pisa' el anterior presupuesto. Hay que notificar al Usuario de esto
+    if (file.status === 'uploading') {
+      //this.msg.loading("subiendo...")
     }
     if (file.status === 'done') {
       file['preview'] = await getBase64(file.originFileObj!);
@@ -643,19 +720,14 @@ export class ResolverComponent implements OnInit {
         url: file.url || file['preview'],
         comentarios : []
       }
-
-      this.currentbudget = newFileDB;
-
       let newBudget: Budget = {
         file: newFileDB, 
       };
-      // No setear el current Solution mandar una copia o algo asi
-      
-      this.currentPedido = {
-        ...this.currentPedido, presupuesto : [ newBudget ]
+      let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido));
+      pedidoCp = {
+        ...pedidoCp, presupuesto: [newBudget]
       };
-
-      this.service.update(this.currentPedido).
+      this.service.update(pedidoCp).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe(async (e: any) => { // revisar el any
             let pedido = (e.body as Pedido)
@@ -664,19 +736,59 @@ export class ResolverComponent implements OnInit {
                 ...file, url: this.generateUrl(file)
               }
             })};
+            /*
+            this.currentPedido = {...pedido, presupuesto: this.currentPedido?.presupuesto?.map((budget: Budget) => {
+              return {
+                ...budget, file: {
+                  ...file, url: this.generateUrl(budget.file)
+                }
+              }
+            })};
+            */
+            if(this.currentPedido.presupuesto) {
+              let budgests: Budget[] = JSON.parse(JSON.stringify(this.currentPedido.presupuesto))
+              let budget: Budget | undefined = budgests.pop()
+              if(budget && budget.file) {
+                this.currentBudget = {
+                  ...budget, file: {
+                    ...budget.file, url: this.generateUrl(budget.file) 
+                  }
+                }
+              };
+            } 
             this.msg.success(`Presupuesto ingresado exitosamente.`); 
         }),
         () => {
-            this.msg.error('Fallo la generación del pedido!');
+            this.msg.error('Fallo el envio del presupuesto!');
         }
 
     } else if (file.status === 'error') {
-        this.msg.error(`${file.name} file upload failed.`);
+        this.msg.error(`${file.name} Fallo el envío del presupuesto!`);
     }
   };
 
-  onClickDeleteBudget = (event: MouseEvent) => {
-    
+  onClickDeleteBudget = (item: Budget | undefined) => {
+    // Se puede eliminar un presupuesto siempre y cuando no se haya enviado al Cliente
+    let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
+    pedidoCp = {
+      ...pedidoCp, presupuesto: pedidoCp.presupuesto?.filter((budget: Budget) => budget.id !== item?.id)
+    }
+    this.service.update(pedidoCp).
+        pipe(filter(e => e instanceof HttpResponse))
+        .subscribe(async (e: any) => {
+            this.currentPedido = (e.body as Pedido);
+            this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
+              return {
+                ...file, url: this.generateUrl(file)
+              }
+            });
+            this.currentBudget = undefined // Elimino el Budget
+            this.showFallbackBudget = true // ya que no tiene Budget debo poner el showFallbackBudget en true!
+            this.msg.success('Presupuesto eliminado correctamente!');
+        }),
+        () => {
+            this.msg.error('No se pudo eliminar el Presupuesto. Intente de nuevo!');
+        }
   }; 
 
   handleSendMarkups = (comments: Comentario[]) => {
@@ -754,7 +866,7 @@ export class ResolverComponent implements OnInit {
     .subscribe((pedido) => { // revisar el any
         this.currentPedido = pedido;
         if(pedido.files === undefined || pedido.files.length === 0) {
-          let file : FileDB | undefined = pedido.solutions ? pedido.solutions[0].file : undefined
+          let file : FileDB | undefined = pedido.solutions ? pedido.solutions[0]?.file : undefined
           if(file) this.currentSolution = {...file, url: this.generateUrl(file) }
         };
         this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {

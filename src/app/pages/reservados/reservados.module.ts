@@ -22,6 +22,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzImageModule } from 'ng-zorro-antd/image';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NoElementsModule } from "src/app/components/noElements/noelements.module";
+import { PedidosListModule } from "src/app/components/pedidosList/pedidosList.module";
 
 @NgModule({
     imports: [
@@ -46,7 +47,8 @@ import { NoElementsModule } from "src/app/components/noElements/noelements.modul
       NzModalModule,
       NzImageModule,
       NzTypographyModule,
-      NoElementsModule 
+      NoElementsModule,
+      PedidosListModule 
     ],
     declarations: [ReservadosComponent],
     exports: [ReservadosComponent]

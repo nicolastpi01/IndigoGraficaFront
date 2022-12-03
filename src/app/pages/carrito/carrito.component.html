@@ -203,7 +203,7 @@
                               nzType="primary">Chat
                             </button>
                           </div>
-                          <div nz-col>
+                          <div nz-col *ngIf="isPendAtention(pedido)">
                             <button
                               nz-button 
                               class="actions" 

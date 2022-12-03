@@ -252,6 +252,7 @@ export class NuevoComponent implements OnInit {
         username: this.currentUser.username,
         email: this.currentUser.email
       },
+      isEditing: false, // Sea el Alta o posterior (se esta Editando el Pedido) es correcto el comportamiento
       // encargado no va a tener nunca porque un Pedido Reservado no puede ser Editado por el Cliente
       fechaEntrega: form.value.datePicker,
       tipo: this.tipoPedidosData.find((tipoPedido: Tipo) => tipoPedido.nombre === form.value.tipo),
@@ -268,11 +269,24 @@ export class NuevoComponent implements OnInit {
     this.service.create(nuevoPedido).
     pipe(filter(e => e instanceof HttpResponse))
     .subscribe( (e: any) => { // revisar el any
-        this.currentPedido = e.body as Pedido
-        this.esEdicion = true
-        this.service.toggle(); // para que se actualice el contador del Sidebar
-        this.loadingAlta = false;
-        this.msg.success('Pedido generado satisfactoriamente!');
+        if(this.esEdicion) {
+          this.msg.success('Pedido editado satisfactoriamente!')
+          setTimeout(() => {
+            this.msg.info("redireccionando...")
+          }, 500);
+          this.service.toggle();
+          setTimeout(() => {
+            this.loadingAlta = false
+            this._router.navigateByUrl("/carrito")
+          }, 2500);
+        }
+        else {
+          this.currentPedido = e.body as Pedido
+          this.esEdicion = true
+          this.service.toggle(); // para que se actualice el contador del Sidebar
+          this.loadingAlta = false
+          this.msg.success('Pedido generado satisfactoriamente!');
+        }
     }),
     () => {
         this.loadingAlta = false;

@@ -4,8 +4,6 @@ import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzTableModule } from "ng-zorro-antd/table";
 import { NzTagModule } from "ng-zorro-antd/tag";
-import { PedidosRoutingModule } from "./pedidos-routing.module";
-import { PedidosComponent } from "./pedidos.component";
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { FormsModule } from '@angular/forms';
@@ -25,11 +23,12 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzCommentModule } from 'ng-zorro-antd/comment';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NoElementsModule } from "src/app/components/noElements/noelements.module";
-import { PedidosListModule } from "src/app/components/pedidosList/pedidosList.module";
+import { PedidosListComponent } from "./pedidosList.component";
+import { PedidosListRoutingModule } from "./pedidos-routing.module";
 
 @NgModule({
     imports: [
-      PedidosRoutingModule,
+      PedidosListRoutingModule,
       NzTableModule,
       CommonModule,
       NzTagModule,
@@ -53,10 +52,9 @@ import { PedidosListModule } from "src/app/components/pedidosList/pedidosList.mo
       NzDividerModule,
       NzCommentModule,
       NzTypographyModule,
-      NoElementsModule,
-      PedidosListModule
+      NoElementsModule
     ],
-    declarations: [PedidosComponent],
-    exports: [PedidosComponent]
+    declarations: [PedidosListComponent],
+    exports: [PedidosListComponent]
   })
-  export class PedidosModule { }
+  export class PedidosListModule { }

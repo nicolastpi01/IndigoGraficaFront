@@ -1,5 +1,5 @@
 <nz-collapse  nzAccordion>
-  <nz-collapse-panel *ngFor="let panel of panels" [nzHeader]="panel.name" [nzActive]="panel.active">
+  <nz-collapse-panel *ngFor="let panel of panels" [nzHeader]="panelHeader(panel)" [nzActive]="panel.active" [nzDisabled]="panel.disabled()">
     <ng-template [ngIf]="panel.name === 'Datos' " [ngIfElse]="ifElse">
     <div nz-col class="gutter-row">
       <nz-tabset>
@@ -127,7 +127,7 @@
                               <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
                             </ng-template>
                             <ng-template #actionAddComment>
-                              <button nz-button (click)="onClickComment($event, file)">
+                              <button nz-button [disabled]="file.comentarios.length == 0" (click)="onClickComment($event, file)">
                                 <p style="font-size: 10px;">Comentarios</p>
                               </button>
                               <!--i nz-icon nzType="comment" (click)="onClickComment($event, file)" nzTheme="outline"></i-->
@@ -175,13 +175,29 @@
         >
           <ng-container *nzModalContent>
             <!--p *ngIf="currentSolution || showFallback || !tieneDimension()" style="text-align: center;"><b>Solución</b></p-->
-            <p style="text-align: center;"><b>Suba el archivo de presupuesto!</b></p>
-            <p style="text-align: center;">Una vez subido el presupuesto este se enviará por mail al cliente</p>
-
+            <p style="text-align: center;"><b>{{ budgetTitle() ? 'Ya enviaste el presupuesto!' : 'Suba el presupuesto!' }}</b></p>
+            <p style="text-align: center;">{{ budgetTitle() ? '' : "Una vez subido el presupuesto puede enviarlo al cliente presionado el botón 'Enviar presupuesto' " }}</p>
+            <!--div nz-col>
+                <nz-upload
+                  nzAction="http://localhost:8080/files/upload"
+                  (nzChange)="handleChangeBudget($event)">
+                  <button nz-button nzType="primary">
+                    Cargar Presupuesto<span nz-icon nzType="upload" nzTheme="outline"></span>
+                  </button>
+                </nz-upload>
+              </div>
+              <div nz-col>
+                <button nz-button nzType="primary" (click)="handleSendBudget()">Enviar presupuesto
+                  <span nz-icon nzType="mail" nzTheme="outline"></span>
+                </button>
+            </div-->
             <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
               <div nz-col>
                 <nz-card [nzCover]="coverTemplate" *ngIf="(currentBudget && currentBudget.file && currentBudget.file.url) || showFallbackBudget" 
-                  [nzActions]="[actionDeleteBudget, actionAddBudget]">
+                  [nzActions]="[actionDeleteBudget, actionUploadBudget]">
+                  <!--nz-card-meta>
+                    <span nz-icon nzType="check" nzTheme="outline"></span>Aprobado
+                  </nz-card-meta-->
                   <ng-template #coverTemplate>
                     <ng-template [ngIf]="currentBudget && currentBudget.file && currentBudget.file.url" [ngIfElse]="Fallback">
                       <img nz-image [nzFallback]="fallback" alt="" [nzSrc]="currentBudget.file.url" width="400" height="300" >
@@ -191,26 +207,38 @@
                     </ng-template>  
                   </ng-template>
                   <ng-template #actionDeleteBudget>
-                    <button nz-button [disabled]="!currentBudget" (click)="onClickDeleteBudget($event)">
+                    <button nz-button [disabled]="disabledDeletedBudget()" (click)="onClickDeleteBudget(currentBudget)">
                       <span nz-icon nzType="delete" nzTheme="outline"></span>Eliminar
                     </button>
                   </ng-template>
-                  <ng-template #actionAddBudget>
+                  <ng-template #actionUploadBudget>
                     <nz-upload
                       nzAction="http://localhost:8080/files/upload"
                       (nzChange)="handleChangeBudget($event)"
                     >
-                      <button nz-button>
-                        <span nz-icon nzType="upload" nzTheme="outline"></span>Subir
-                      </button>
+                    <button 
+                      nz-button
+                      [disabled]="disabledUploadBudget()"
+                      ><span nz-icon nzType="upload" nzTheme="outline"></span>Subir
+                    </button>
                     </nz-upload>
                   </ng-template>
                 </nz-card>
               </div>
             </div>
+            <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+              <div nz-col>
+                <button
+                  [disabled]="disabledSendBudget()"
+                  nz-button nzType="primary" 
+                  style="height: 50px; width: 270px;" 
+                  (click)="handleSendBudget()">
+                  <p class="resolverText">Enviar presupuesto&nbsp;<span nz-icon nzType="mail" nzTheme="outline"></span></p> 
+                </button>
+              </div>
+            </div> 
           </ng-container>
         </nz-modal>
-             
         <app-chat 
           [elem]="currentFile" 
           [visible]="isVisibleModalFileChat" 
@@ -358,7 +386,7 @@
   (onDelete)="handleClickEliminarComment()">
 </app-chat>
 
-<div nz-row nzJustify="end" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+<div nz-row nzJustify="end" [nzGutter]="[{ xs: 8, sm: 16, md: 24, lg: 32 }, 4]">
   <div nz-col>
     <button nz-button nzType="default" (click)="goOutside()" style="width: 120px;">Salir<i nz-icon nzType="home" nzTheme="outline"></i></button>
   </div>
@@ -366,19 +394,11 @@
     <button nz-button nzType="primary" style="width: 120px;" (click)="onClickPedidoChat($event)">Chat<i nz-icon nzType="message" nzTheme="outline"></i></button>
   </div>
   <div nz-col>
-    <nz-upload
-      nzAction="http://localhost:8080/files/upload"
-      (nzChange)="handleChangeBudget($event)">
-      <button nz-button nzType="primary">
-        Cargar Presupuesto<span nz-icon nzType="upload" nzTheme="outline"></span>
-      </button>
-    </nz-upload>
-  </div>
-  <div nz-col>
-    <button nz-button nzType="primary" (click)="handleSendBudget()">Enviar presupuesto
-      <span nz-icon nzType="mail" nzTheme="outline"></span>
+    <button nz-button nzType="primary" [title]="messageTitle()" (click)="onClickSendBudgetButton()">Enviar presupuesto
+      <span *ngIf="hasBeenSendBudget() " nz-icon nzType="check" nzTheme="outline"></span>
     </button>
   </div>
+  
 </div>
 
 

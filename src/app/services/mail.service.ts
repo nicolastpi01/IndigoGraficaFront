@@ -15,8 +15,7 @@ import { Observable } from 'rxjs/internal/Observable';
     };
     
     constructor(private http: HttpClient) { }
-
-    // Deberia usarse para persistir la posicion antes de dar de alta un comentario (actualizar el pedido), una vez persistidas las Posiciones se actualiza el Pedido 
+ 
     sendBudget(pedidoId: string): Observable<HttpEvent<[]>> {
         const request = new HttpRequest('POST', `${this.baseUrl}${this.api}/presupuesto/${pedidoId}`, {
           reportProgress: true,

@@ -86,7 +86,7 @@ export class CarritoComponent implements OnInit {
     this.tabs = [
       {
         name: 'Info',
-        icon: 'data',
+        icon: 'folder',
         title: 'Datos'
       },
       {
@@ -630,7 +630,16 @@ export class CarritoComponent implements OnInit {
   }
 
   onClickEdit(pedido: Pedido) : void {
-    this._router.navigateByUrl('/editar' + `/${pedido.id}`)
+    
+    // Comportamiento si el Servicio esta todo OK
+    this.service.allowsEdit(pedido.id).subscribe({
+      next: (result) => {
+        this._router.navigateByUrl('/editar' + `/${pedido.id}`)
+      },
+      error: (err) => {
+        this.msg.error(err.error.message)
+      }
+    });
   };
 
   handleOkMoreInfo() : void {
@@ -793,6 +802,7 @@ export class CarritoComponent implements OnInit {
   showNotifyRevision = () => {
     if(this.existsSolutionsWithoutFeedback()) {
       this.checkSolutionsDissaproved()
+      // Lanza la excepción desde el front
       this.msg.error("Exísten soluciones para las cuáles no se ha brindado una conformidad-- Aprobado o Desaprobado")
     }
     else {
@@ -814,21 +824,24 @@ export class CarritoComponent implements OnInit {
     window.location.reload();
   }
 
+  isPendAtention = (pedido: Pedido) => {
+    return pedido.state && pedido.state.value === 'pendAtencion'
+  };
+
   onOkNotifyRevision = () => {
-    this.service.sendRevision(this.currentPedido?.id).pipe(
-      catchError(er => {
-        this.msg.error(er.error.message);
-        return of(er)
-      })
-    )
-      .subscribe((result: any) => {
+    this.service.sendRevision(this.currentPedido?.id).subscribe({
+      next: (result) => {
         this.service.toggle()
         this.msg.success(result.message)  
         setTimeout(() => {
-          this.msg.loading("recargando...");
+          this.msg.loading("recargando...")
           this.refreshPage()
-        }, 1500);         
-      });
+        }, 1500);
+      },
+      error: (err) => {
+        this.msg.error(err.error.message)
+      }
+    });
   };
 
   existsSolutionsWithoutFeedback = () :boolean => {

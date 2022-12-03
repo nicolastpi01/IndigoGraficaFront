@@ -20,14 +20,16 @@ export interface Pedido {
     tipografia?: string;
     state?: Estado; 
     fechaEntrega?: Date | string;
-    tipo?: Tipo; 
+    tipo?: Tipo;
+    isEditing?: boolean, 
     descripcion?: string; 
     colores?: Color[]; 
     encargado?: Usuario; // El encargado de darle resolución al Pedido (siempre es un Editor --único)
-    files?:  Array<FileDB>;
+    files?: Array<FileDB>;
     interacciones?: Array<Interaccion>, // Interacciones entre usuario y Editor (Es el ida y vuelta) o el chat
-    solutions?:  Array<Solution>;
-    presupuesto?: Array<Budget>
+    solutions?: Array<Solution>;
+    presupuesto?: Array<Budget>;
+    sendBudgetMail?: boolean;
 
 }
 
