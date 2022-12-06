@@ -20,7 +20,6 @@ import { Estado } from 'src/app/interface/estado';
 import { Budget } from 'src/app/interface/Budget';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
-import { isSuccess } from 'angular-in-memory-web-api';
 import { MailService } from 'src/app/services/mail.service';
 
 @Component({
@@ -110,6 +109,37 @@ export class ResolverComponent implements OnInit {
     return this.currentPedido && this.currentPedido.files && this.currentPedido.files.length > 0
   };
 
+  hasFilesToResolve = () :boolean => {
+    if(this.isRejected()) {
+      return this.currentPedido !== undefined && this.currentPedido.files !== undefined &&
+        this.currentPedido.files.filter((file: FileDB) => !this.hasApprovedSolution(file) ).length > 0 
+    }
+    else {
+      return this.currentPedido !== undefined && this.currentPedido.files !== undefined && this.currentPedido.files.length > 0
+    }
+  };
+  
+  hasApprovedSolution = (file: FileDB) :boolean => {
+    let find: Solution | undefined = this.currentPedido?.solutions?.find((sol: Solution) => sol.idFileToSolution === file.id?.toString() )
+    console.log("FIND :", find)
+    let approved: boolean = (find !== undefined) && (find.approved !== undefined) && find.approved
+    return (this.currentPedido !== undefined) && (this.currentPedido.solutions !== undefined) && approved
+  };
+  
+  filesToResolve = () :FileDB[] | undefined => {
+    if(this.isRejected()) {
+      console.log("IS REJECTED")
+      //let pedidoFind: Pedido | undefined = this.pedidos.find((pedido: Pedido) => 
+      //pedido.files?.some((file: FileDB) => file.id?.toString() === solution.idFileToSolution))
+
+      return this.currentPedido?.files?.filter((file: FileDB) => !this.hasApprovedSolution(file) )
+    }
+    else {
+      return this.currentPedido?.files
+    }
+  }
+  
+
   eliminarRespuesta = () => {
     let last = this.searchLastInteraccion();
     if(last && last.id && last.rol === 'EDITOR') {
@@ -165,6 +195,11 @@ export class ResolverComponent implements OnInit {
     else {
       this.textAreaValue = undefined;
     }
+  };
+
+  isRejected = () : boolean =>  {
+    return this.currentPedido !== undefined && this.currentPedido.state !== undefined 
+    && this.currentPedido.state.value === 'rechazado'
   };
 
   colorear :(state: Estado) => string | undefined = colorearEstado

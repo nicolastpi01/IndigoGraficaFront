@@ -1,1 +1,12 @@
-<p>retornados works!</p>
+
+<app-pedidosList
+    [pedidos]="pedidos"
+    [loading]="loading"
+    [roles]="roles"
+    [onClickAction]="onClickAction"
+    [onClickActionText]="actionText"
+    (onClickCancelModal)="cleanPedidoAndFile($event)"
+    (onClickShowFiles)="cleanPedidoAndFile($event)"
+    (onClickWatch)="manageOuputOnClickWatch($event)"
+>
+</app-pedidosList>

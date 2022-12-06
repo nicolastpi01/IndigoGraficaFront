@@ -271,13 +271,13 @@
     </ng-template>
      <ng-template #Resolver>
       <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
-        <ng-template [ngIf]="currentPedido && currentPedido.files && tieneDimension()" [ngIfElse]="ifElse">
+        <ng-template [ngIf]="hasFilesToResolve()" [ngIfElse]="ifElse">
           <div nz-col>
             <!--p [style]="resolverFilesStyle(currentPedido)"><b>Archivos</b></p-->
             <p style="text-align: center;"><b>Archivos</b></p> 
             <nz-list nzGrid>
-              <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="currentPedido && currentPedido.files">
-                <div nz-col *ngFor="let file of currentPedido.files">
+              <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="currentPedido && filesToResolve()">
+                <div nz-col *ngFor="let file of filesToResolve()">
                   <nz-list-item>
                     <!--nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddComment, actionAddSolution]"-->
                     <nz-card [style]="cardStyle(file)" [nzCover]="coverTemplate" [nzActions]="[actionAddSolution]">
@@ -349,7 +349,7 @@
       </div>
       <br>
       <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
-        <div nz-col>
+        <div nz-col *ngIf="!isRejected()">
           <button
             [disabled]="currentPedido && currentPedido.hasPayment"
             nz-button nzType="primary" 
@@ -364,7 +364,7 @@
             <p class="resolverText">Resolver</p>
           </button>
         </div>
-        <div nz-col>
+        <div nz-col *ngIf="!isRejected()">
           <div [style]="paymentInfoStyle()">
             <p>{{ paymentInfoText().fistParagraph }}</p>
             <p>{{ paymentInfoText().secondParagraph }}</p>
@@ -394,7 +394,11 @@
     <button nz-button nzType="primary" style="width: 120px;" (click)="onClickPedidoChat($event)">Chat<i nz-icon nzType="message" nzTheme="outline"></i></button>
   </div>
   <div nz-col>
-    <button nz-button nzType="primary" [title]="messageTitle()" (click)="onClickSendBudgetButton()">Enviar presupuesto
+    <button 
+      *ngIf="!isRejected()" 
+      nz-button nzType="primary" 
+      [title]="messageTitle()" 
+      (click)="onClickSendBudgetButton()">Enviar presupuesto
       <span *ngIf="hasBeenSendBudget() " nz-icon nzType="check" nzTheme="outline"></span>
     </button>
   </div>
