@@ -66,24 +66,7 @@ export class ResolverComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id')
-    this.getPedido();
-    this.panels = [
-      {
-        active: true,
-        name: 'Datos',
-        disabled: () => false 
-      },
-      {
-        active: false,
-        name: 'Comentarios',
-        disabled: () =>  !this.hasFiles()
-      },
-      {
-        active: false,
-        name: 'Resolver',
-        disabled: () => false
-      }
-    ];
+    this.getPedido()
     this.tabs = [
       {
         name: 'Pedido',
@@ -103,6 +86,42 @@ export class ResolverComponent implements OnInit {
     label: "EDITOR",
     icon: "highlight",
     hexColor: "background-color: #f56a00"
+  };
+
+  determinePanels = (pedido: Pedido) :Array<{active: boolean, name: string, disabled: (() => boolean)}> => {
+    if(pedido.state && pedido.state.value === 'rechazado') {
+      return [
+        {
+          active: true,
+          name: 'Datos',
+          disabled: () => false 
+        },
+        {
+          active: false,
+          name: 'Resolver',
+          disabled: () => false
+        }
+      ];
+    }
+    else {
+      return [
+        {
+          active: true,
+          name: 'Datos',
+          disabled: () => false 
+        },
+        {
+          active: false,
+          name: 'Comentarios',
+          disabled: () =>  !this.hasFiles()
+        },
+        {
+          active: false,
+          name: 'Resolver',
+          disabled: () => false
+        }
+      ];
+    }
   };
 
   tieneDimension = () => {
@@ -900,6 +919,7 @@ export class ResolverComponent implements OnInit {
     this.service.getPedido(this.id)
     .subscribe((pedido) => { // revisar el any
         this.currentPedido = pedido;
+        this.panels = this.determinePanels(pedido)
         if(pedido.files === undefined || pedido.files.length === 0) {
           let file : FileDB | undefined = pedido.solutions ? pedido.solutions[0]?.file : undefined
           if(file) this.currentSolution = {...file, url: this.generateUrl(file) }
