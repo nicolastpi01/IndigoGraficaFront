@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 import { PedidoService } from 'src/app/services/pedido.service';
@@ -21,6 +21,11 @@ import { Budget } from 'src/app/interface/Budget';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { MailService } from 'src/app/services/mail.service';
+
+interface FileReplacementFeedback {
+  color: string,
+  text: string
+};
 
 @Component({
   selector: 'app-resolver',
@@ -157,7 +162,22 @@ export class ResolverComponent implements OnInit {
       return this.currentPedido?.files
     }
   }
-  
+
+
+  // Cuando se desaprueba una Solución su imagen debe quedar hasReplacement = false
+  determineFileHasReplacementFeedback = (fileHasReplacement: boolean | undefined) :FileReplacementFeedback => {
+    let ret: FileReplacementFeedback = {
+      color: 'red',
+      text: 'Esta solución fue desaprobada por el Cliente, agregue una nueva!'
+    }
+    if(fileHasReplacement) {
+      ret = {
+        color: "green",
+        text: "Esta es una solución para la cuál ya se agrego un reemplazo"
+      }
+    }
+    return ret;
+  };
 
   eliminarRespuesta = () => {
     let last = this.searchLastInteraccion();
@@ -655,6 +675,31 @@ export class ResolverComponent implements OnInit {
       }
     } 
   };
+
+  onClickShowRejectionReason = () => {
+    // Levanta el Modal que muestra la información de rechazo de la Solución
+  };
+
+  rejectedHeaderInfo = () => {
+    let ret = {
+      style: {
+        "font-weight": 'bold',
+        "text-align": 'center',
+        "color": 'rgb(201, 46, 46)' // red
+      },
+      text: 'Reemplace todas las soluciones que necesiten arreglo, y envie la Revisión nuevamente!'
+    }
+    if(false) { // Cuando cada Solución 'Desaprobada' tiene su nuevo reemplazo!
+      return {
+        ...ret,
+        style: {
+          ...ret.style, color: 'rgb(37, 167, 52)', // green
+        },
+        text: 'Todas las Soluciones tienen un reemplazo, el Pedido esta listo para Reenviarse' 
+      }
+    }
+    return ret
+  }; 
 
   paymentInfoText = () => {
     if(this.currentPedido && this.currentPedido.hasPayment) {

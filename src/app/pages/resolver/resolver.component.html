@@ -270,6 +270,8 @@
      </ng-template>
     </ng-template>
      <ng-template #Resolver>
+      <h3 *ngIf="isRejected()" [ngStyle]="rejectedHeaderInfo().style" nz-typography>{{ rejectedHeaderInfo().text }}</h3>
+      <br>
       <div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
         <ng-template [ngIf]="hasFilesToResolve()" [ngIfElse]="ifElse">
           <div nz-col>
@@ -314,7 +316,7 @@
           <!--nz-card *ngIf="currentSolution" [nzCover]="coverTemplate" [nzActions]="[actionAddComment, actionAddSolution]"-->
           <!--nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddComment, actionAddSolution]"-->
           <nz-card [nzCover]="coverTemplate" *ngIf="(currentSolution && currentSolution.url) || showFallback || !tieneDimension()" 
-              [nzActions]="[actionDeleteSolution, actionAddSolution]">
+              [nzActions]="isRejected()? [actionDeleteSolution, rejectionReason, actionAddSolution] :[actionDeleteSolution, actionAddSolution]">
             <nz-card-meta             
               nzDescription=""
               [nzAvatar]="avatarTemplate"
@@ -334,6 +336,9 @@
                   <span nz-icon nzType="delete" nzTheme="outline"></span>Eliminar
                 </button>
               </ng-template>
+              <ng-template #rejectionReason>
+                <button nz-button (click)="onClickShowRejectionReason()">Motivo rechazo</button>
+              </ng-template>
               <ng-template #actionAddSolution>
                 <nz-upload
                   nzAction="http://localhost:8080/files/upload"
@@ -344,6 +349,17 @@
                   </button>
                 </nz-upload>
               </ng-template>
+              <!--div 
+                style="text-align: center;" 
+                *ngIf="currentSolution && isRejected() && currentSolution.hasReplacement !== undefined"
+              -->
+              <div 
+                style="text-align: center;" 
+                *ngIf="currentSolution && isRejected()"
+              >
+                <p [style]="{ 'color': determineFileHasReplacementFeedback(currentSolution.hasReplacement).color }">
+                  {{ determineFileHasReplacementFeedback(currentSolution.hasReplacement).text }}</p>
+              </div>
             </nz-card>            
         </div>
       </div>
