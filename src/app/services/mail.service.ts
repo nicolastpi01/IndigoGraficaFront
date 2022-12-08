@@ -16,12 +16,14 @@ import { Observable } from 'rxjs/internal/Observable';
     
     constructor(private http: HttpClient) { }
  
-    sendBudget(pedidoId: string): Observable<HttpEvent<[]>> {
-        const request = new HttpRequest('POST', `${this.baseUrl}${this.api}/presupuesto/${pedidoId}`, {
-          reportProgress: true,
-          responseType: 'json'
-        });
-        return this.http.request(request);
+    sendBudget(pedidoId: string): Observable<any> {
+        // const request = new HttpRequest('POST', `${this.baseUrl}${this.api}/presupuesto/${pedidoId}`, {
+        //   reportProgress: true,
+        //   responseType: 'json'
+        // });
+        // return this.http.request(request).pipe()
+        return this.http.post(`${this.baseUrl}${this.api}/presupuesto/${pedidoId}`,{reportProgress: true, responseType: 'json'}).pipe()
     };
 }
+
     
