@@ -8,7 +8,6 @@ export interface FileDB {
     type: string,
     data: Blob,
     url?: string,
-    hasReplacement?: boolean,
     comentarios: Comentario[],
     interacciones?: Array<Interaccion>
 }

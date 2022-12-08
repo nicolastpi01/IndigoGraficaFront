@@ -97,12 +97,12 @@ export class ResolverComponent implements OnInit {
     if(pedido.state && pedido.state.value === 'rechazado') {
       return [
         {
-          active: true,
+          active: false,
           name: 'Datos',
           disabled: () => false 
         },
         {
-          active: false,
+          active: true,
           name: 'Resolver',
           disabled: () => false
         }
@@ -164,13 +164,13 @@ export class ResolverComponent implements OnInit {
   }
 
 
-  // Cuando se desaprueba una Solución su imagen debe quedar hasReplacement = false
-  determineFileHasReplacementFeedback = (fileHasReplacement: boolean | undefined) :FileReplacementFeedback => {
+  // Cuando se desaprueba una Solución la misma debe quedar hasReplacement = false
+  determineFileHasReplacementFeedback = (fileSol: FileDB) :FileReplacementFeedback => {
     let ret: FileReplacementFeedback = {
       color: 'red',
       text: 'Esta solución fue desaprobada por el Cliente, agregue una nueva!'
     }
-    if(fileHasReplacement) {
+    if(this.hasReplacement(fileSol)) {
       ret = {
         color: "green",
         text: "Esta es una solución para la cuál ya se agrego un reemplazo"
@@ -680,6 +680,13 @@ export class ResolverComponent implements OnInit {
     // Levanta el Modal que muestra la información de rechazo de la Solución
   };
 
+  // retorna true cuando una Sol. tiene reemplazo, sino false o undefined
+  hasReplacement = (file: FileDB) :boolean | undefined => {
+    // solution.idFileToSolution !== this.currentFile?.id
+    let findSol: Solution | undefined = this.currentPedido?.solutions?.find((sol: Solution) => sol.idFileToSolution === file.id?.toString())
+    return findSol && findSol.hasReplacement
+  };
+
   rejectedHeaderInfo = () => {
     let ret = {
       style: {
@@ -689,7 +696,8 @@ export class ResolverComponent implements OnInit {
       },
       text: 'Reemplace todas las soluciones que necesiten arreglo, y envie la Revisión nuevamente!'
     }
-    if(false) { // Cuando cada Solución 'Desaprobada' tiene su nuevo reemplazo!
+    if(this.currentPedido && this.currentPedido.solutions && 
+      this.currentPedido.solutions.length > 0 && this.currentPedido.solutions.every((sol: Solution) => sol.hasReplacement)) { // Cuando cada Solución 'Desaprobada' tiene su nuevo reemplazo!
       return {
         ...ret,
         style: {
@@ -988,6 +996,7 @@ export class ResolverComponent implements OnInit {
   };
 
   onClickComment = (event: MouseEvent, item: FileDB) => {
+    console.log("LLAME ONCLICK COMMENT")
     event.preventDefault;
     this.currentFile = item; 
     this.isVisibleModalComment = true;

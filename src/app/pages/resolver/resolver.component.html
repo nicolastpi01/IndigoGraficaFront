@@ -288,12 +288,30 @@
                         nzDescription=""
                       ></nz-card-meta>
                         <ng-template #coverTemplate>
-                          <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '160px', height: '140px', cursor: 'pointer' }">
+                          <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '166px', height: '140px', cursor: 'pointer' }">
                         </ng-template>
                         <ng-template #actionAddSolution>
-                            <button nzType="default" nz-button (click)="onClickAddSolution($event, file)">
+                            <button *ngIf="!isRejected()" nzType="default" nz-button (click)="onClickAddSolution($event, file)">
                               Solución
                             </button>
+                            <div *ngIf="isRejected()" nz-row [nzGutter]="[{ xs: 2, sm: 4, md: 6, lg: 8 }, 4]">
+                              <div nz-col>
+                                <button nz-button type="default" (click)="onClickAddSolution($event, file)">
+                                  <p style="font-size: 10px">Solución</p>
+                                </button>
+                              </div>
+                              <div nz-col>
+                                <button 
+                                  nz-button 
+                                  type="default"  
+                                  nz-tooltip 
+                                  [nzTooltipTitle]=" file.comentarios.length === 0 ? 'No cuenta con comentarios' : '' " 
+                                  (click)="file.comentarios.length > 0 ? onClickComment($event, file) : undefined"
+                                >
+                                  <p style="font-size: 10px;">Comentarios</p>
+                                </button>
+                              </div>
+                            </div>
                         </ng-template>
                     </nz-card>
                   </nz-list-item>
@@ -357,8 +375,8 @@
                 style="text-align: center;" 
                 *ngIf="currentSolution && isRejected()"
               >
-                <p [style]="{ 'color': determineFileHasReplacementFeedback(currentSolution.hasReplacement).color }">
-                  {{ determineFileHasReplacementFeedback(currentSolution.hasReplacement).text }}</p>
+                <p [style]="{ 'color': determineFileHasReplacementFeedback(currentSolution).color }">
+                  {{ determineFileHasReplacementFeedback(currentSolution).text }}</p>
               </div>
             </nz-card>            
         </div>
@@ -387,6 +405,14 @@
           </div>
         </div>
       </div>
+      <app-comentarios
+        [isVisible]="isVisibleModalComment"
+        [file]="currentFile"
+        (onClose)="handleCancelResolver($event)"
+        (onAccept)="onClickChat($event)"
+        (onSendMarkups)="handleSendMarkups($event)"
+        [rol]="currentRol">
+      </app-comentarios>
      </ng-template>
   </nz-collapse-panel>
 </nz-collapse>
