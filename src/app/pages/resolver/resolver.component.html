@@ -413,6 +413,17 @@
         (onSendMarkups)="handleSendMarkups($event)"
         [rol]="currentRol">
       </app-comentarios>
+      <app-chat 
+        [elem]="currentComment" 
+        [visible]="isVisibleModalChat" 
+        (onClose)="handleCancelModalResponse($event)"
+        [perfil]="getPerfil"
+        [text]="textAreaValue"
+        [noResultText]="ChatNoResultMessage"
+        (onAccept)="handleOkModalResponse($event)"
+        (onDelete)="eliminarRespuesta()"
+        [rejected]="isRejected()">
+      </app-chat>
      </ng-template>
   </nz-collapse-panel>
 </nz-collapse>

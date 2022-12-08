@@ -20,6 +20,7 @@ export interface PerfilInfo {
   export class ChatComponent implements OnInit {
     time = formatDistance(new Date(), new Date());
     @Input('text') userCommentValue: string | undefined;
+    @Input('rejected') rejected: boolean = false;
     determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
     avatarStyle: (interaccion: Interaccion) => { 'background-color': string; } = avatarStyle;
     @Input() elem: Pedido | Comentario | FileDB | undefined; 

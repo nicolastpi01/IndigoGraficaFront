@@ -59,7 +59,7 @@
                 </button>
               </nz-form-item>
               <nz-form-item>
-                <button nz-button (click)="handleClickAceptar()" nzType="default">
+                <button nz-button [disabled]="rejected" (click)="handleClickAceptar()" nzType="default">
                   {{ isEditing(elem) ? 'Editar' : 'Enviar' }}
                 </button>
               </nz-form-item>

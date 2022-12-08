@@ -64,7 +64,10 @@ export class ResolverComponent implements OnInit {
   time = formatDistance(new Date(), new Date());
   now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
   ChatNoResultMessage: string = showNoResultTextChatFor('Cliente');
-  currentRol :string = 'EDITOR'; 
+  currentRol :string = 'EDITOR';
+
+  // 300 caracteres!
+  textoSinFormato: string = 'Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracEsto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 carac' 
 
   constructor(private route: ActivatedRoute, private service :PedidoService, private mailService : MailService, private msg: NzMessageService, 
     private _router: Router, private modal: NzModalService, private tokenService: TokenStorageService) {}
@@ -145,14 +148,14 @@ export class ResolverComponent implements OnInit {
   
   hasApprovedSolution = (file: FileDB) :boolean => {
     let find: Solution | undefined = this.currentPedido?.solutions?.find((sol: Solution) => sol.idFileToSolution === file.id?.toString() )
-    console.log("FIND :", find)
+    //console.log("FIND :", find)
     let approved: boolean = (find !== undefined) && (find.approved !== undefined) && find.approved
     return (this.currentPedido !== undefined) && (this.currentPedido.solutions !== undefined) && approved
   };
   
   filesToResolve = () :FileDB[] | undefined => {
     if(this.isRejected()) {
-      console.log("IS REJECTED")
+      //console.log("IS REJECTED")
       //let pedidoFind: Pedido | undefined = this.pedidos.find((pedido: Pedido) => 
       //pedido.files?.some((file: FileDB) => file.id?.toString() === solution.idFileToSolution))
 
@@ -678,6 +681,15 @@ export class ResolverComponent implements OnInit {
 
   onClickShowRejectionReason = () => {
     // Levanta el Modal que muestra la información de rechazo de la Solución
+    this.modal.info({
+      nzTitle: `<b style="color: blue;">Motivo rechazo: </b>`,
+      nzContent: this.textoSinFormato,
+      nzOkText: 'Ok',
+      nzCentered: true,
+      nzOkType: 'primary',
+      nzOnOk: () => {
+      }  
+    });
   };
 
   // retorna true cuando una Sol. tiene reemplazo, sino false o undefined
@@ -1041,8 +1053,8 @@ export class ResolverComponent implements OnInit {
     event.preventDefault;
     this.currentFile = item
     // Cuidado, porque item.id y idFileToSolution son de =/ tipo
-    this.currentSolution = this.currentPedido?.solutions?.find((solution: Solution) => solution.idFileToSolution === item.id?.toString())?.file
-    
+    let currentSol :Solution | undefined = this.currentPedido?.solutions?.find((solution: Solution) => solution.idFileToSolution === item.id?.toString())
+    this.currentSolution = currentSol?.file
     if(!this.currentSolution) {
       this.showFallback = true
     } 
