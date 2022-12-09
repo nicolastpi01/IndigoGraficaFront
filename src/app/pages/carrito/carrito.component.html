@@ -402,7 +402,29 @@
                           ><p>Desaprobar</p>
                           </button>
                         </div>
-                      </div>        
+                      </div>
+                      <br>
+                      <p>Motivo rechazo:</p>
+                      <form
+                        nz-form
+                        [nzLayout]="'vertical'"
+                        [formGroup]="validateForm"
+                      >
+                        <nz-form-item>
+                          <!--nz-form-control nzHasFeedback [nzErrorTip]="MotivoRechazoErrorTpl" nzErrorTip="300 caracteres es la máxima cantidad permitida"-->
+                          <!--nz-form-control nzHasFeedback nzValidateStatus="error" [nzErrorTip]="MotivoRechazoErrorTpl"-->
+                          <nz-form-control nzHasFeedback nzErrorTip="300 caracteres es la máxima cantidad permitida">
+                              <nz-input-group>
+                                <nz-textarea-count [nzMaxCharacterCount]="300">
+                                  <textarea rows="4" formControlName="motivoRechazo" nz-input></textarea>
+                                </nz-textarea-count>
+                              </nz-input-group>
+                              <!--ng-template #MotivoRechazoErrorTpl let-control>
+                                <ng-container *ngIf="control.hasError('maxLength')">300 caracteres es la máxima cantidad permitida</ng-container>
+                              </ng-template-->
+                          </nz-form-control>
+                        </nz-form-item>
+                      </form> 
                     </ng-container>
                   </nz-modal>
                   <app-chat 

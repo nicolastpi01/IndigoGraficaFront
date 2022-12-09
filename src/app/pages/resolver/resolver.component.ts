@@ -529,15 +529,18 @@ export class ResolverComponent implements OnInit {
       // Despues de la rta del server tengo que generar todas las url para los Files en Solutions
       // Tengo que setear la currentSolution
 
+      // ACA AGREGO hasReplacement 
       let newSolution: Solution = {
         idFileToSolution: this.currentFile?.id,
-        file: newFileDB, 
+        file: newFileDB,
+        hasReplacement: this.isRejected() // Si es un Pedido rechazado entonces ahora tiene reemplazo, sino queda en False 
       };
       // No setear el current Solution mandar una copia o algo asi
       if(this.currentPedido && this.currentPedido.files && this.currentPedido.files.length > 0) {
         this.currentPedido = {
+          //VSVSFVSF
           ...this.currentPedido, solutions : this.currentPedido && this.currentPedido.solutions ? 
-          [...this.currentPedido?.solutions.filter((sol: Solution) => sol.idFileToSolution !== newSolution.idFileToSolution), newSolution ] 
+          [...this.currentPedido?.solutions.filter((sol: Solution) => sol.idFileToSolution !== newSolution.idFileToSolution?.toString()), newSolution ] 
           : [ newSolution ]
           };
       }
@@ -547,6 +550,7 @@ export class ResolverComponent implements OnInit {
           };
       }
       
+      console.log("CURRENT PEDIDO: ", this.currentPedido)
       this.service.update(this.currentPedido).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe(async (e: any) => { // revisar el any
@@ -683,7 +687,7 @@ export class ResolverComponent implements OnInit {
     // Levanta el Modal que muestra la información de rechazo de la Solución
     this.modal.info({
       nzTitle: `<b style="color: blue;">Motivo rechazo: </b>`,
-      nzContent: this.textoSinFormato,
+      nzContent: this.currentPedido?.solutions?.find((sol: Solution) => sol.idFileToSolution === this.currentFile?.id?.toString())?.rejectionReason,
       nzOkText: 'Ok',
       nzCentered: true,
       nzOkType: 'primary',
@@ -695,7 +699,10 @@ export class ResolverComponent implements OnInit {
   // retorna true cuando una Sol. tiene reemplazo, sino false o undefined
   hasReplacement = (file: FileDB) :boolean | undefined => {
     // solution.idFileToSolution !== this.currentFile?.id
-    let findSol: Solution | undefined = this.currentPedido?.solutions?.find((sol: Solution) => sol.idFileToSolution === file.id?.toString())
+    console.log("FILE: ", this.currentFile)
+    console.log("SOLUTIONS: ", this.currentPedido?.solutions)
+    let findSol: Solution | undefined = this.currentPedido?.solutions?.find((sol: Solution) => sol.idFileToSolution === this.currentFile?.id?.toString())
+    console.log("FIND SOL: ", findSol)
     return findSol && findSol.hasReplacement
   };
 

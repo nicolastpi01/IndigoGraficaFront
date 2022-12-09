@@ -1,5 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Color } from 'src/app/interface/color';
@@ -12,7 +12,7 @@ import { fallback } from 'src/app/utils/const/constantes';
 import { colorearEstado } from 'src/app/utils/pedidos-component-utils';
 import { formatDistance } from 'date-fns';
 import { HttpResponse } from '@angular/common/http';
-import { catchError, filter, of, pipe } from 'rxjs';
+import { catchError, filter, Observable, Observer, of, pipe } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { PerfilInfo } from 'src/app/components/chat/chat.component';
@@ -62,6 +62,7 @@ export class CarritoComponent implements OnInit {
   fallback: string = fallback;
   time = formatDistance(new Date(), new Date());
   AccionText: String = "Editar"
+  validateForm!: FormGroup;
 
   solutionFeedback: SolutionFeedback = {
     "color": "red",
@@ -77,12 +78,19 @@ export class CarritoComponent implements OnInit {
   currentRol: string = 'CLIENTE'
   IdsSolutionsDisapproved: (string | undefined)[] = []
 
+
+  motivoRechazo: string = 'ffff Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracEsto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 carac'
+
   contentNotifySolutionText = "Va a enviar la revisión, las Soluciones 'desaprobadas' seran revisadas por el Editor quien corregira las mismas a la brevedad, las soluciones 'aprobadas'desapareceran de la vista, esta seguro de mandar la revisión ?"
   
   constructor(private _router: Router, private service: PedidoService, 
     private fb: FormBuilder, private modal: NzModalService, private msg: NzMessageService, private tokenService: TokenStorageService) { }
 
   ngOnInit(): void {
+    this.validateForm = this.fb.group({
+      motivoRechazo: [null, [Validators.maxLength(300) ] ],
+      remember: [true]
+    })
     this.tabs = [
       {
         name: 'Info',
@@ -710,6 +718,10 @@ export class CarritoComponent implements OnInit {
   showRevisarModal = (solution: Solution) :void => {
     console.log("PEDIDO EN TAB SOLUTIONS: ", this.currentPedido)
     this.currentSolution = solution
+    this.validateForm.patchValue({
+      motivoRechazo: solution.rejectionReason,
+      remember: true
+    })
     this.solutionFeedback = this.determineSolutionFeedback(solution)
     let pedidoFind: Pedido | undefined = this.pedidos.find((pedido: Pedido) => 
     pedido.files?.some((file: FileDB) => file.id?.toString() === solution.idFileToSolution))
@@ -732,33 +744,42 @@ export class CarritoComponent implements OnInit {
   }
 
   sendApproveSolution = (approved: boolean) :void => {
-    console.log("CURRENT PEDIDO: ", this.currentPedido)
-    let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
-    pedidoCp = {
-      ...pedidoCp, solutions: pedidoCp.solutions?.map((sol: Solution) => {
-        if(this.currentSolution && (sol.id === this.currentSolution.id)) {
-          return {
-            ...sol, approved: approved
+    //console.log("CURRENT PEDIDO: ", this.currentPedido)
+    // Si no esta aprobado y el textArea esta vacio
+    let form = this.validateForm
+    if(!approved && (form.value.motivoRechazo === null || form.value.motivoRechazo === '') ) {
+      console.log("EL TEXT AREA ESTA VACIO")
+      this.msg.error('Debe ingresar un motivo de rechazo indicando porque se desaprobo la Solución brindada')
+    }
+    else {
+      let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
+      pedidoCp = {
+        ...pedidoCp, solutions: pedidoCp.solutions?.map((sol: Solution) => {
+          if(this.currentSolution && (sol.id === this.currentSolution.id)) {
+            return {
+              ...sol, approved: approved,
+              hasReplacement: false, // Lo marco como False, si el Pedido fue aprobado no pasa nada, si fue desaprobado si importa esto
+              rejectionReason: form.value.motivoRechazo
+            }
           }
-        }
-        else {
-          return sol
-        }
-      })
-    };
-    let token :string = this.tokenService.getToken()
-    this.service.agreeToTheSolution(pedidoCp, approved, token).pipe(
-      catchError(er => {
-        this.msg.error(er.error.message);
-        return of(er)
-      })
-    ).
+          else {
+            return sol
+          }
+        })
+      };
+      let token :string = this.tokenService.getToken()
+      this.service.agreeToTheSolution(pedidoCp, approved, token).pipe(
+        catchError(er => {
+          this.msg.error(er.error.message);
+          return of(er)
+        })
+      ).
       pipe(filter(e => e instanceof HttpResponse))
       .subscribe(async (e: any) => {
         this.msg.success(`Solución ${approved ? 'aprobada' : 'desaprobada'} satisfactoriamente!`)
-        console.log("IDS ANTES: ", this.IdsSolutionsDisapproved)
+        //console.log("IDS ANTES: ", this.IdsSolutionsDisapproved)
         this.IdsSolutionsDisapproved = this.IdsSolutionsDisapproved.filter((id: string  | undefined) => id !== this.currentSolution?.id)
-        console.log("IDS DESPUES: ", this.IdsSolutionsDisapproved)
+        //console.log("IDS DESPUES: ", this.IdsSolutionsDisapproved)
         if(this.currentSolution) {
           this.currentSolution = {
             ...this.currentSolution, approved: approved
@@ -781,8 +802,8 @@ export class CarritoComponent implements OnInit {
             return pedido
           }
         });
-        
       });
+    }
   };
 
   onClickTab = (tab: { name: string, icon: string, title: string }, pedido: Pedido) => {
