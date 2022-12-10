@@ -716,11 +716,11 @@ export class CarritoComponent implements OnInit {
   };
   
   showRevisarModal = (solution: Solution) :void => {
-    console.log("PEDIDO EN TAB SOLUTIONS: ", this.currentPedido)
+    console.log("sOL: ", solution)
     this.currentSolution = solution
     this.validateForm.patchValue({
       motivoRechazo: solution.rejectionReason,
-      remember: true
+      //remember: true
     })
     this.solutionFeedback = this.determineSolutionFeedback(solution)
     let pedidoFind: Pedido | undefined = this.pedidos.find((pedido: Pedido) => 
@@ -752,6 +752,7 @@ export class CarritoComponent implements OnInit {
       this.msg.error('Debe ingresar un motivo de rechazo indicando porque se desaprobo la Solución brindada')
     }
     else {
+      console.log("CURRENT PEDIDO: ", this.currentPedido)
       let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
       pedidoCp = {
         ...pedidoCp, solutions: pedidoCp.solutions?.map((sol: Solution) => {
@@ -782,7 +783,7 @@ export class CarritoComponent implements OnInit {
         //console.log("IDS DESPUES: ", this.IdsSolutionsDisapproved)
         if(this.currentSolution) {
           this.currentSolution = {
-            ...this.currentSolution, approved: approved
+            ...this.currentSolution, approved: approved, rejectionReason: form.value.motivoRechazo
           }
         };
         this.currentPedido = {
@@ -863,6 +864,10 @@ export class CarritoComponent implements OnInit {
         this.msg.error(err.error.message)
       }
     });
+  };
+
+  getVisibleSolutions = (solution: Solution[]) :Solution[] => {
+    return solution.filter((sol: Solution) => sol.visible)
   };
 
   existsSolutionsWithoutFeedback = () :boolean => {

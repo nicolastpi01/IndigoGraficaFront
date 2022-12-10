@@ -112,7 +112,11 @@ export class PedidoService {
   };
 
   resolver(id: string | undefined) :Observable<any> {
-    return this.http.put(`${this.baseUrl}/pedidos/resolver/` + id, httpOptions);
+    return this.http.put(`${this.baseUrl}/pedidos/resolver/` + id, httpOptions)
+  };
+
+  resolverRejected(id: string | undefined) :Observable<any> {
+    return this.http.put(`${this.baseUrl}/pedidos/resolver/rechazados/` + id, httpOptions)
   };
 
   sendRevision(id: string | undefined) :Observable<any> {

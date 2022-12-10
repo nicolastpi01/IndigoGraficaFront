@@ -63,8 +63,9 @@ export class ResolverComponent implements OnInit {
   tabs: Array<{ name: string, icon: string, title: string }> = [];
   time = formatDistance(new Date(), new Date());
   now = new Date().toLocaleDateString() + ' - ' + new Date().toLocaleTimeString()
-  ChatNoResultMessage: string = showNoResultTextChatFor('Cliente');
-  currentRol :string = 'EDITOR';
+  ChatNoResultMessage: string = showNoResultTextChatFor('Cliente')
+  currentRol :string = 'EDITOR'
+  resolverLoading: boolean = false
 
   // 300 caracteres!
   textoSinFormato: string = 'Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracEsto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 carac' 
@@ -533,7 +534,8 @@ export class ResolverComponent implements OnInit {
       let newSolution: Solution = {
         idFileToSolution: this.currentFile?.id,
         file: newFileDB,
-        hasReplacement: this.isRejected() // Si es un Pedido rechazado entonces ahora tiene reemplazo, sino queda en False 
+        hasReplacement: this.isRejected(), // Si es un Pedido rechazado entonces ahora tiene reemplazo, sino queda en False
+        rejectionReason: this.currentPedido?.solutions?.find((sol: Solution) => sol.idFileToSolution === this.currentFile?.id?.toString())?.rejectionReason
       };
       // No setear el current Solution mandar una copia o algo asi
       if(this.currentPedido && this.currentPedido.files && this.currentPedido.files.length > 0) {
@@ -550,7 +552,7 @@ export class ResolverComponent implements OnInit {
           };
       }
       
-      console.log("CURRENT PEDIDO: ", this.currentPedido)
+      //console.log("CURRENT PEDIDO: ", this.currentPedido)
       this.service.update(this.currentPedido).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe(async (e: any) => { // revisar el any
@@ -561,9 +563,9 @@ export class ResolverComponent implements OnInit {
                 ...file, url: this.generateUrl(file)  //this.blodToUrl(file) -> Mejorar este metodo, por ahora lo dejo asi
               }
             })};
-            console.log("El pedido: ", this.currentPedido)
+            //console.log("El pedido: ", this.currentPedido)
 
-            console.log("Current Sol: ", this.currentSolution)
+            //console.log("Current Sol: ", this.currentSolution)
             //this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
             //  return {
             //    ...file, url: await getBase64(file)  
@@ -594,21 +596,48 @@ export class ResolverComponent implements OnInit {
   };
 
   resolver = () => {
-   this.service.resolver(this.currentPedido?.id).subscribe({
-    next: ((pedido: any) => {
-      this.msg.success(pedido.message)
-      this.service.toggle()
-      setTimeout(() => {
-        this.msg.info("redireccionando...");
-      }, 500);
-      setTimeout(() => {
-        this._router.navigateByUrl("/revision") // redireccionar a otro lado vista...
-      }, 2500);
-    }),
-    error: ((er: any) => {
-      this.msg.error(er.error.message);
-    })
-   }) 
+    this.resolverLoading = true;
+    //let callService: (id: string | undefined) => Observable<any> = this.service.resolver
+    if(this.isRejected()) {
+      //console.log("MANDO A RESOLVER UN PEDIDO CON TODAS SUS SOLUCIONES DESAPROBADAS!!!")
+      //callService = this.service.resolverRejected
+      this.service.resolverRejected(this.currentPedido?.id).subscribe({
+        next: ((pedido: any) => {
+          this.msg.success(pedido.message)
+          this.service.toggle()
+          setTimeout(() => {
+            this.msg.info("redireccionando...");
+          }, 500);
+          setTimeout(() => {
+            this._router.navigateByUrl("/revision") // redireccionar a otro lado vista...
+            this.resolverLoading = false
+          }, 2500);
+        }),
+        error: ((er: any) => {
+          this.msg.error(er.error.message)
+          this.resolverLoading = false
+        })
+      })
+    }
+    else {
+      this.service.resolver(this.currentPedido?.id).subscribe({
+        next: ((pedido: any) => {
+          this.msg.success(pedido.message)
+          this.service.toggle()
+          setTimeout(() => {
+            this.msg.info("redireccionando...");
+          }, 500);
+          setTimeout(() => {
+            this._router.navigateByUrl("/revision") // redireccionar a otro lado vista...
+            this.resolverLoading = false
+          }, 2500);
+        }),
+        error: ((er: any) => {
+          this.msg.error(er.error.message)
+          this.resolverLoading = false
+        })
+      })
+    }
   };
 
   hasFiles = () => {
@@ -684,6 +713,8 @@ export class ResolverComponent implements OnInit {
   };
 
   onClickShowRejectionReason = () => {
+    console.log("CURRENT FILE: ", this.currentFile)
+    console.log("CURRENT SOLUTIONS: ", this.currentPedido?.solutions)
     // Levanta el Modal que muestra la información de rechazo de la Solución
     this.modal.info({
       nzTitle: `<b style="color: blue;">Motivo rechazo: </b>`,
@@ -699,10 +730,10 @@ export class ResolverComponent implements OnInit {
   // retorna true cuando una Sol. tiene reemplazo, sino false o undefined
   hasReplacement = (file: FileDB) :boolean | undefined => {
     // solution.idFileToSolution !== this.currentFile?.id
-    console.log("FILE: ", this.currentFile)
-    console.log("SOLUTIONS: ", this.currentPedido?.solutions)
+    //console.log("FILE: ", this.currentFile)
+    //console.log("SOLUTIONS: ", this.currentPedido?.solutions)
     let findSol: Solution | undefined = this.currentPedido?.solutions?.find((sol: Solution) => sol.idFileToSolution === this.currentFile?.id?.toString())
-    console.log("FIND SOL: ", findSol)
+    //console.log("FIND SOL: ", findSol)
     return findSol && findSol.hasReplacement
   };
 
@@ -715,8 +746,9 @@ export class ResolverComponent implements OnInit {
       },
       text: 'Reemplace todas las soluciones que necesiten arreglo, y envie la Revisión nuevamente!'
     }
+    // Cuando cada Solución 'Desaprobada' tiene su nuevo reemplazo o está aprobada!
     if(this.currentPedido && this.currentPedido.solutions && 
-      this.currentPedido.solutions.length > 0 && this.currentPedido.solutions.every((sol: Solution) => sol.hasReplacement)) { // Cuando cada Solución 'Desaprobada' tiene su nuevo reemplazo!
+      this.currentPedido.solutions.length > 0 && this.currentPedido.solutions.every((sol: Solution) => sol.hasReplacement || sol.approved)) { 
       return {
         ...ret,
         style: {
@@ -1015,7 +1047,7 @@ export class ResolverComponent implements OnInit {
   };
 
   onClickComment = (event: MouseEvent, item: FileDB) => {
-    console.log("LLAME ONCLICK COMMENT")
+    //console.log("LLAME ONCLICK COMMENT")
     event.preventDefault;
     this.currentFile = item; 
     this.isVisibleModalComment = true;

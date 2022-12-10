@@ -394,8 +394,15 @@
           </button>
         </div>
         <div nz-col>
-          <button nz-button disabled="{{currentPedido && !currentPedido.hasPayment}}" nzType="primary" style="height: 50px; width: 150px;" (click)="resolver()">
-            <p class="resolverText">Resolver</p>
+          <button 
+            nz-button 
+            disabled="{{currentPedido && !currentPedido.hasPayment}}" 
+            nzType="primary" 
+            style="height: 50px; width: 150px;" 
+            (click)="resolver()"
+            [nzLoading]="resolverLoading"
+          >
+            <p class="resolverText">{{resolverLoading ? '' : 'Resolver'}}</p>
           </button>
         </div>
         <div nz-col *ngIf="!isRejected()">

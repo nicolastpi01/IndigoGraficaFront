@@ -146,8 +146,8 @@
                         
                             <p style="text-align: center;"><b>Imágenes con soluciones</b></p>
                               <nz-list nzGrid>
-                                <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="pedido.solutions">
-                                  <div nz-col *ngFor="let solution of pedido.solutions">
+                                <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="pedido.solutions && getVisibleSolutions(pedido.solutions)">
+                                  <div nz-col *ngFor="let solution of getVisibleSolutions(pedido.solutions)">
                                     <nz-list-item>
                                       <nz-card [style]="cardStyle(solution)" [nzCover]="coverTemplate" [nzActions]="[actions]">
                                         <nz-card-meta

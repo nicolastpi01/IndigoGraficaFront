@@ -6,6 +6,7 @@ export interface Solution {
     idFileToSolution: string | undefined
     file: FileDB
     approved?: boolean,
+    visible?: boolean,
     hasReplacement?: boolean,
     rejectionReason?: string
 }
