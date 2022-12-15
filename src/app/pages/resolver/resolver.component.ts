@@ -861,6 +861,10 @@ export class ResolverComponent implements OnInit {
     return this.currentPedido && this.currentPedido.sendBudgetMail
   }
 
+  uploadBudget = () :boolean => {
+    return this.currentPedido !== undefined && this.currentPedido.presupuesto !== undefined && this.currentPedido.presupuesto.length !== 0
+  }
+
   async handleChangeBudget({ file, fileList }: NzUploadChangeParam): Promise<void> {
     // Se puede subir un Presupuesto siempre y cuando no se haya enviado el Presupuesto al Cliente
     // además, el efecto es que se 'pisa' el anterior presupuesto. Hay que notificar al Usuario de esto

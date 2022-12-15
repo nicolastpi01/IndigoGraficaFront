@@ -175,7 +175,7 @@
         >
           <ng-container *nzModalContent>
             <!--p *ngIf="currentSolution || showFallback || !tieneDimension()" style="text-align: center;"><b>Solución</b></p-->
-            <p style="text-align: center;"><b>{{ budgetTitle() ? 'Ya enviaste el presupuesto!' : 'Suba el presupuesto!' }}</b></p>
+            <p style="text-align: center;"><b>{{budgetTitle() ? 'Ya enviaste el presupuesto!' : ( uploadBudget()? 'Ya subiste el presupuesto!' : 'Suba el presupuesto!') }}</b></p>
             <p style="text-align: center;">{{ budgetTitle() ? '' : "Una vez subido el presupuesto puede enviarlo al cliente presionado el botón 'Enviar presupuesto' " }}</p>
             <!--div nz-col>
                 <nz-upload
@@ -200,7 +200,7 @@
                   </nz-card-meta-->
                   <ng-template #coverTemplate>
                     <ng-template [ngIf]="currentBudget && currentBudget.file && currentBudget.file.url" [ngIfElse]="Fallback">
-                      <img nz-image [nzFallback]="fallback" alt="" [nzSrc]="currentBudget.file.url" width="400" height="300" >
+                      <img nz-image [nzFallback]="fallback" alt="" nzSrc="assets/pdf.jpg" width="400" height="300" >
                     </ng-template>
                     <ng-template #Fallback>
                       <img nz-image *ngIf="showFallbackBudget" [nzFallback]="fallback" alt="" nzSrc="error"  width='400px' height='300px' >
