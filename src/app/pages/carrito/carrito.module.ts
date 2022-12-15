@@ -28,6 +28,7 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { ChatModule } from "src/app/components/chat/chat.module";
 import { ComentariosModule } from "src/app/components/comentarios/comentarios.module";
 import { NoElementsModule } from "src/app/components/noElements/noelements.module";
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 @NgModule({
     imports: [
@@ -58,7 +59,8 @@ import { NoElementsModule } from "src/app/components/noElements/noelements.modul
       NzTabsModule,
       ChatModule,
       ComentariosModule,
-      NoElementsModule      
+      NoElementsModule,
+      NzToolTipModule      
     ],
     declarations: [CarritoComponent],
     exports: [CarritoComponent]

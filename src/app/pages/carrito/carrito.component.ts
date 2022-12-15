@@ -192,10 +192,12 @@ export class CarritoComponent implements OnInit {
   };
 
   onClickShowFileComments = (event: MouseEvent, item: FileDB, pedido: Pedido) => {
-    event.preventDefault;
-    this.currentFile = item;
-    this.currentPedido = pedido; 
-    this.isVisibleModalFileComments = true;
+    event.preventDefault
+    this.currentFile = item
+    this.currentPedido = pedido
+    if(item.comentarios.length > 0) {
+      this.isVisibleModalFileComments = true
+    }
   }
 
   onClickComment = (comentario: Comentario) => {

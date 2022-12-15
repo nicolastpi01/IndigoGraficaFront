@@ -121,7 +121,13 @@
                                                     </button>
                                                   </div>
                                                   <div nz-col>
-                                                    <button nz-button type="default" (click)="onClickShowFileComments($event, file, pedido)">
+                                                    <button 
+                                                      nz-button 
+                                                      type="default"
+                                                      nz-tooltip 
+                                                      [nzTooltipTitle]=" file.comentarios.length == 0 ? 'No cuenta con comentarios' : '' " 
+                                                      (click)="onClickShowFileComments($event, file, pedido)"
+                                                    >
                                                       <p style="font-size: 10px;">Comentarios</p>
                                                     </button>
                                                   </div>

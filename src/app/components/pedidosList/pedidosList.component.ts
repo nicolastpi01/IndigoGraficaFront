@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { Router } from "@angular/router";
 import { NzMessageService } from "ng-zorro-antd/message";
-import { NzModalService } from "ng-zorro-antd/modal";
 import { Comentario } from "src/app/interface/comentario";
 import { Estado } from "src/app/interface/estado";
 import { FileDB } from "src/app/interface/fileDB";
@@ -44,7 +43,7 @@ import { colorearEstado } from "src/app/utils/pedidos-component-utils";
 
     // No tocar el constructor
     constructor(private service: PedidoService, private msg: NzMessageService, private _router: Router, 
-      private tokenService: TokenStorageService, private modal: NzModalService) {}
+      private tokenService: TokenStorageService) {}
 
     showTotal = (total: number) => {
       if(total > 0) return `#Total: ${total}`
@@ -96,14 +95,6 @@ import { colorearEstado } from "src/app/utils/pedidos-component-utils";
           pedido: this.currentPedido, 
           file: this.currentFile
         })
-      }
-      else {
-        //let content: string = !this.isEditor() && this.isPendingAtention() ? "Puede agregar imágenes al Pedido si ingresa a 'Editar' la misma desde el Carrito" : '' 
-        this.modal.info({
-          nzTitle: 'Este Pedido no cuenta con imágenes de referencia',
-          nzContent: '<p>&nbsp;&nbsp;&nbsp;</p>',
-          nzOnOk: () => {}
-        });
       }
     };
 

@@ -26,6 +26,7 @@ import { NzCommentModule } from 'ng-zorro-antd/comment';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NoElementsModule } from "src/app/components/noElements/noelements.module";
 import { PedidosListModule } from "src/app/components/pedidosList/pedidosList.module";
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 @NgModule({
     imports: [
@@ -54,7 +55,8 @@ import { PedidosListModule } from "src/app/components/pedidosList/pedidosList.mo
       NzCommentModule,
       NzTypographyModule,
       NoElementsModule,
-      PedidosListModule
+      PedidosListModule,
+      NzToolTipModule
     ],
     declarations: [PedidosComponent],
     exports: [PedidosComponent]

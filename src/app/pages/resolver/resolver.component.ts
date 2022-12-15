@@ -1052,9 +1052,11 @@ export class ResolverComponent implements OnInit {
 
   onClickComment = (event: MouseEvent, item: FileDB) => {
     //console.log("LLAME ONCLICK COMMENT")
-    event.preventDefault;
-    this.currentFile = item; 
-    this.isVisibleModalComment = true;
+    if(item.comentarios.length > 0) {
+      event.preventDefault;
+      this.currentFile = item; 
+      this.isVisibleModalComment = true;
+    }
   };
 
   onClickDeleteSolution = (event: MouseEvent) => {
