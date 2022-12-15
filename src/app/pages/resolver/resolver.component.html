@@ -462,7 +462,8 @@
     <button 
       *ngIf="!isRejected()" 
       nz-button nzType="primary" 
-      [title]="messageTitle()" 
+      nz-tooltip 
+      [nzTooltipTitle]=" messageTitle() " 
       (click)="onClickSendBudgetButton()">Enviar presupuesto
       <span *ngIf="hasBeenSendBudget() " nz-icon nzType="check" nzTheme="outline"></span>
     </button>
