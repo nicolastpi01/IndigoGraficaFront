@@ -47,7 +47,7 @@
               <div nz-col >
                 <p class="subTitle">Estado :</p>
                 <ng-template [ngIf]="currentPedido.state" [ngIfElse]="WithoutState">
-                  <p><nz-tag [nzColor]="colorear(currentPedido.state)">{{currentPedido.state}}</nz-tag></p>
+                  <p><nz-tag [nzColor]="colorear(currentPedido.state)">{{currentPedido.state.label}}</nz-tag></p>
                 </ng-template>
                 <ng-template #WithoutState>
                   <p>-</p>
