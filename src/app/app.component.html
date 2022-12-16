@@ -50,37 +50,33 @@
                [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
             ></i>
         </span>
-        <!-- login -->
-        <button class="button-normal" (click)="showModalLogin()" *ngIf="!isLoggedIn" nz-button nzType="default">Ingresar</button>
-        <!-- logout -->
-        <button class="button-normal" (click)="logout()" *ngIf="isLoggedIn" nz-button nzType="default">Cerrar sesión</button>
-        <span *ngIf="isLoggedIn">
+        <span style="padding-top: 5px;" *ngIf="isLoggedIn">
           <i 
             nz-icon 
             nzType="user" 
             nzTheme="outline"
             [style]="userIconStyle()" 
-          ><p [style]="userDescriptionStyle()">{{ buildUsername() }}</p>
+            ><p style="float: right;">{{ buildUsername() }}</p>
           </i>
         </span>
-        <!-- signon -->
-        <button class="button-normal" (click)="showModalRegistrar()" *ngIf="!isLoggedIn" nz-button nzType="primary">Creá tu cuenta</button>
-        <span (click)="onClickCart()" *ngIf="isLoggedIn">
-          <i 
+        <div style="display: flex;">
+          <span (click)="onClickCart()" *ngIf="isLoggedIn">
+            <i 
             class="cart-normal"
             nz-icon
             nzType="shopping-cart" 
             nzTheme="outline"
-          ><p class="counter">{{ amountToShowInCart() }}</p></i>
-        </span> 
-        <!--span>
-          <strong style="font-size: medium; float: right;"><i
-            class="user" 
-            nz-icon 
-            nzType="user" 
-            nzTheme="outline">
-          </i>Nicolás García</strong>   
-        </span-->
+            ><p class="counter">{{ amountToShowInCart() }}</p></i>
+          </span> 
+          <!-- logout -->
+          <button class="button-normal" (click)="logout()" *ngIf="isLoggedIn" nz-button nzType="default">Cerrar sesión</button>
+        </div>
+        <div style="float: right;" *ngIf="!isLoggedIn">
+          <!-- login -->
+          <button class="button-normal" (click)="showModalLogin()" nz-button nzType="default">Ingresar</button>
+          <!-- signon -->
+          <button class="button-normal" (click)="showModalRegistrar()" nz-button nzType="primary">Creá tu cuenta</button>
+        </div>
       </div>
     </nz-header>
     <nz-content>
