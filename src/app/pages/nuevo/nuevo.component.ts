@@ -49,11 +49,9 @@ export class NuevoComponent implements OnInit {
   pedidoId?: string
   isLoggedIn = false;
   currentUser: any;
-  //@ViewChild(CdkVirtualScrollViewport) viewport: CdkVirtualScrollViewport | undefined;
+
   @ViewChild('viewport', { read: ElementRef }) viewport!: ElementRef;
   @ViewChildren('inputComment', { read: ElementRef }) inputs!: QueryList<ElementRef>
-  //@ViewChild('someVar') el!: ElementRef;
-  //@ViewChild('dummyClick', { static: true }) dummyClickRef: ElementRef | undefined;
 
   constructor(private fb: FormBuilder, private service :PedidoService, private fileService: FileService, 
     private tipoService: TipoPedidoService, private colorService :ColorService, private _router: Router, 
