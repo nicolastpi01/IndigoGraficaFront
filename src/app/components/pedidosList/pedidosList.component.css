@@ -1,0 +1,12 @@
+
+.border {
+    border-color:rgb(13, 255, 0);
+    border-width: 1.5px;
+    border-style: solid;
+}
+
+.buttonGroup { 
+    display:flex; 
+    justify-content: flex-end; 
+    outline: 2px;
+}
