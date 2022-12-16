@@ -24,81 +24,49 @@
                               {{ tab.title }}
                           </ng-template>
                         </ng-template>
-                        <ng-template [ngIf]="tab.name === 'Info' " [ngIfElse]="FilesOrSolutions">
-                              <div nz-row nzJustify="center" [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
-                                <!--ng-template [ngIf]="pedido.id.lenght < 10 || pedido.expandedId" [ngIfElse]="WithoutExpandedId"-->
-                                  <div nz-col>
-                                    <p class="subTitle">Id :</p>
-                                    <p>{{ pedido.id ? pedido.id : "-" }}</p>
+                        <ng-template [ngIf]="tab.name === 'Solutions' || (currentTab && currentTab.tabName === 'Solutions' && currentTab.idPedido === pedido.id) " [ngIfElse]="FilesOrData">
+                          <p style="text-align: center;"><b>Imágenes con soluciones</b></p>
+                              <nz-list nzGrid>
+                                <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="pedido.solutions && getVisibleSolutions(pedido.solutions)">
+                                  <div nz-col *ngFor="let solution of getVisibleSolutions(pedido.solutions)">
+                                    <nz-list-item>
+                                      <nz-card [style]="cardStyle(solution)" [nzCover]="coverTemplate" [nzActions]="[actions]">
+                                        <nz-card-meta
+                                          [nzTitle]="solution.file.name"
+                                          nzDescription=""
+                                        ></nz-card-meta>
+                                        <ng-template #coverTemplate>
+                                          <img nz-image alt="no cargo imagen" *ngIf="solution && solution.file && solution.file.url" 
+                                            [nzSrc]="solution.file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
+                                        </ng-template>
+                                        <ng-template #actions>
+                                            <nz-tag class="tag" style="height: 40px; width:max-content;" [nzColor]="determineTagColor(solution)">
+                                              <p style="font-size: 15px; font-weight: bold;">{{determineTextColor(solution)}}</p>
+                                            </nz-tag>
+                                            <br>
+                                            <br>
+                                            <button nz-button type="primary" style="height: 40px; width: 100px;" (click)="showRevisarModal(solution)">
+                                              <p>Revisar</p>
+                                            </button>
+                                        </ng-template>
+                                      </nz-card>
+                                    </nz-list-item>
                                   </div>
-                                <!--/ng-template>
-                                <ng-template #WithoutExpandedId>
-                                  <div nz-col nzSpan="6">
-                                    <p class="subTitle">Id :</p>
-                                    <p
-                                        nz-typography
-                                        nzEllipsis
-                                        (nzExpandChange)="onExpandedChangedId(pedido)"
-                                        nzExpandable="true" 
-                                        [nzCopyTooltips]="null"
-                                        [attr.title]="pedido.id"
-                                        [nzEllipsisRows]="1"
-                                        [nzContent]="pedido.id"
-                                      >
-                                    </p>
-                                  </div>
-                                </ng-template-->
-                                <!--ng-template [ngIf]="pedido.nombre.lenght < 10 || pedido.expandedTitle" [ngIfElse]="WithoutExpanded"-->
-                                  <div nz-col>
-                                    <p class="subTitle">Título :</p>
-                                    <p>{{pedido.nombre ? pedido.nombre : '-' }}</p>
-                                  </div>
-                                <!--/ng-template>
-                                <ng-template #WithoutExpanded>
-                                  <div nz-col nzSpan="4">
-                                    <p class="subTitle">Título :</p>
-                                    <p
-                                        nz-typography
-                                        nzEllipsis
-                                        (nzExpandChange)="onExpandedChangeTitle(pedido)"
-                                        nzExpandable="true" 
-                                        [nzCopyTooltips]="null"
-                                        [attr.title]="pedido.nombre"
-                                        [nzEllipsisRows]="1"
-                                        [nzContent]="pedido.nombre"
-                                      >
-                                    </p>
-                                  </div>
-                                </ng-template-->
-                                <div nz-col>
-                                  <p class="subTitle">Tipo :</p>
-                                  <p>{{ pedido.tipo && pedido.tipo.nombre ? pedido.tipo.nombre : '-'}}</p>
                                 </div>
-                                <div nz-col >
-                                  <p class="subTitle">Fecha Entrega :</p>
-                                  <p>{{ pedido.fechaEntrega ? toLocalDateStringFunction(pedido.fechaEntrega) : '-'}}</p>
-                                </div>
-                                <div nz-col>
-                                  <p class="subTitle">Estado :</p>
-                                  <ng-template [ngIf]="pedido.state" [ngIfElse]="WithoutState">
-                                    <p><nz-tag [nzColor]="colorear(pedido.state)">{{pedido.state.label}}</nz-tag></p>
-                                  </ng-template>
-                                  <ng-template #WithoutState>
-                                    <p>-</p>
-                                  </ng-template>
-                                </div>
-                                <div nz-col>
-                                  <p class="subTitle">Encargado :</p>
-                                  <p>{{ pedido.encargado && pedido.encargado.nombre && pedido.encargado.apellido ? pedido.encargado.nombre + " " + pedido.encargado.apellido : '-'}}</p>
-                                </div>
-                                <div nz-col>
-                                  <p class="subTitle">Cantidad :</p>
-                                  <p>{{ pedido.cantidad ? pedido.cantidad : '-'}}</p>
-                                </div>
-                            </div>
+                              </nz-list>
+                              <div class="loadmore">
+                                <button
+                                  *ngIf="isPendingRevision(pedido)"
+                                  nz-button 
+                                  (click)="showNotifyRevision()" 
+                                  nzType="primary">Enviar revisión
+                                </button>
+                              </div>
+                              <br>
+                              <!--br-->
                         </ng-template>
-                        <ng-template #FilesOrSolutions>
-                          <ng-template [ngIf]="tab.name === 'Files' " [ngIfElse]="Solutions">
+                        <ng-template #FilesOrData>
+                          <ng-template [ngIf]="tab.name === 'Files' " [ngIfElse]="Data">
                             <ng-template [ngIf]="pedido.files && pedido.files.length" [ngIfElse]="NoFiles">
                               <p style="text-align: center;"><b>Archivos</b></p>
                                 <nz-list nzGrid>
@@ -148,48 +116,79 @@
                               
                           </ng-template>
                         </ng-template>
-                        <ng-template #Solutions>
-                        
-                            <p style="text-align: center;"><b>Imágenes con soluciones</b></p>
-                              <nz-list nzGrid>
-                                <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="pedido.solutions && getVisibleSolutions(pedido.solutions)">
-                                  <div nz-col *ngFor="let solution of getVisibleSolutions(pedido.solutions)">
-                                    <nz-list-item>
-                                      <nz-card [style]="cardStyle(solution)" [nzCover]="coverTemplate" [nzActions]="[actions]">
-                                        <nz-card-meta
-                                          [nzTitle]="solution.file.name"
-                                          nzDescription=""
-                                        ></nz-card-meta>
-                                        <ng-template #coverTemplate>
-                                          <img nz-image alt="no cargo imagen" *ngIf="solution && solution.file && solution.file.url" 
-                                            [nzSrc]="solution.file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
-                                        </ng-template>
-                                        <ng-template #actions>
-                                            <nz-tag class="tag" style="height: 40px; width:max-content;" [nzColor]="determineTagColor(solution)">
-                                              <p style="font-size: 15px; font-weight: bold;">{{determineTextColor(solution)}}</p>
-                                            </nz-tag>
-                                            <br>
-                                            <br>
-                                            <button nz-button type="primary" style="height: 40px; width: 100px;" (click)="showRevisarModal(solution)">
-                                              <p>Revisar</p>
-                                            </button>
-                                        </ng-template>
-                                      </nz-card>
-                                    </nz-list-item>
-                                  </div>
-                                </div>
-                              </nz-list>
-                              <div class="loadmore">
-                                <button
-                                  *ngIf="isPendingRevision(pedido)"
-                                  nz-button 
-                                  (click)="showNotifyRevision()" 
-                                  nzType="primary">Enviar revisión
-                                </button>
+                        <ng-template #Data>
+                          <div nz-row nzJustify="center" [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
+                            <!--ng-template [ngIf]="pedido.id.lenght < 10 || pedido.expandedId" [ngIfElse]="WithoutExpandedId"-->
+                              <div nz-col>
+                                <p class="subTitle">Id :</p>
+                                <p>{{ pedido.id ? pedido.id : "-" }}</p>
                               </div>
-                              <br>
-                              <!--br-->
-                          </ng-template> 
+                            <!--/ng-template>
+                            <ng-template #WithoutExpandedId>
+                              <div nz-col nzSpan="6">
+                                <p class="subTitle">Id :</p>
+                                <p
+                                    nz-typography
+                                    nzEllipsis
+                                    (nzExpandChange)="onExpandedChangedId(pedido)"
+                                    nzExpandable="true" 
+                                    [nzCopyTooltips]="null"
+                                    [attr.title]="pedido.id"
+                                    [nzEllipsisRows]="1"
+                                    [nzContent]="pedido.id"
+                                  >
+                                </p>
+                              </div>
+                            </ng-template-->
+                            <!--ng-template [ngIf]="pedido.nombre.lenght < 10 || pedido.expandedTitle" [ngIfElse]="WithoutExpanded"-->
+                              <div nz-col>
+                                <p class="subTitle">Título :</p>
+                                <p>{{pedido.nombre ? pedido.nombre : '-' }}</p>
+                              </div>
+                            <!--/ng-template>
+                            <ng-template #WithoutExpanded>
+                              <div nz-col nzSpan="4">
+                                <p class="subTitle">Título :</p>
+                                <p
+                                    nz-typography
+                                    nzEllipsis
+                                    (nzExpandChange)="onExpandedChangeTitle(pedido)"
+                                    nzExpandable="true" 
+                                    [nzCopyTooltips]="null"
+                                    [attr.title]="pedido.nombre"
+                                    [nzEllipsisRows]="1"
+                                    [nzContent]="pedido.nombre"
+                                  >
+                                </p>
+                              </div>
+                            </ng-template-->
+                            <div nz-col>
+                              <p class="subTitle">Tipo :</p>
+                              <p>{{ pedido.tipo && pedido.tipo.nombre ? pedido.tipo.nombre : '-'}}</p>
+                            </div>
+                            <div nz-col >
+                              <p class="subTitle">Fecha Entrega :</p>
+                              <p>{{ pedido.fechaEntrega ? toLocalDateStringFunction(pedido.fechaEntrega) : '-'}}</p>
+                            </div>
+                            <div nz-col>
+                              <p class="subTitle">Estado :</p>
+                              <ng-template [ngIf]="pedido.state" [ngIfElse]="WithoutState">
+                                <p><nz-tag [nzColor]="colorear(pedido.state)">{{pedido.state.label}}</nz-tag></p>
+                              </ng-template>
+                              <ng-template #WithoutState>
+                                <p>-</p>
+                              </ng-template>
+                            </div>
+                            <div nz-col>
+                              <p class="subTitle">Encargado :</p>
+                              <p>{{ pedido.encargado && pedido.encargado.nombre && pedido.encargado.apellido ? pedido.encargado.nombre + " " + pedido.encargado.apellido : '-'}}</p>
+                            </div>
+                            <div nz-col>
+                              <p class="subTitle">Cantidad :</p>
+                              <p>{{ pedido.cantidad ? pedido.cantidad : '-'}}</p>
+                            </div>
+                          </div>  
+                        </ng-template> 
                       </ng-template>
                         <div nz-row class="buttonGroup" [nzGutter]="16">
                           <div nz-col>

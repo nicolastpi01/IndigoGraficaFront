@@ -78,6 +78,11 @@ export class CarritoComponent implements OnInit {
   currentRol: string = 'CLIENTE'
   IdsSolutionsDisapproved: (string | undefined)[] = []
 
+  currentTab: undefined | {
+    tabName: string,
+    idPedido: string | undefined
+  };
+
 
   motivoRechazo: string = 'ffff Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracEsto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 carac'
 
@@ -724,10 +729,19 @@ export class CarritoComponent implements OnInit {
       motivoRechazo: solution.rejectionReason,
       //remember: true
     })
+    
+
     this.solutionFeedback = this.determineSolutionFeedback(solution)
     let pedidoFind: Pedido | undefined = this.pedidos.find((pedido: Pedido) => 
     pedido.files?.some((file: FileDB) => file.id?.toString() === solution.idFileToSolution))
-    if(pedidoFind) this.currentPedido = pedidoFind // sino se queda como esta el CurrentFile 
+    if(pedidoFind) {
+      let currentTab = {
+        tabName: "Solutions",
+        idPedido: pedidoFind.id
+      }
+      this.currentTab = currentTab
+      this.currentPedido = pedidoFind
+    }  
     this.isVisibleModalRevisarSolucion = true
   };
 
@@ -810,9 +824,21 @@ export class CarritoComponent implements OnInit {
   };
 
   onClickTab = (tab: { name: string, icon: string, title: string }, pedido: Pedido) => {
+    let currentTab = {
+      tabName: tab.name,
+      idPedido: pedido.id
+    };
+    
+    // Guardo como un Estado currentTab
+    // VOY A MOSTRAR LOS TABS DE OTRA FORMA:
+    // [ngIf]="tab.name === 'Solutions' || 
+      // (currentTab && currentTab.name === 'Solutions' && currentTab.idPedido === pedido.id) " ENTONCES MUESTRO EL TEMPLATE DE SOLUCIONES
+      // PROSIGO CON LOS CASOS PARA LOS OTROS TEMPLATES
+    console.log("CURRENT TAB: ", currentTab)
     if(tab.name === 'Solutions') {
-      console.log("ON CLICK TAB PEDIDO: ", pedido)
+      //console.log("ON CLICK TAB PEDIDO: ", pedido)
       this.currentPedido = pedido
+      //this.currentTab = currentTab // HACER ESTO CUANDO HACE CLICK EN 'REVISAR!'
     }
   };
 
