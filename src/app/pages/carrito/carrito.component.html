@@ -10,8 +10,6 @@
               <nz-list-header class="amount">
                 <p>#Total: {{total}}</p>
               </nz-list-header>
-              <!--div nz-row nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
-                <div nz-col nzSpan="24"-->
                   <nz-list-item *ngFor="let pedido of pedidos">
                     <div nz-col class="algo" style="border: 5px solid #FFFF00" nzSpan="24">
                     <nz-tabset>
@@ -26,50 +24,14 @@
                         </ng-template>
                         <ng-template [ngIf]="tab.name === 'Info' " [ngIfElse]="FilesOrSolutions">
                               <div nz-row nzJustify="center" [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
-                                <!--ng-template [ngIf]="pedido.id.lenght < 10 || pedido.expandedId" [ngIfElse]="WithoutExpandedId"-->
                                   <div nz-col>
                                     <p class="subTitle">Id :</p>
                                     <p>{{ pedido.id ? pedido.id : "-" }}</p>
                                   </div>
-                                <!--/ng-template>
-                                <ng-template #WithoutExpandedId>
-                                  <div nz-col nzSpan="6">
-                                    <p class="subTitle">Id :</p>
-                                    <p
-                                        nz-typography
-                                        nzEllipsis
-                                        (nzExpandChange)="onExpandedChangedId(pedido)"
-                                        nzExpandable="true" 
-                                        [nzCopyTooltips]="null"
-                                        [attr.title]="pedido.id"
-                                        [nzEllipsisRows]="1"
-                                        [nzContent]="pedido.id"
-                                      >
-                                    </p>
-                                  </div>
-                                </ng-template-->
-                                <!--ng-template [ngIf]="pedido.nombre.lenght < 10 || pedido.expandedTitle" [ngIfElse]="WithoutExpanded"-->
                                   <div nz-col>
                                     <p class="subTitle">Título :</p>
                                     <p>{{pedido.nombre ? pedido.nombre : '-' }}</p>
                                   </div>
-                                <!--/ng-template>
-                                <ng-template #WithoutExpanded>
-                                  <div nz-col nzSpan="4">
-                                    <p class="subTitle">Título :</p>
-                                    <p
-                                        nz-typography
-                                        nzEllipsis
-                                        (nzExpandChange)="onExpandedChangeTitle(pedido)"
-                                        nzExpandable="true" 
-                                        [nzCopyTooltips]="null"
-                                        [attr.title]="pedido.nombre"
-                                        [nzEllipsisRows]="1"
-                                        [nzContent]="pedido.nombre"
-                                      >
-                                    </p>
-                                  </div>
-                                </ng-template-->
                                 <div nz-col>
                                   <p class="subTitle">Tipo :</p>
                                   <p>{{ pedido.tipo && pedido.tipo.nombre ? pedido.tipo.nombre : '-'}}</p>
@@ -105,7 +67,7 @@
                                   <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="pedido.files">
                                     <div nz-col *ngFor="let file of pedido.files">
                                       <nz-list-item>
-                                        <nz-card [nzCover]="coverTemplate" [nzActions]="[actions]">
+                                        <nz-card [nzCover]="coverTemplate" [nzActions]="[chat, comentarios]">
                                             <nz-card-meta
                                                 [nzTitle]="file.name"
                                                 nzDescription=""
@@ -113,19 +75,23 @@
                                               <ng-template #coverTemplate>
                                                 <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
                                               </ng-template>
-                                              <ng-template  #actions>
-                                                <div nz-row [nzGutter]="[{ xs: 2, sm: 4, md: 6, lg: 8 }, 4]">
-                                                  <div nz-col>
+                                              <ng-template  #chat>
+                                                <!-- <div nz-row [nzGutter]="[{ xs: 2, sm: 4, md: 6, lg: 8 }, 4]"> -->
+                                                  <!-- <div nz-col> -->
                                                     <button nz-button type="default" (click)="onClickFileChat(file, pedido)">
                                                       <p style="font-size: 10px;">Chat</p>
                                                     </button>
-                                                  </div>
-                                                  <div nz-col>
+                                                  <!-- </div> -->
+                                                <!-- </div> -->
+                                              </ng-template>
+                                              <ng-template  #comentarios>
+                                                <!-- <div nz-row [nzGutter]="[{ xs: 2, sm: 4, md: 6, lg: 8 }, 4]"> -->
+                                                  <!-- <div nz-col> -->
                                                     <button nz-button type="default" (click)="onClickShowFileComments($event, file, pedido)">
                                                       <p style="font-size: 10px;">Comentarios</p>
                                                     </button>
-                                                  </div>
-                                                </div>
+                                                  <!-- </div> -->
+                                                <!-- </div> -->
                                               </ng-template>
                                         </nz-card>
                                       </nz-list-item>
