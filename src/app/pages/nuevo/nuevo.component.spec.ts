@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 let fixture : ComponentFixture<NuevoComponent>;
 let app : NuevoComponent;
@@ -36,6 +37,7 @@ describe('NuevoComponent', () => {
         { provide: PedidoService },
         { provide: NzMessageService },
         { provide: Overlay },
+        { provide: NzModalService },
     ]
     }).compileComponents()
     fixture = TestBed.createComponent(NuevoComponent)
