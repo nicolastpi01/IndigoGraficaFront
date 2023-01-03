@@ -344,7 +344,8 @@ export class CarritoComponent implements OnInit {
         let response: Interaccion = {
           texto: comment,
           rol: 'USUARIO',
-          key: commentCp.interacciones.length 
+          key: commentCp.interacciones.length,
+          creationDate: new Date() 
         };
         commentCp = {
           ...commentCp, interacciones: [...commentCp.interacciones, response] 
@@ -412,7 +413,8 @@ export class CarritoComponent implements OnInit {
         let response: Interaccion = {
           texto: userComment,
           rol: 'USUARIO',
-          key: fileCp.interacciones.length
+          key: fileCp.interacciones.length,
+          creationDate: new Date()
         }
         fileCp.interacciones = [
           ...fileCp.interacciones, response
@@ -525,7 +527,8 @@ export class CarritoComponent implements OnInit {
         let response: Interaccion = {
           texto: userComment,
           rol: 'USUARIO',
-          key: pedidoCp.interacciones.length
+          key: pedidoCp.interacciones.length,
+          creationDate: new Date()
         };
         pedidoCp.interacciones = [ // Mando al server la copia del CurrentPedido
           ...pedidoCp.interacciones,

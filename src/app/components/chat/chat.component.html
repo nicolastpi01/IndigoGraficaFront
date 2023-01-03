@@ -17,7 +17,7 @@
         <nz-list class="list" *ngIf="elem && elem.interacciones">
           <nz-list-empty [nzNoResult]="noResultText" *ngIf="elem.interacciones.length == 0"></nz-list-empty>
           <nz-list-item [style]="itemListStyle(interaccion, elem)" *cdkVirtualFor="let interaccion of elem.interacciones">
-            <nz-comment [nzAuthor]="interaccion.rol" [nzDatetime]="time">
+            <nz-comment [nzAuthor]="interaccion.rol" [nzDatetime]="toFullDate(interaccion.creationDate)">
               <nz-avatar
                 nz-comment-avatar
                 [nzIcon]="determineIcon(interaccion)"
@@ -43,7 +43,7 @@
       </div>
       <div nz-col>
         <p style="text-align: center;"><b>{{perfil?.title}}</b></p>
-        <nz-comment style="min-width: 25vw;" [nzAuthor]="perfil?.label" [nzDatetime]="time">
+        <nz-comment style="min-width: 25vw;" [nzAuthor]="perfil?.label">
           <nz-avatar nz-comment-avatar [nzIcon]="perfil?.icon" [style]="perfil?.hexColor"></nz-avatar>
           <nz-comment-content>
             <nz-form-item>

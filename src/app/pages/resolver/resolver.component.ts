@@ -260,7 +260,8 @@ export class ResolverComponent implements OnInit {
       let response: Interaccion = {
         texto: textValue,
         rol: 'EDITOR',
-        key: this.currentComment.interacciones.length 
+        key: this.currentComment.interacciones.length,
+        creationDate: new Date() 
       };
       this.currentComment = {
         ...this.currentComment, respondido: true
@@ -350,7 +351,8 @@ export class ResolverComponent implements OnInit {
         let response: Interaccion = {
           texto: editorComment,
           rol: 'EDITOR',
-          key: fileCp.interacciones.length
+          key: fileCp.interacciones.length,
+          creationDate: new Date()
         };
         fileCp.interacciones = [ 
           ...fileCp.interacciones,
@@ -443,7 +445,8 @@ export class ResolverComponent implements OnInit {
         let response: Interaccion = {
           texto: userComment,
           rol: 'EDITOR',
-          key: pedidoCp.interacciones.length
+          key: pedidoCp.interacciones.length,
+          creationDate: new Date()
         };
         pedidoCp.interacciones = [ 
           ...pedidoCp.interacciones,

@@ -575,7 +575,8 @@ export class NuevoComponent implements OnInit {
             { 
               texto: '',
               rol: 'USUARIO', // Temporal
-              key: 1
+              key: 1,
+              creationDate: new Date()
             }
           ],
           numero: this.currentFile.comentarios.length === 0 ? 1 : Math.max.apply(null, this.currentFile.comentarios.map((comentario: Comentario) => comentario.numero)) + 1,

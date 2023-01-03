@@ -26,5 +26,6 @@ export interface Comentario {
       id?: string,
       texto: string,
       rol: string,
-      key?: number
+      key?: number,
+      creationDate?: Date | string,
   }

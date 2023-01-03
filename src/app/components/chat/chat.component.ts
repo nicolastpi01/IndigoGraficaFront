@@ -3,7 +3,7 @@ import { formatDistance } from 'date-fns';
 import { Comentario, Interaccion } from "src/app/interface/comentario";
 import { FileDB } from "src/app/interface/fileDB";
 import { Pedido } from "src/app/interface/pedido";
-import { avatarStyle, determineIcon } from "src/app/utils/functions/functions";
+import { avatarStyle, determineIcon, toFullDate } from "src/app/utils/functions/functions";
 
 export interface PerfilInfo {
   title: string,
@@ -21,6 +21,7 @@ export interface PerfilInfo {
     time = formatDistance(new Date(), new Date());
     @Input('text') userCommentValue: string | undefined;
     @Input('rejected') rejected: boolean = false;
+    toFullDate : (date: Date | any) => string = toFullDate;
     determineIcon: (interaccion: Interaccion) => "user" | "highlight" = determineIcon;
     avatarStyle: (interaccion: Interaccion) => { 'background-color': string; } = avatarStyle;
     @Input() elem: Pedido | Comentario | FileDB | undefined; 
