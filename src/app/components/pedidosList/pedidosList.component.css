@@ -1,12 +1,23 @@
 
 .border {
-    border-color:rgb(13, 255, 0);
-    border-width: 1.5px;
-    border-style: solid;
+border-color:rgb(13, 255, 0);
+border-width: 1.5px;
+border-style: solid;
 }
 
 .buttonGroup { 
-    display:flex; 
-    justify-content: flex-end; 
-    outline: 2px;
+display:flex; 
+justify-content: flex-end; 
+outline: 2px;
+}
+
+.amount {
+color: red;
+font-weight: bold;
+float: right;
+}
+
+.loadmore {
+    text-align: center; 
+    height: 32px;
 }

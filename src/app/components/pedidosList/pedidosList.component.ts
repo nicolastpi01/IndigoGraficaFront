@@ -18,11 +18,17 @@ import { colorearEstado } from "src/app/utils/pedidos-component-utils";
   })
   export class PedidosListComponent {
 
-    allData: Array<any> = []
     isLoggedIn: boolean = false
+    index: number = 0
+    index2: number = 2
+    count: number = 2
 
     @Input() pedidos: Array<any> = []
+    @Input() allData: Array<any> = []
+
     @Input() total: number = 0
+    //@Output('updateTotal') emitUpdateTotal = new EventEmitter<number>()
+
     @Input() loading: boolean = false
     @Input() roles: string[] = []
     @Input() onClickAction: ((pedido: Pedido) => void) | undefined
@@ -34,6 +40,7 @@ import { colorearEstado } from "src/app/utils/pedidos-component-utils";
     @Output('onClickWatch') emitFileOnClickWatch = new EventEmitter<FileDB>();
     @Output('onClickShowFiles') emitOnClickShowFiles = new EventEmitter<{pedido: Pedido, file: FileDB | undefined}>();
     @Output('onClickCancelModal') emitOnClickCancelModal = new EventEmitter<{pedido: Pedido | undefined, file: FileDB | undefined}>();
+    loadingMore: boolean = false;
 
     // IMPORTS
     toLocalDateStringFunction : (date: Date | string) => string = toLocalDateString
@@ -45,8 +52,8 @@ import { colorearEstado } from "src/app/utils/pedidos-component-utils";
     constructor(private service: PedidoService, private msg: NzMessageService, private _router: Router, 
       private tokenService: TokenStorageService) {}
 
-    showTotal = (total: number) => {
-      if(total > 0) return `#Total: ${total}`
+    showTotal = () => {
+      if(this.total > 0) return `#Total: ${this.total}`
       else return ''
     }
 
@@ -74,6 +81,7 @@ import { colorearEstado } from "src/app/utils/pedidos-component-utils";
       (this.currentPedido.state.value === 'pendAtencion')
     }
     */
+    
 
     onClickWatch = (file: any) => {
       this.currentFile = file;
@@ -118,6 +126,19 @@ import { colorearEstado } from "src/app/utils/pedidos-component-utils";
         pedido: this.currentPedido,
         file: this.currentFile
       })
+    };
+
+    onLoadMore = () => {
+      this.loadingMore = true
+      let index = this.index + this.count
+      let index2 = this.index2 + this.count
+      
+      let slice = this.allData.slice(index, index2)
+      this.pedidos = this.pedidos.concat(slice)
+  
+      this.index2 = index2
+      this.index = index
+      this.loadingMore = false
     };
 
   }

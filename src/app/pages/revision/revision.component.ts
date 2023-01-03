@@ -14,6 +14,8 @@ import { RESERVADO } from 'src/app/utils/const/constantes';
 })
 export class RevisionComponent implements OnInit {
 
+  index: number = 0
+  index2: number = 2
   PENDREVISION: string = 'pendRevision'
   total: number = 0
   actionText: string = ""
@@ -44,8 +46,7 @@ export class RevisionComponent implements OnInit {
     .subscribe(pedidos => {
       this.allData = pedidos
       this.total = pedidos.length
-      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false }))
-      //this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2);        
+      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2)        
       this.loading = false
     })
   };

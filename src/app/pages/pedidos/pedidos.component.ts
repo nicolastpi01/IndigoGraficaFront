@@ -20,12 +20,10 @@ export class PedidosComponent implements OnInit {
   loadingMore: boolean = false
   isVisibleFilesModal: boolean = false
   loadingAccion: boolean = false
-  
-  
+    
   @HostBinding('class.is-open')
-  isOpen = false;
+  isOpen = false
   allData: Array<any> = []
-
 
   total: number = 0
   actionText: string = "Reservar"
@@ -57,9 +55,9 @@ export class PedidosComponent implements OnInit {
     let token :string = this.tokenService.getToken()
     this.service.getAllPedidos(token)
     .subscribe(pedidos => {
-      this.allData = pedidos
+      this.allData = pedidos.map((p) => ({ ...p, showMore: false })) //pedidos
       this.total = pedidos.length
-      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false }))
+      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2)
       //this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2);        
       this.loading = false
     })
@@ -75,6 +73,7 @@ export class PedidosComponent implements OnInit {
             this.msg.success('Reservado exitosamente!');
             this.service.toggle()
             this.pedidos = this.pedidos.filter((p: Pedido) => p.id !== pedido.id) // Saco el que se reservo!
+            this.total = this.pedidos.length
             if(this.pedidos.length === 0) {
               this.msg.loading("redireccionando...");
               setTimeout(() => {

@@ -13,6 +13,8 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 })
 export class TerminadosComponent implements OnInit {
 
+  index: number = 0
+  index2: number = 2
   FINALIZADOS: string = 'finalizados'
   allData: Array<any> = []
   total: number = 0
@@ -42,8 +44,7 @@ export class TerminadosComponent implements OnInit {
     .subscribe(pedidos => {
       this.allData = pedidos
       this.total = pedidos.length
-      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false }))
-      //this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2);        
+      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2)        
       this.loading = false
     })
   };

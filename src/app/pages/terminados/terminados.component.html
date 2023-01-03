@@ -1,8 +1,10 @@
 
 <app-pedidosList
     [pedidos]="pedidos"
+    [allData]="allData"
     [loading]="loading"
     [roles]="roles"
+    [total]="total"
     (onClickCancelModal)="cleanPedidoAndFile($event)"
     (onClickShowFiles)="cleanPedidoAndFile($event)"
     (onClickWatch)="manageOuputOnClickWatch($event)"

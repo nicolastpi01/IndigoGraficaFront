@@ -14,9 +14,9 @@ import { RESERVADO } from 'src/app/utils/const/constantes';
 })
 export class ReservadosComponent implements OnInit {
 
-  count: number = 2;
-  index: number = 0;
-  index2: number = 2;
+  count: number = 2
+  index: number = 0
+  index2: number = 2
   allData: Array<any> = []
   loadingMore: boolean = false;
 
@@ -44,9 +44,8 @@ export class ReservadosComponent implements OnInit {
     .subscribe(pedidos => {
       this.allData = pedidos
       this.total = pedidos.length
-      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false }))
-      this.loading = false 
-      //this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2); 
+      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2)
+      this.loading = false
     });
   }
 

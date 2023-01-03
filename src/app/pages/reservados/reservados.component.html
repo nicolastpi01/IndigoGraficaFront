@@ -2,7 +2,9 @@
 <app-pedidosList
   [pedidos]="pedidos"
   [loading]="loading"
+  [allData]="allData"
   [roles]="roles"
+  [total]="total"
   [onClickAction]="onClickAction"
   [onClickActionText]="actionText"
   (onClickCancelModal)="cleanPedidoAndFile($event)"
@@ -10,9 +12,6 @@
   (onClickWatch)="manageOuputOnClickWatch($event)"
 >
 </app-pedidosList>
-
-
-
 
 
 <!--ng-template [ngIf]="loading" [ngIfElse]="ifElse">

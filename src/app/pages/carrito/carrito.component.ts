@@ -33,11 +33,12 @@ interface SolutionFeedback {
 
 export class CarritoComponent implements OnInit {
 
-  total: number = 0;
-  count: number = 2;
-  index: number = 0;
-  index2: number = 2;
-  pedidos: any[] = [];
+  index: number = 0
+  index2: number = 2
+  count: number = 2
+
+  total: number = 0
+  pedidos: any[] = []
   allData: any[] = []
 
   currentPedido: Pedido | undefined; 

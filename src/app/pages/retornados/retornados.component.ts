@@ -14,6 +14,8 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 export class RetornadosComponent implements OnInit {
   isLoggedIn = false
   roles: string[] = []
+  index: number = 0
+  index2: number = 2
   allData: Array<any> = []
   total: number = 0
   loading: boolean = false
@@ -41,7 +43,7 @@ export class RetornadosComponent implements OnInit {
     .subscribe(pedidos => {
       this.allData = pedidos
       this.total = pedidos.length
-      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false }))        
+      this.pedidos = pedidos.map((p) => ({ ...p, showMore: false })).slice(this.index, this.index2)        
       this.loading = false
     })
   };
