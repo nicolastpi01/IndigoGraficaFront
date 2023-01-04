@@ -1,7 +1,39 @@
-<div nz-row nzJustify="center" [nzGutter]="16">
-<div nz-col class="gutter-row" class="gutter-row-message" [nzSpan]="6"><div class="inner-box"><h2 nz-typography>{{mensajeBienvenida}}</h2></div></div>
-<div nz-col class="gutter-row" [nzSpan]="6"><div class="inner-box">
-      <img nz-image width="200px" nzSrc="./assets/herramienta-de-diseno.png" alt="" />
+<div nz-row nzJustify="space-between" nzAlign="middle"[nzGutter]="24" >
+  <div nz-col class="gutter-row" [nzSpan]="8">
+    <div class="inner-box">
+      <img nz-image width="50%" nzSrc="./assets/herramienta-de-diseno.png" alt="" />
     </div>
+  </div>
+  <div nz-col class="gutter-row" [nzSpan]="16" >
+    <div class="inner-box">
+      <h2 nz-typography>{{mensajeBienvenida}}</h2>
+    </div>
+  </div>
 </div>
+<div nz-row [nzGutter]="8" nzJustify="space-around">
+  <div nz-col [nzSpan]="8" nzFlex="none">
+    <nz-card nzTitle="Sobre nosotros" style="height: 100%;">
+      <span>
+        Desde 2008, nos dedicamos a acompañar a clientes de todo el país en el desarrollo de sus proyectos y potenciar sus ideas. 
+        Nuestros servicios incluyen diseño gráfico, ilustración, edición e impresión en una gran variedad de productos.  
+      </span> 
+    </nz-card>
+  </div>
+  <div *ngIf="isLoggedIn" nz-col [nzSpan]="8">
+    <nz-card nzTitle="Dónde comenzar" style="height: 100%;">
+      <span>
+        Para solicitar alguno de nuestros servicios, dirígite a la sección "Nuevo" en el menú de la izquierda. 
+        Desde allí, cargá toda la información referente a tu pedido. Despues de hacer la solicitud, 
+        puedes cargar imagenes de referencia y comentarios en éstas si es necesario.
+      </span> 
+    </nz-card>
+  </div>
+  <div *ngIf="isLoggedIn" nz-col [nzSpan]="8">
+    <nz-card nzTitle="Despues de realizar el pedido" style="height: 100%;">
+      <span>
+        Para consultar el estado de su pedido, dirijase a su carrito (el icono de la parte superior). 
+        Allí también podrá consultar el estado de su pedido, plantearnos dudas o informar cambios sobre el mísmo.
+      </span> 
+    </nz-card>
+  </div>
 </div>

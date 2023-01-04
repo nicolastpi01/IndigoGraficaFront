@@ -117,7 +117,7 @@
                 <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="currentPedido && currentPedido.files">
                   <div nz-col *ngFor="let file of currentPedido.files">
                     <nz-list-item>
-                      <nz-card [nzCover]="coverTemplate" class="border" [nzActions]="[actionAddComment, actionChat]">
+                      <nz-card [nzCover]="coverTemplate" class="border" [nzActions]="[actionChat, actionAddComment]">
                           <nz-card-meta
                               [nzTitle]="file.name"
                               nzDescription=""
@@ -137,14 +137,10 @@
                               >
                                 <p style="font-size: 10px;">Comentarios</p>
                               </button>
-                              <!--i nz-icon nzType="comment" (click)="onClickComment($event, file)" nzTheme="outline"></i-->
                             </ng-template>
                             <ng-template #actionChat>
                               <button nz-button (click)="onClickFileChat(file)">
                                 <p style="font-size: 10px;">Chat</p>
-                                  <!--div nz-icon nzType="comment" style="font-size: 10px;" nzTheme="outline">
-                                    Chat
-                                  </div-->
                               </button>
                             </ng-template>
                       </nz-card>

@@ -835,20 +835,31 @@ export class ResolverComponent implements OnInit {
     this.currentPedido = {
       ...this.currentPedido, sendBudgetMail: true
     };
-    this.msg.success("Presupuesto enviado.")
     setTimeout(() => {
       //this.msg.loading("recargando...");
       //this.refreshPage() F5
       this.goOutModalBudget()
     }, 1500);
      // Cuando este ok reemplazar esto por hacer un F5 con un loading
-    this.mailService.sendBudget(this.currentPedido!.id!)
-    .pipe(filter(e => e instanceof HttpResponse)).subscribe(async (e: any) => {
-      this.msg.success(`Presupuesto enviado.`);
-    }), () => {
-      this.msg.error('Sucedió un error durante el envio del presupuesto.');
-      // y cierra el Modal
-    }
+     this.mailService.sendBudget(this.currentPedido!.id!)
+     .pipe(filter(e => e instanceof HttpResponse))
+     .subscribe({
+      next: (pedido: any) => {
+        this.msg.success(pedido.message)
+        this.service.toggle()
+        setTimeout(() => {
+          this.msg.info("redireccionando...");
+        }, 500);
+      },
+      error: (err) => {
+        this.msg.error('Sucedió un error durante el envio del presupuesto. ' + err.error, {
+          nzDuration: 5000
+        });
+      },
+      complete: () => {
+        this.msg.success('Presupuesto enviado exitosamente')
+      }
+    })
   };
 
   messageTitle = () => {
