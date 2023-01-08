@@ -66,6 +66,7 @@ export class ResolverComponent implements OnInit {
   ChatNoResultMessage: string = showNoResultTextChatFor('Cliente')
   currentRol :string = 'EDITOR'
   resolverLoading: boolean = false
+  sendingBudget = false
 
   // 300 caracteres!
   textoSinFormato: string = 'Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracEsto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 caracteres Esto tiene 150 carac' 
@@ -830,35 +831,63 @@ export class ResolverComponent implements OnInit {
     return (this.currentPedido && this.currentPedido.sendBudgetMail) || !this.currentBudget
   };
 
+  refreshPage() {
+    window.location.reload();
+  }
+
   handleSendBudget = () => {
     // COMPORTAMIENTO CUANDO EL SERVER DA OK
-    this.currentPedido = {
-      ...this.currentPedido, sendBudgetMail: true
-    };
+    //fdsf
+    /*
     setTimeout(() => {
       //this.msg.loading("recargando...");
       //this.refreshPage() F5
       this.goOutModalBudget()
     }, 1500);
-     // Cuando este ok reemplazar esto por hacer un F5 con un loading
-     this.mailService.sendBudget(this.currentPedido!.id!)
-     .pipe(filter(e => e instanceof HttpResponse))
-     .subscribe({
-      next: (pedido: any) => {
-        this.msg.success(pedido.message)
-        this.service.toggle()
+    */
+      //dvdsvdsv
+      // Cuando este ok reemplazar esto por hacer un F5 con un loading
+    this.sendingBudget = true
+    this.mailService.sendBudget(this.currentPedido!.id!)
+     
+     //.pipe(filter(e => e instanceof HttpResponse))
+     .subscribe({ 
+      next: (_) => {
+        this.sendingBudget = false
+        //console.log("RESULT:", result)
+        this.msg.success('Presupuesto enviado por mail exitosamente') // VA
+        //this.service.toggle()
+        //this.goOutModalBudget()
         setTimeout(() => {
-          this.msg.info("redireccionando...");
-        }, 500);
+          this.msg.loading("recargando...")
+          this.refreshPage()
+        }, 1500);
+        //this.msg.success('Presupuesto enviado exitosamente')
+        //setTimeout(() => {
+          //this.msg.loading("recargando...");
+          //this.refreshPage() F5
+          
+        //}, 1500);
+        /*
+        this.currentPedido = { // SACAR
+          ...this.currentPedido, sendBudgetMail: true
+        }
+        */
+        //this.goOutModalBudget() // SACAR
       },
-      error: (err) => {
-        this.msg.error('Sucedió un error durante el envio del presupuesto. ' + err.error, {
-          nzDuration: 5000
-        });
-      },
+      error: (result) => {
+          //this.msg.error('Sucedió un error durante el envio del presupuesto. ' + err.error, {
+          this.sendingBudget = false
+          //console.log("ERROR:", result)
+          this.msg.error(result.error)
+          //this.msg.error(err.message, {
+          //  nzDuration: 5000
+          //})
+      }
+      /*,
       complete: () => {
         this.msg.success('Presupuesto enviado exitosamente')
-      }
+      }*/
     })
   };
 

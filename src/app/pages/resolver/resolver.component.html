@@ -234,9 +234,11 @@
                 <button
                   [disabled]="disabledSendBudget()"
                   nz-button nzType="primary" 
-                  style="height: 50px; width: 270px;" 
+                  style="height: 50px; width: 270px;"
+                  [nzLoading]="sendingBudget" 
                   (click)="handleSendBudget()">
-                  <p class="resolverText">Enviar presupuesto&nbsp;<span nz-icon nzType="mail" nzTheme="outline"></span></p> 
+                  <!--p class="resolverText">{{sendingBudget ? '' : 'Enviar presupuesto'&nbsp;<span nz-icon nzType="mail" nzTheme="outline"></span> }}</p-->
+                  <p class="resolverText">{{sendingBudget ? '' : 'Enviar presupuesto' }}</p> 
                 </button>
               </div>
             </div> 

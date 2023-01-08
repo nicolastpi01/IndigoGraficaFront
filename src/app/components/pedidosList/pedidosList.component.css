@@ -21,3 +21,12 @@ float: right;
     text-align: center; 
     height: 32px;
 }
+
+.elem {
+    border-style: solid;
+    border-color: aqua;
+}
+
+.elem :hover {
+    background: #d8dadb;
+}
