@@ -299,7 +299,7 @@ export class NuevoComponent implements OnInit {
     if (status !== 'uploading') {
     }
     if (status === 'done') {
-      this.msg.success(`${file.name} Agregado el archivo correctamente!`);
+      this.msg.success(`archivo: ${file.name} subido satisfactoriamente!`);
 
       file['preview'] = await getBase64(file.originFileObj!);
       this.fileList = fileList.map((nZFile: NzUploadFile) => {
