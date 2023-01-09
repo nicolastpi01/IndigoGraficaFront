@@ -23,8 +23,6 @@ float: right;
 }
 
 .elem {
-    border-style: solid;
-    border-color: aqua;
 }
 
 .elem :hover {

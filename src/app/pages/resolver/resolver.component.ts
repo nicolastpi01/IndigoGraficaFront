@@ -581,7 +581,7 @@ export class ResolverComponent implements OnInit {
             //if (currentFileAux && this.files) this.files = [...this.files, currentFileAux ] // this.files?.push(currentFileAux); 
             //this.currentFile = currentFileAux;
             //if(this.currentFile) this.currentFile.comentarios = []
-            this.msg.success(`${file.name} file uploaded successfully`); 
+            this.msg.success(`archivo: ${file.name} subido satisfactoriamente!`); 
             //this.msg.success('Se actualizo el pedido correctamente!');
         }),
         () => {

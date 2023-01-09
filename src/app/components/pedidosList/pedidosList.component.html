@@ -13,77 +13,78 @@
               {{ showTotal() }}
             </nz-list-header-->
             <nz-list-item class="elem" *ngFor="let pedido of pedidos">
-              <!--div class="border"-->
-              <div>
-                  <div nz-row [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
-                    <nz-col>
-                      <b>Titulo</b>
-                      <p>{{pedido.nombre}}</p> 
-                    </nz-col>
-                    <nz-col>
-                      <b>Subtitulo</b>
-                      <p>{{pedido.nombreExtendido}}</p> 
-                    </nz-col>
-                    <nz-col >
-                      <b>Cantidad</b>
-                      <p>{{pedido.cantidad}}</p> 
-                    </nz-col>
-                    <nz-col>
-                      <b>Fecha entrega</b>
-                      <p>{{ toLocalDateStringFunction(pedido.fechaEntrega) }}</p> 
-                    </nz-col>
-                    <nz-col>
-                      <b>Tipografía</b>
-                      <p>{{pedido.tipografia}}</p> 
-                    </nz-col>
-                    <nz-col >
-                      <b>Alto</b>
-                      <p>{{pedido.alto}}</p> 
-                    </nz-col>
-                    <nz-col>
-                      <b>Ancho</b>
-                      <p>{{pedido.ancho}}</p> 
-                    </nz-col>
-                    <nz-col>
-                      <b>Tipo</b>
-                      <p>{{pedido.tipo.nombre}}</p> 
-                    </nz-col>
-                    <nz-col>
-                      <b>Estado</b>
-                      <p><nz-tag [nzColor]="colorear(pedido.state)">{{pedido.state.label}}</nz-tag></p> 
-                    </nz-col>
-                    <nz-col>
-                      <b>Colores</b>
-                      <nz-list>
-                        <nz-list-item style="display: inline; padding-left: 3px; padding-right: 3px; border-bottom: 0 none;" *ngFor="let color of pedido.colores">
-                          <nz-badge [nzColor]="color.hexCode">{{ color.nombre }}</nz-badge>
-                        </nz-list-item>
-                      </nz-list> 
-                    </nz-col>
-                    <nz-col>
-                      <b>Descripción</b>
-                      <p>{{ pedido.descripcion ? pedido.descripcion : "-" }}</p> 
-                    </nz-col>
-                  </div>
-                
-                <br>
-                <div style="text-align: center;">
-                  {{ pedido.showMore ? 'Ocultar' : 'Info del usuario' }}
+              <div nz-col style="border: 5px solid #FFFF00" nzSpan="24">
+                <div nz-row [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
+                  <nz-col>
+                    <b>Titulo</b>
+                    <p>{{pedido.nombre}}</p> 
+                  </nz-col>
+                  <nz-col>
+                    <b>Subtitulo</b>
+                    <p>{{pedido.nombreExtendido}}</p> 
+                  </nz-col>
+                  <nz-col>
+                    <b>Cantidad</b>
+                    <p>{{pedido.cantidad}}</p> 
+                  </nz-col>
+                  <nz-col>
+                    <b>Fecha entrega</b>
+                    <p>{{ toLocalDateStringFunction(pedido.fechaEntrega) }}</p> 
+                  </nz-col>
+                  <nz-col>
+                    <b>Tipografía</b>
+                    <p>{{pedido.tipografia}}</p> 
+                  </nz-col>
+                  <nz-col >
+                    <b>Alto</b>
+                    <p>{{pedido.alto}}</p> 
+                  </nz-col>
+                  <nz-col>
+                    <b>Ancho</b>
+                    <p>{{pedido.ancho}}</p> 
+                  </nz-col>
+                  <nz-col>
+                    <b>Tipo</b>
+                    <p>{{pedido.tipo.nombre}}</p> 
+                  </nz-col>
+                  <nz-col>
+                    <b>Estado</b>
+                    <p><nz-tag [nzColor]="colorear(pedido.state)">{{pedido.state.label}}</nz-tag></p> 
+                  </nz-col>
+                  <nz-col>
+                    <b>Colores</b>
+                    <nz-list>
+                      <nz-list-item style="display: inline; padding-left: 3px; padding-right: 3px; border-bottom: 0 none;" *ngFor="let color of pedido.colores">
+                        <nz-badge [nzColor]="color.hexCode">{{ color.nombre }}</nz-badge>
+                      </nz-list-item>
+                    </nz-list> 
+                  </nz-col>
+                  <nz-col>
+                    <b>Descripción</b>
+                    <p>{{ pedido.descripcion ? pedido.descripcion : "-" }}</p> 
+                  </nz-col>                    
+                </div>
+              
+              <div nz-row nzJustify="center" [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
+                <nz-col>
+                    {{ pedido.showMore ? 'Ocultar' : 'Info del usuario' }}
                   <span nz-icon style="cursor: pointer;" nzType="{{ pedido.showMore ? 'up' : 'down' }}" 
-                      nzTheme="outline" (click)="onClickShowMore(pedido)">
+                    nzTheme="outline" (click)="onClickShowMore(pedido)">
                   </span>
-                </div>
-                <br>
-                <div *ngIf="pedido.showMore">
-                  <div nz-row [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
-                    <div nz-col *ngFor="let us of userData">
-                      <b>{{us.title}}</b>
-                      <p>{{getValueOrNot(us, pedido)}}</p>
-                    </div>
-                  </div>
-                </div>
-                <br>
-                <div nz-row class="buttonGroup" [nzGutter]="16">
+                </nz-col>
+              </div>
+              <br>
+              <nz-col>
+                <nz-row *ngIf="pedido.showMore" [nzGutter]="{ xs: 24, sm: 32, md: 48, lg: 64 }">
+                  <nz-col *ngFor="let us of userData">
+                    <b>{{us.title}}</b>
+                    <p>{{getValueOrNot(us, pedido)}}</p>
+                  </nz-col>
+                </nz-row>
+              </nz-col>
+
+              <div class="buttonGroup">
+                <nz-row [nzGutter]="16">
                   <div nz-col>
                     <button 
                       nz-button 
@@ -101,8 +102,10 @@
                       (click)="onClickAction(pedido)">{{ onClickActionText }}
                     </button>
                   </div>
-                </div>
+                </nz-row>
+              </div>
             </div>
+        
             </nz-list-item>
             <nz-list-footer>
               <div class="loadmore">
