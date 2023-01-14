@@ -291,6 +291,12 @@ export class NuevoComponent implements OnInit {
     }
   }
 
+  onChangeTypePedido = (elem: any) : void => {
+    // Cuando cambia el tipo de Pedido estaria bueno que cambien tanto el Ancho, Alto, y la Tipografia que dependen del TipoPedido
+    // Esto no quiere decir que el Usuario no pueda elegir otra Tipografia, Ancho, y Alto, siemplemente se da un feedback de lo que
+    // despues pasa si el Usuario no ingresa los mismos
+  };
+
   async handleChange({ file, fileList }: NzUploadChangeParam): Promise<void> {
     const status = file.status;
     if (status !== 'uploading') {

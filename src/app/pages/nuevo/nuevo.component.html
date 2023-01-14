@@ -59,8 +59,8 @@
           <nz-form-item>
             <nz-form-label nzRequired>Tipo</nz-form-label>
             <nz-form-control nzHasFeedback nzErrorTip="Por favor ingrese un tipo">
-                <nz-input-group>
-                  <nz-select nzShowSearch nzAllowClear id="tipos" nzPlaceHolder="Tipo" formControlName="tipo" [nzOptions]="tiposDePedidos" ></nz-select>
+                <nz-input-group> 
+                  <nz-select nzShowSearch nzAllowClear id="tipos" (ngModelChange)="onChangeTypePedido($event)" nzPlaceHolder="Tipo" formControlName="tipo" [nzOptions]="tiposDePedidos" ></nz-select>
                 </nz-input-group>
             </nz-form-control>
           </nz-form-item>
