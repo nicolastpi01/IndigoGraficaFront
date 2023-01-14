@@ -1,6 +1,3 @@
-import { Estado } from "src/app/interface/estado";
-import { Usuario } from "src/app/interface/usuario";
-
 
 export const PENDIENTEATENCION = "Pendiente atencion"
 export const PROPIOS = "propios"
@@ -8,7 +5,6 @@ export const RESERVADO = "reservado"
 export const PENDIENTEREVISION = 'Pendiente revision'
 export const FINALIZADOS = "Finalizados"
 export const REVISION = "Revision"
-//export const RETORNADOS = "Retornado"
 export const RECHAZADO = 'Rechazado'
 
 export const NONE: string = "#e9f7e2";

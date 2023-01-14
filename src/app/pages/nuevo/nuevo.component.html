@@ -19,23 +19,37 @@
       >
       <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
         <div nz-col nz-col nzXs="24" nzSm="6">
-          <nz-form-item>
+          <!--nz-form-item>
             <nz-form-label nzRequired >Título</nz-form-label>
             <nz-form-control nzHasFeedback nzErrorTip="Por favor ingresa un título">
               <nz-input-group>
-                <!--input type="text" #dummyClick nz-input formControlName="titulo" placeholder="Titulo" required/-->
                 <input type="text" nz-input formControlName="titulo" placeholder="Titulo" required/>
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item-->
+          <nz-form-item>
+            <nz-form-label>Título</nz-form-label>
+            <nz-form-control>
+              <nz-input-group>
+                <input type="text" nz-input formControlName="titulo" placeholder="Titulo"/>
               </nz-input-group>
             </nz-form-control>
           </nz-form-item>
         </div>
-
         <div nz-col nzXs="24" nzSm="6">
-          <nz-form-item>
+          <!--nz-form-item>
             <nz-form-label nzRequired >Subtítulo</nz-form-label>
             <nz-form-control nzHasFeedback nzErrorTip="Por favor ingrese un subtítulo">
               <nz-input-group>
                 <input type="text" nz-input formControlName="subtitulo" placeholder="Subtítulo" />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item-->
+          <nz-form-item>
+            <nz-form-label>Subtítulo</nz-form-label>
+            <nz-form-control>
+              <nz-input-group>
+                <input type="text" nz-input formControlName="subtitulo" placeholder="Subtítulo"/>
               </nz-input-group>
             </nz-form-control>
           </nz-form-item>
@@ -82,11 +96,11 @@
             <nz-form-label>Alto</nz-form-label>
             <nz-form-control nzHasFeedback nzValidatingTip="Revisando..." [nzErrorTip]="AltoErrorTpl">
                 <nz-input-group>
-                  <input type="number" nz-input formControlName="alto" placeholder="Alto (px)"/>
+                  <input type="number" nz-input formControlName="alto" placeholder="Alto (cm)"/>
                 </nz-input-group>
                 <ng-template #AltoErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('min')">El alto debe ser minimo de 30px</ng-container>
-                  <ng-container *ngIf="control.hasError('differDimension')">Ancho y alto deben tener el mismo tamaño</ng-container>
+                  <ng-container *ngIf="control.hasError('min')">El alto debe ser minimo de 60cm</ng-container>
+                  <!--ng-container *ngIf="control.hasError('differDimension')">Ancho y alto deben tener el mismo tamaño</ng-container-->
                 </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -96,16 +110,15 @@
           <nz-form-label>Ancho</nz-form-label>
           <nz-form-control nzHasFeedback nzValidatingTip="Revisando..." [nzErrorTip]="AnchoErrorTpl">
               <nz-input-group>
-                <input type="number" nz-input formControlName="ancho" placeholder="Ancho (px)"/>
+                <input type="number" nz-input formControlName="ancho" placeholder="Ancho (cm)"/>
               </nz-input-group>
               <ng-template #AnchoErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('min')">El ancho debe ser minimo de 30px</ng-container>
-                <ng-container *ngIf="control.hasError('differDimension')">Ancho y alto deben tener el mismo tamaño</ng-container>
+                <ng-container *ngIf="control.hasError('min')">El ancho debe ser minimo de 60cm</ng-container>
+                <!--ng-container *ngIf="control.hasError('differDimension')">Ancho y alto deben tener el mismo tamaño</ng-container-->
               </ng-template>
           </nz-form-control>
         </nz-form-item>
       </div>
-      
       <div nz-col nzXs="24" nzSm="4">
         <nz-form-item>
           <nz-form-label>Tipografía</nz-form-label>
@@ -116,55 +129,51 @@
           </nz-form-control>
         </nz-form-item>
       </div>  
-        
-    <div nz-col nzXs="24" nzSm="6">
-      <nz-form-item>
-        <nz-form-label>Color</nz-form-label>
-        <nz-form-control nzHasFeedback>
-          <nz-input-group>
-            <nz-select nzAllowClear nzPlaceHolder="Colores" nzMode="multiple" formControlName="color" [nzCustomTemplate]="multipleTemplate" [nzOptions]="colores"></nz-select>
-            <ng-template #multipleTemplate let-selected>
-              <div class="ant-select-selection-item-content">
-                <nz-badge [nzColor]="selected.nzValue"></nz-badge>
-                  {{ selected.nzLabel }}
-              </div>
-            </ng-template>
-          </nz-input-group>
-        </nz-form-control>
-      </nz-form-item>
-    </div>  
-    
-    <div nz-col nzXs="24">
-      <nz-form-item>
-        <nz-form-label>Descripción</nz-form-label>
-          <nz-form-control nzHasFeedback nzErrorTip="150 caracteres es la máxima cantidad permitida">
+      <div nz-col nzXs="24" nzSm="6">
+        <nz-form-item>
+          <nz-form-label>Color</nz-form-label>
+          <nz-form-control nzHasFeedback>
             <nz-input-group>
-              <nz-textarea-count [nzMaxCharacterCount]="150">
-                <textarea rows="3" placeholder="Descripción" formControlName="comentario" nz-input></textarea>
-              </nz-textarea-count>
+              <nz-select nzAllowClear nzPlaceHolder="Colores" nzMode="multiple" formControlName="color" [nzCustomTemplate]="multipleTemplate" [nzOptions]="colores"></nz-select>
+              <ng-template #multipleTemplate let-selected>
+                <div class="ant-select-selection-item-content">
+                  <nz-badge [nzColor]="selected.nzValue"></nz-badge>
+                    {{ selected.nzLabel }}
+                </div>
+              </ng-template>
             </nz-input-group>
-        </nz-form-control>
-      </nz-form-item>
-    </div>
-    
+          </nz-form-control>
+        </nz-form-item>
+      </div>  
+      <div nz-col nzXs="24">
+        <nz-form-item>
+          <nz-form-label>Descripción</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="150 caracteres es la máxima cantidad permitida">
+              <nz-input-group>
+                <nz-textarea-count [nzMaxCharacterCount]="150">
+                  <textarea rows="3" placeholder="Descripción" formControlName="comentario" nz-input></textarea>
+                </nz-textarea-count>
+              </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
     </div>
     <br>
-
-        <div nz-row class="formButtonGroup" [nzGutter]="16">
-          <nz-col>
-          <nz-form-item>
-            <nz-form-control>
-              <button 
-                nz-button
-                class="buttonAlta" 
-                [nzLoading]="loadingAlta"
-                (click)="onClickAlta()"
-                data-testid="buttonAlta" 
-                [nzType]="'primary'">{{ loadingAlta ? 'Espere...' : (esEdicion? 'Editar' : 'Alta') }}
-              </button>
-            </nz-form-control>
-          </nz-form-item>
-        </nz-col>
+    <div nz-row class="formButtonGroup" [nzGutter]="16">
+      <nz-col>
+        <nz-form-item>
+          <nz-form-control>
+            <button 
+              nz-button
+              class="buttonAlta" 
+              [nzLoading]="loadingAlta"
+              (click)="onClickAlta()"
+              data-testid="buttonAlta" 
+              [nzType]="'primary'">{{ loadingAlta ? 'Espere...' : (esEdicion? 'Editar' : 'Alta') }}
+            </button>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
       <nz-col>
           <nz-form-item >
             <nz-form-control> 

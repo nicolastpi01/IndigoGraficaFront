@@ -59,16 +59,19 @@ export class NuevoComponent implements OnInit {
     private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    
     this.isLoggedIn = !!this.tokenService.getToken();
     if (this.isLoggedIn) {
       this.currentUser = this.tokenService.getUser();
       this.validateForm = this.fb.group({
-        titulo: [null, [Validators.required]],
-        subtitulo: [null, [Validators.required]],
+        //titulo: [null, [Validators.required]],
+        //subtitulo: [null, [Validators.required]],
+        titulo: [null, []],
+        subtitulo: [null, []],
         cantidad: [null, []], // La cantidad por defecto es uno, y si no esta definido se pone uno en el Pedido
-        alto: [null, [ Validators.min(30)], [(control: FormControl) => this.dimensionAsyncValidator (control, 'ancho') ]],
-        ancho: [null, [ Validators.min(30)], [(control: FormControl) => this.dimensionAsyncValidator (control, 'alto') ]],
+        //alto: [null, [ Validators.min(30)], [(control: FormControl) => this.dimensionAsyncValidator (control, 'ancho') ]],
+        //ancho: [null, [ Validators.min(30)], [(control: FormControl) => this.dimensionAsyncValidator (control, 'alto') ]],
+        alto: [null, [ Validators.min(60)]],
+        ancho: [null, [ Validators.min(60)]],
         datePicker: [null, [Validators.required], [this.confirmDateValidator]],
         tipografia: [null, []],
         tipo:  [[], [Validators.required]],
@@ -100,6 +103,7 @@ export class NuevoComponent implements OnInit {
     ];
   };
 
+  /*
   dimensionAsyncValidator = (control: FormControl, dimension: string) =>
     new Observable((observer: Observer<ValidationErrors | null>) => {
       setTimeout(() => {
@@ -113,6 +117,7 @@ export class NuevoComponent implements OnInit {
         }
       }, 1000);
   });
+  */
 
   confirmDateValidator = (control: FormControl) => 
     new Observable((observer: Observer<ValidationErrors | null>) => {
@@ -281,10 +286,27 @@ export class NuevoComponent implements OnInit {
           }, 2500);
         }
         else {
-          this.currentPedido = e.body as Pedido
+          let pedido = e.body as Pedido
+          this.currentPedido = pedido
           this.esEdicion = true
           this.service.toggle(); // para que se actualice el contador del Sidebar
           this.loadingAlta = false
+          let form = this.validateForm;
+          //const date = pedido.fechaEntrega as string
+          //const newDate = new Date(date)
+          this.validateForm.setValue({
+            titulo: form.value['titulo'],
+            subtitulo: form.value['subtitulo'],
+            cantidad: pedido.cantidad, 
+            alto:  pedido.alto, // Si el Pedido no tiene definido en el Form. de Alta un Alto este se determina en el Back basado en el TipoPedido
+            ancho: pedido.ancho, // Si el Pedido no tiene definido en el Form. de Alta un Ancho este se determina en el Back basado en el TipoPedido
+            datePicker: form.value['datePicker'],
+            tipografia: pedido.tipografia, // Si el Pedido no tiene definido en el Form. de Alta una Tipografía este se determina en el Back basado en el TipoPedido
+            tipo: form.value['tipo'], //this.tiposDePedidos.find(tipoPedido => tipoPedido.value === pedido.tipo?.nombre)?.value,
+            color: form.value['color'],
+            comentario: form.value['comentario'],
+            remember: true
+          })
           this.msg.success('Pedido generado satisfactoriamente!');
         }
     }),
