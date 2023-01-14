@@ -100,7 +100,6 @@
                 </nz-input-group>
                 <ng-template #AltoErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('min')">El alto debe ser minimo de 60cm</ng-container>
-                  <!--ng-container *ngIf="control.hasError('differDimension')">Ancho y alto deben tener el mismo tamaño</ng-container-->
                 </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -114,7 +113,6 @@
               </nz-input-group>
               <ng-template #AnchoErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('min')">El ancho debe ser minimo de 60cm</ng-container>
-                <!--ng-container *ngIf="control.hasError('differDimension')">Ancho y alto deben tener el mismo tamaño</ng-container-->
               </ng-template>
           </nz-form-control>
         </nz-form-item>

@@ -15,7 +15,6 @@ import { Pedido } from 'src/app/interface/pedido';
 import { FileDB } from 'src/app/interface/fileDB';
 import { FileService } from 'src/app/services/file.service';
 import { Comentario, Interaccion } from 'src/app/interface/comentario';
-import { PosicionService } from 'src/app/services/posicion.service';
 import { getBase64 } from 'src/app/utils/functions/functions';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -63,13 +62,9 @@ export class NuevoComponent implements OnInit {
     if (this.isLoggedIn) {
       this.currentUser = this.tokenService.getUser();
       this.validateForm = this.fb.group({
-        //titulo: [null, [Validators.required]],
-        //subtitulo: [null, [Validators.required]],
         titulo: [null, []],
         subtitulo: [null, []],
         cantidad: [null, []], // La cantidad por defecto es uno, y si no esta definido se pone uno en el Pedido
-        //alto: [null, [ Validators.min(30)], [(control: FormControl) => this.dimensionAsyncValidator (control, 'ancho') ]],
-        //ancho: [null, [ Validators.min(30)], [(control: FormControl) => this.dimensionAsyncValidator (control, 'alto') ]],
         alto: [null, [ Validators.min(60)]],
         ancho: [null, [ Validators.min(60)]],
         datePicker: [null, [Validators.required], [this.confirmDateValidator]],
@@ -82,9 +77,7 @@ export class NuevoComponent implements OnInit {
       this.findColores();
       this.findPedidos();
       this.loadPedidoIfExist()
-      this.panels = this.initialPanelState();
-      //this.dummyClickRef?.nativeElement.click()
-      //this.dummyClickRef?.nativeElement.focus()  
+      this.panels = this.initialPanelState();  
     }
   };
 
@@ -102,22 +95,6 @@ export class NuevoComponent implements OnInit {
       },
     ];
   };
-
-  /*
-  dimensionAsyncValidator = (control: FormControl, dimension: string) =>
-    new Observable((observer: Observer<ValidationErrors | null>) => {
-      setTimeout(() => {
-        if(this.validateForm.value) {
-          if ( (control.value !== this.validateForm.value[dimension]) && this.validateForm.value[dimension] ) {
-            observer.next({ error: true, differDimension: true });
-          } else {
-            observer.next(null);
-          }
-          observer.complete();
-        }
-      }, 1000);
-  });
-  */
 
   confirmDateValidator = (control: FormControl) => 
     new Observable((observer: Observer<ValidationErrors | null>) => {
@@ -292,8 +269,6 @@ export class NuevoComponent implements OnInit {
           this.service.toggle(); // para que se actualice el contador del Sidebar
           this.loadingAlta = false
           let form = this.validateForm;
-          //const date = pedido.fechaEntrega as string
-          //const newDate = new Date(date)
           this.validateForm.setValue({
             titulo: form.value['titulo'],
             subtitulo: form.value['subtitulo'],
@@ -484,13 +459,6 @@ export class NuevoComponent implements OnInit {
     }
   };
 
-  /*
-  checkInputStyle = (comentario: Comentario) => {
-    if(comentario.isVisible) return 'autofocus'
-    else return ''
-  };
-  */
-
   // Acá, deberia agregar al objeto comentario el color que quiero que muestre, y despues cambiarlo en el OnClick (cambiarlo en todos menos en el que quiero)
   badgeAddOnBeforeStyle = (comentario: Comentario) => {
     return {
@@ -605,7 +573,6 @@ export class NuevoComponent implements OnInit {
           llave:  this.currentFile.comentarios.length === 0 ? 1 : Math.max.apply(null, this.currentFile.comentarios.map((comentario: Comentario) => comentario.numero)) + 1 
        }
       ];
-      //this.viewport.nativeElement.scrollIntoView({block: "end", behavior: "smooth"}); // Ya no haria falta, el autofocus ya deja al input en pantalla
       this.inputs.changes.pipe(takeWhile(()=>true)).subscribe(() => {
         if (this.inputs.length)  //<--add this "if"
           this.inputs.last.nativeElement.focus()
