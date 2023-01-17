@@ -117,7 +117,7 @@
                 <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" *ngIf="currentPedido && currentPedido.files">
                   <div nz-col *ngFor="let file of currentPedido.files">
                     <nz-list-item>
-                      <nz-card [nzCover]="coverTemplate" class="border" [nzActions]="[actionChat, actionAddComment]">
+                      <nz-card [nzCover]="coverTemplate" class="border" [nzActions]="[actions]">
                           <nz-card-meta
                               [nzTitle]="file.name"
                               nzDescription=""
@@ -126,22 +126,26 @@
                             <ng-template #avatarTemplate>
                             </ng-template>
                             <ng-template #coverTemplate>
-                              <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
+                              <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ height: '160px', cursor: 'pointer' }">
                             </ng-template>
-                            <ng-template #actionAddComment>
-                              <button 
-                                nz-button
-                                nz-tooltip 
-                                [nzTooltipTitle]=" file.comentarios.length == 0 ? 'No cuenta con comentarios' : '' "  
-                                (click)="onClickComment($event, file)"
-                              >
-                                <p style="font-size: 10px;">Comentarios</p>
-                              </button>
-                            </ng-template>
-                            <ng-template #actionChat>
-                              <button nz-button (click)="onClickFileChat(file)">
-                                <p style="font-size: 10px;">Chat</p>
-                              </button>
+                            <ng-template #actions>
+                              <div nz-row nzJustify="center" [nzGutter]="[{ xs: 2, sm: 4, md: 6, lg: 8 }, 4]">
+                                <div nz-col>
+                                  <button 
+                                    nz-button
+                                    nz-tooltip 
+                                    [nzTooltipTitle]=" file.comentarios.length == 0 ? 'No cuenta con comentarios' : '' "  
+                                    (click)="onClickComment($event, file)"
+                                  >
+                                    <p style="font-size: 10px;">Comentarios</p>
+                                  </button>
+                                </div>
+                                <div nz-col>
+                                  <button nz-button (click)="onClickFileChat(file)">
+                                    <p style="font-size: 10px;">Chat</p>
+                                  </button>
+                                </div>
+                              </div>
                             </ng-template>
                       </nz-card>
                     </nz-list-item>
@@ -293,7 +297,7 @@
                         nzDescription=""
                       ></nz-card-meta>
                         <ng-template #coverTemplate>
-                          <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '166px', height: '140px', cursor: 'pointer' }">
+                          <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ height: '140px', cursor: 'pointer' }">
                         </ng-template>
                         <ng-template #actionAddSolution>
                             <button *ngIf="!isRejected()" nzType="default" nz-button (click)="onClickAddSolution($event, file)">
@@ -335,9 +339,6 @@
         
         <div nz-col>
           <p *ngIf="currentSolution || showFallback || !tieneDimension()" style="text-align: center;"><b>Solución</b></p>
-          <!--b>Solución</b-->
-          <!--nz-card *ngIf="currentSolution" [nzCover]="coverTemplate" [nzActions]="[actionAddComment, actionAddSolution]"-->
-          <!--nz-card [nzCover]="coverTemplate" [nzActions]="[actionAddComment, actionAddSolution]"-->
           <nz-card [nzCover]="coverTemplate" *ngIf="(currentSolution && currentSolution.url) || showFallback || !tieneDimension()" 
               [nzActions]="isRejected()? [actionDeleteSolution, rejectionReason, actionAddSolution] :[actionDeleteSolution, actionAddSolution]">
             <nz-card-meta             
@@ -467,8 +468,7 @@
       (click)="onClickSendBudgetButton()">Enviar presupuesto
       <span *ngIf="hasBeenSendBudget() " nz-icon nzType="check" nzTheme="outline"></span>
     </button>
-  </div>
-  
+  </div>  
 </div>
 
 

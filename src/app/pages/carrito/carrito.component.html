@@ -34,8 +34,10 @@
                                           nzDescription=""
                                         ></nz-card-meta>
                                         <ng-template #coverTemplate>
-                                          <img nz-image alt="no cargo imagen" *ngIf="solution && solution.file && solution.file.url" 
-                                            [nzSrc]="solution.file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
+                                          <!--img nz-image alt="no cargo imagen" *ngIf="solution && solution.file && solution.file.url" 
+                                            [nzSrc]="solution.file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }"-->
+                                            <img nz-image alt="no cargo imagen" *ngIf="solution && solution.file && solution.file.url" 
+                                            [nzSrc]="solution.file.url" [ngStyle]="{ height: '160px', cursor: 'pointer' }">
                                         </ng-template>
                                         <ng-template #actions>
                                             <nz-tag class="tag" style="height: 40px; width:max-content;" [nzColor]="determineTagColor(solution)">
@@ -61,7 +63,6 @@
                                 </button>
                               </div>
                               <br>
-                              <!--br-->
                         </ng-template>
                         <ng-template #FilesOrData>
                           <ng-template [ngIf]="tab.name === 'Files' " [ngIfElse]="Data">
@@ -77,10 +78,10 @@
                                                 nzDescription=""
                                             ></nz-card-meta>
                                               <ng-template #coverTemplate>
-                                                <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ width: '150px', height: '160px', cursor: 'pointer' }">
+                                                <img nz-image alt="no cargo imagen" *ngIf="file && file.url" [nzSrc]="file.url" [ngStyle]="{ height: '160px', cursor: 'pointer' }">
                                               </ng-template>
                                               <ng-template  #actions>
-                                                <div nz-row [nzGutter]="[{ xs: 2, sm: 4, md: 6, lg: 8 }, 4]">
+                                                <div nz-row nzJustify="center" [nzGutter]="[{ xs: 2, sm: 4, md: 6, lg: 8 }, 4]">
                                                   <div nz-col>
                                                     <button nz-button type="default" (click)="onClickFileChat(file, pedido)">
                                                       <p style="font-size: 10px;">Chat</p>
@@ -110,8 +111,7 @@
                                     <p>No cuenta con imágenes para este pedido</p>
                                     <img nz-image alt="" [nzSrc]="fallback" width="150" height="160">
                                     <p>Puede agregarlas desde el botón 'Editar'</p>
-                                  </div>
-                              
+                                  </div> 
                           </ng-template>
                         </ng-template>
                         <ng-template #Data>
@@ -384,7 +384,12 @@
                         </div-->
                         <div nz-col>
                           <p style="text-align: center;"><b>Imágen base</b></p>
-                          <img nz-image nzDisablePreview="false" [nzFallback]="fallback" alt="" [nzSrc]="determineImageToSolution()" width="400" height="200">
+                          <nz-card [nzCover]="coverTemplate">
+                            <ng-template #coverTemplate>
+                              <img nz-image nzDisablePreview="false" [nzFallback]="fallback" alt="" 
+                                [nzSrc]="determineImageToSolution()" width="400" height="200">
+                            </ng-template>
+                          </nz-card>
                         </div>
                       </div>
                       <br>
