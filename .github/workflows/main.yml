@@ -23,14 +23,6 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Codecov
-        uses: codecov/codecov-action@v3.1.1
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-
       - uses: actions/checkout@v3
       # The following lines will Cache the npm modules when running the test so the actions will be faster
       - name: Cache node modules
@@ -49,8 +41,6 @@ jobs:
 
       - name: Run npm i
         run: npm i
-      - name: Run test:coverage command
-        run: npm run test:coverage
       - name: Run test:ci command
         run: npm run test:ci
       - name: Run build:ci command
