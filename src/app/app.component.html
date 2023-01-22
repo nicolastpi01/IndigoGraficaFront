@@ -71,9 +71,9 @@
           <!-- logout -->
           <button class="button-normal" (click)="logout()" *ngIf="isLoggedIn" nz-button nzType="default">Cerrar sesión</button>
         </div>
-        <div style="float: right;" *ngIf="!isLoggedIn">
+        <div style="float: right;"  *ngIf="!isLoggedIn">
           <!-- login -->
-          <button class="button-normal" (click)="showModalLogin()" nz-button nzType="default">Ingresar</button>
+          <button class="button-normal" data-testid="ingresar" (click)="showModalLogin()" nz-button nzType="default">Ingresar</button>
           <!-- signon -->
           <button class="button-normal" (click)="showModalRegistrar()" nz-button nzType="primary">Creá tu cuenta</button>
         </div>
