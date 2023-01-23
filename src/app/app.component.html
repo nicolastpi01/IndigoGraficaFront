@@ -50,7 +50,7 @@
                [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
             ></i>
         </span>
-        <span style="padding-top: 5px; min-width: 300px;" *ngIf="isLoggedIn">
+        <span data-testid="describeUserName" style="padding-top: 5px; min-width: 300px;" *ngIf="isLoggedIn">
           <i 
             nz-icon 
             nzType="user" 
@@ -69,7 +69,7 @@
             ><p class="counter">{{ amountToShowInCart() }}</p></i>
           </span> 
           <!-- logout -->
-          <button class="button-normal" (click)="logout()" *ngIf="isLoggedIn" nz-button nzType="default">Cerrar sesión</button>
+          <button class="button-normal" (click)="logout()" data-testid="btnCerrarSesion" *ngIf="isLoggedIn" nz-button nzType="default">Cerrar sesión</button>
         </div>
         <div style="float: right;"  *ngIf="!isLoggedIn">
           <!-- login -->

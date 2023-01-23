@@ -47,6 +47,7 @@ export class AppComponent {
   constructor(private service: PedidoService, private _router: Router,private tokenStorageService: TokenStorageService) {}
 
   ngOnInit() {
+    //console.log("TOKEN:", this.tokenStorageService.getToken());
     this.isLoggedIn = !!this.tokenStorageService.getToken();
     this.allStates.push(this.pendienteAtencion)
     this.allStates.push(this.reservado)
@@ -54,6 +55,7 @@ export class AppComponent {
     if (this.isLoggedIn) {
       const user = this.tokenStorageService.getUser();
       this.roles = user.roles;
+      //console.log("USERS:", user)
       this.mostrarOpcionesCliente = this.roles.includes('ROLE_USER');
       this.mostrarOpcionesEncargado = this.roles.includes('ROLE_ENCARGADO');
       this.determineMenuColors()
@@ -200,7 +202,7 @@ export class AppComponent {
   };
   
   findResume = () :void => {
-    console.log("Llamo a findResume!!!")
+    //console.log("Llamo a findResume!!!")
     let token :string = this.tokenStorageService.getToken()
     this.service.getResume(token)
     .subscribe(resume => {
