@@ -44,7 +44,7 @@ export class AppComponent {
   defaultColors: MenuColor = colorsDefault;
   menuColors : MenuColor = colorsDefault;
    
-  constructor(private service: PedidoService, private _router: Router,private tokenStorageService: TokenStorageService) {}
+  constructor(private service: PedidoService, private _router: Router, private tokenStorageService: TokenStorageService) {}
 
   ngOnInit() {
     //console.log("TOKEN:", this.tokenStorageService.getToken());
@@ -206,6 +206,7 @@ export class AppComponent {
     let token :string = this.tokenStorageService.getToken()
     this.service.getResume(token)
     .subscribe(resume => {
+      //console.log("RESUMEN:", resume)
       this.resume = resume
     });
   };

@@ -66,7 +66,8 @@
             nz-icon
             nzType="shopping-cart" 
             nzTheme="outline"
-            ><p class="counter">{{ amountToShowInCart() }}</p></i>
+            data-testid="cartIcon"
+            ><p class="counter" data-testid="cartAmount">{{ amountToShowInCart() }}</p></i>
           </span> 
           <!-- logout -->
           <button class="button-normal" (click)="logout()" data-testid="btnCerrarSesion" *ngIf="isLoggedIn" nz-button nzType="default">Cerrar sesión</button>

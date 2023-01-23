@@ -4,7 +4,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { PedidoServiceMock } from './mocks/pedido.service.mock';
 import { TokenStorageServiceMock } from './mocks/token-storage.service.mock';
+import { PedidoService } from './services/pedido.service';
 import { TokenStorageService } from './services/token-storage.service';
 
 describe('AppComponent', () => {
@@ -23,7 +25,8 @@ describe('AppComponent', () => {
         AppComponent
       ],
       providers: [
-        { provide: TokenStorageService, useClass: TokenStorageServiceMock }
+        { provide: TokenStorageService, useClass: TokenStorageServiceMock },
+        { provide: PedidoService, useClass: PedidoServiceMock }
       ],
     }).compileComponents().then(() => {
       fixture = TestBed.createComponent(AppComponent);
@@ -61,9 +64,18 @@ describe('AppComponent', () => {
   // Desde el service stub se pre-carga el Token, y el rol del Usuario y el nombre
   it("Está logueado y es 'Editor' con nombre de usuario 'userStub' entonces debe renderizar 'userStub - Editor", () => {
     comp.ngOnInit();
-    fixture.detectChanges();
+    fixture.detectChanges()
     const compiled = fixture.debugElement.query(By.css('[data-testid="describeUserName"]')).nativeElement;
     expect(compiled.textContent).toContain('userStub - Editor');
+  });
+
+  it("Esta logueado entonces debe aparecer el icono del Carrito con la cantidad de elementos igual a 50", () => {
+    comp.ngOnInit();
+    fixture.detectChanges();
+    const cartIcon = fixture.debugElement.query(By.css('[data-testid="cantIcon"]'));
+    const cartAmount = fixture.debugElement.query(By.css('[data-testid="cartAmount"]')).nativeElement;
+    expect(cartAmount.textContent).toEqual('50')
+    expect(cartIcon).toBeDefined();
   });
 
 });
