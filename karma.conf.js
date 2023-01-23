@@ -30,7 +30,19 @@ module.exports = function (config) {
       reporters: [
         { type: 'html' },
         { type: 'text-summary' }
-      ]
+      ],
+      check: {
+        //emitWarning: true,
+        global: {
+          statements: 40,
+          branches: 40,
+          functions: 40,
+          lines: 40,
+          //excludes: [
+          //  'foo/bar/**/*.js'
+          //]
+        }
+      },  
     },
     reporters: ['progress', 'kjhtml'],
     port: 9876,
