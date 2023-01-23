@@ -38,7 +38,7 @@ module.exports = function (config) {
           branches: 40,
           functions: 40,
           lines: 40,
-          //excludes: [
+          //excludes: [ // Con esto se pueden excluir archivos del reporte
           //  'foo/bar/**/*.js'
           //]
         }
