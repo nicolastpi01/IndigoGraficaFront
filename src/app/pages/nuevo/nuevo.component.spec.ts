@@ -8,10 +8,6 @@ import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-let fixture : ComponentFixture<NuevoComponent>;
-let app : NuevoComponent;
-let dbe: any;
-
 let initialPanelState :Array<{active: boolean, name: string, disabled: boolean}> = [
     {
       active: true,
@@ -26,12 +22,16 @@ let initialPanelState :Array<{active: boolean, name: string, disabled: boolean}>
   ]
 
 describe('NuevoComponent', () => {
+  let fixture : ComponentFixture<NuevoComponent>;
+  let cmp : NuevoComponent;
+  let dbe: any;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [RouterTestingModule,  HttpClientTestingModule],
       declarations: [
         NuevoComponent
       ],
-      imports: [RouterTestingModule,  HttpClientTestingModule],
       providers: [
         { provide: FormBuilder},
         { provide: PedidoService },
@@ -39,23 +39,25 @@ describe('NuevoComponent', () => {
         { provide: Overlay },
         { provide: NzModalService },
     ]
-    }).compileComponents()
-    fixture = TestBed.createComponent(NuevoComponent)
-    app = fixture.componentInstance
-    fixture.detectChanges()
-    dbe = fixture.debugElement.nativeElement
+    }).compileComponents().then(() => {
+      fixture = TestBed.createComponent(NuevoComponent);
+      cmp = fixture.componentInstance;
+      dbe = fixture.debugElement.nativeElement; 
+    });
   })
-    
+
   it("Valida el contenido del texto del boton de alta de Form. por defecto", () => {
-    app.panels = initialPanelState;
-    fixture.detectChanges()
+    fixture.detectChanges();
+    cmp.isLoggedIn = true;
+    cmp.panels = initialPanelState;
+    fixture.detectChanges();
     const el = dbe.querySelector(`[data-testid="buttonAlta"]`)
     expect(el.textContent).toBe("Alta ");
   })
 
   it("Valida el contenido del texto del boton de alta de Form. cuando esta cargando", () => {
-    app.panels = initialPanelState;
-    app.loadingAlta = true;
+    cmp.panels = initialPanelState;
+    cmp.loadingAlta = true;
     fixture.detectChanges()
     const el = dbe.querySelector(`[data-testid="buttonAlta"]`)
     expect(el.textContent).toBe("Espere... ");
@@ -63,23 +65,19 @@ describe('NuevoComponent', () => {
   
 
   it("Verifico que no esta definido el icono de subir un archivo en el acordeon de Mis Pedidos", () => {
-    app.panels = initialPanelState;
+    cmp.panels = initialPanelState;
     fixture.detectChanges()
     const el = dbe.querySelector(`[data-testid="iconUpload"]`)
     expect(el).toBeNull();
   })
 
-  
   it("Verifica que el boton de limpiar esta definido en el formulario de Alta Pedido", () => {
     //const algo = fixture.debugElement.nativeElement.querySelector('#shan')
-    app.panels = initialPanelState;
+    cmp.panels = initialPanelState;
     fixture.detectChanges()
     const el = dbe.querySelector(`[data-testid="buttonClear"]`)
     expect(el).toBeDefined();
   })
   
-
-
-
 })
 

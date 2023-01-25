@@ -10,7 +10,7 @@
 <br>
 
 <nz-collapse nzAccordion>
-  <nz-collapse-panel *ngFor="let panel of panels" [nzHeader]="panel.name" [nzActive]="panel.active" [nzDisabled]="panel.disabled">
+  <nz-collapse-panel data-testid="panel" *ngFor="let panel of panels" [nzHeader]="panel.name" [nzActive]="panel.active" [nzDisabled]="panel.disabled">
     <ng-template [ngIf]="panel.name === 'Datos' " [ngIfElse]="ifElse">
       <form
         nz-form
