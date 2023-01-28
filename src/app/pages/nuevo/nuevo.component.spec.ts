@@ -73,6 +73,7 @@ describe('NuevoComponent', () => {
 
   it("Verifica que el boton de limpiar esta definido en el formulario de Alta Pedido", () => {
     //const algo = fixture.debugElement.nativeElement.querySelector('#shan')
+    fixture.detectChanges()
     cmp.panels = initialPanelState;
     fixture.detectChanges()
     const el = dbe.querySelector(`[data-testid="buttonClear"]`)
