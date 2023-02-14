@@ -21,7 +21,6 @@ export class PedidoService {
 
   toggle() {
     this.isOpen = !this.isOpen;
-    //console.log("IsOpen :", this.isOpen)
     this.change.emit(this.isOpen);
   }
 

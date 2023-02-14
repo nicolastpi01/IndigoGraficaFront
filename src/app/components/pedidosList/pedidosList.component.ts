@@ -85,7 +85,6 @@ import { colorearEstado } from "src/app/utils/pedidos-component-utils";
 
     onClickWatch = (file: any) => {
       this.currentFile = file;
-      console.log("CURRENT FILE: ", this.currentFile)
       this.emitFileOnClickWatch.emit(file) 
     };
 

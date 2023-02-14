@@ -329,8 +329,6 @@ export class NuevoComponent implements OnInit {
 
       let currentPedidoCopy = JSON.parse(JSON.stringify(this.currentPedido))
       currentPedidoCopy.files = [...currentPedidoCopy.files, newFileDB ]
-
-      console.log("CURRENT PEDIDO :", currentPedidoCopy)
       this.service.update(currentPedidoCopy).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe(async (e: any) => { // revisar el any

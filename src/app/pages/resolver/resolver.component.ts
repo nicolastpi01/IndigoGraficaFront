@@ -150,14 +150,12 @@ export class ResolverComponent implements OnInit {
   
   hasApprovedSolution = (file: FileDB) :boolean => {
     let find: Solution | undefined = this.currentPedido?.solutions?.find((sol: Solution) => sol.idFileToSolution === file.id?.toString() )
-    //console.log("FIND :", find)
     let approved: boolean = (find !== undefined) && (find.approved !== undefined) && find.approved
     return (this.currentPedido !== undefined) && (this.currentPedido.solutions !== undefined) && approved
   };
   
   filesToResolve = () :FileDB[] | undefined => {
     if(this.isRejected()) {
-      //console.log("IS REJECTED")
       //let pedidoFind: Pedido | undefined = this.pedidos.find((pedido: Pedido) => 
       //pedido.files?.some((file: FileDB) => file.id?.toString() === solution.idFileToSolution))
 
@@ -516,7 +514,6 @@ export class ResolverComponent implements OnInit {
 
   async handleChange({ file, fileList }: NzUploadChangeParam): Promise<void> {
     if (file.status !== 'uploading') {
-      //console.log(file, fileList);
     }
     if (file.status === 'done') {
       file['preview'] = await getBase64(file.originFileObj!);
@@ -556,7 +553,6 @@ export class ResolverComponent implements OnInit {
           };
       }
       
-      //console.log("CURRENT PEDIDO: ", this.currentPedido)
       this.service.update(this.currentPedido).
         pipe(filter(e => e instanceof HttpResponse))
         .subscribe(async (e: any) => { // revisar el any
@@ -567,9 +563,6 @@ export class ResolverComponent implements OnInit {
                 ...file, url: this.generateUrl(file)  //this.blodToUrl(file) -> Mejorar este metodo, por ahora lo dejo asi
               }
             })};
-            //console.log("El pedido: ", this.currentPedido)
-
-            //console.log("Current Sol: ", this.currentSolution)
             //this.currentPedido.files = this.currentPedido.files?.map((file: FileDB) => {
             //  return {
             //    ...file, url: await getBase64(file)  
@@ -603,7 +596,6 @@ export class ResolverComponent implements OnInit {
     this.resolverLoading = true;
     //let callService: (id: string | undefined) => Observable<any> = this.service.resolver
     if(this.isRejected()) {
-      //console.log("MANDO A RESOLVER UN PEDIDO CON TODAS SUS SOLUCIONES DESAPROBADAS!!!")
       //callService = this.service.resolverRejected
       this.service.resolverRejected(this.currentPedido?.id).subscribe({
         next: ((pedido: any) => {
@@ -717,8 +709,6 @@ export class ResolverComponent implements OnInit {
   };
 
   onClickShowRejectionReason = () => {
-    console.log("CURRENT FILE: ", this.currentFile)
-    console.log("CURRENT SOLUTIONS: ", this.currentPedido?.solutions)
     // Levanta el Modal que muestra la información de rechazo de la Solución
     this.modal.info({
       nzTitle: `<b style="color: blue;">Motivo rechazo: </b>`,
@@ -734,10 +724,7 @@ export class ResolverComponent implements OnInit {
   // retorna true cuando una Sol. tiene reemplazo, sino false o undefined
   hasReplacement = (file: FileDB) :boolean | undefined => {
     // solution.idFileToSolution !== this.currentFile?.id
-    //console.log("FILE: ", this.currentFile)
-    //console.log("SOLUTIONS: ", this.currentPedido?.solutions)
     let findSol: Solution | undefined = this.currentPedido?.solutions?.find((sol: Solution) => sol.idFileToSolution === this.currentFile?.id?.toString())
-    //console.log("FIND SOL: ", findSol)
     return findSol && findSol.hasReplacement
   };
 
@@ -854,7 +841,6 @@ export class ResolverComponent implements OnInit {
      .subscribe({ 
       next: (_) => {
         this.sendingBudget = false
-        //console.log("RESULT:", result)
         this.msg.success('Presupuesto enviado por mail exitosamente') // VA
         //this.service.toggle()
         //this.goOutModalBudget()
@@ -878,7 +864,6 @@ export class ResolverComponent implements OnInit {
       error: (result) => {
           //this.msg.error('Sucedió un error durante el envio del presupuesto. ' + err.error, {
           this.sendingBudget = false
-          //console.log("ERROR:", result)
           this.msg.error(result.error)
           //this.msg.error(err.message, {
           //  nzDuration: 5000
@@ -1094,7 +1079,6 @@ export class ResolverComponent implements OnInit {
   };
 
   onClickComment = (event: MouseEvent, item: FileDB) => {
-    //console.log("LLAME ONCLICK COMMENT")
     if(item.comentarios.length > 0) {
       event.preventDefault;
       this.currentFile = item; 

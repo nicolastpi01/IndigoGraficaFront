@@ -727,7 +727,6 @@ export class CarritoComponent implements OnInit {
   };
   
   showRevisarModal = (solution: Solution) :void => {
-    console.log("sOL: ", solution)
     this.currentSolution = solution
     this.validateForm.patchValue({
       motivoRechazo: solution.rejectionReason,
@@ -764,15 +763,12 @@ export class CarritoComponent implements OnInit {
   }
 
   sendApproveSolution = (approved: boolean) :void => {
-    //console.log("CURRENT PEDIDO: ", this.currentPedido)
     // Si no esta aprobado y el textArea esta vacio
     let form = this.validateForm
     if(!approved && (form.value.motivoRechazo === null || form.value.motivoRechazo === '') ) {
-      console.log("EL TEXT AREA ESTA VACIO")
       this.msg.error('Debe ingresar un motivo de rechazo indicando porque se desaprobo la Solución brindada')
     }
     else {
-      console.log("CURRENT PEDIDO: ", this.currentPedido)
       let pedidoCp : Pedido = JSON.parse(JSON.stringify(this.currentPedido))
       pedidoCp = {
         ...pedidoCp, solutions: pedidoCp.solutions?.map((sol: Solution) => {
@@ -798,9 +794,7 @@ export class CarritoComponent implements OnInit {
       pipe(filter(e => e instanceof HttpResponse))
       .subscribe(async (e: any) => {
         this.msg.success(`Solución ${approved ? 'aprobada' : 'desaprobada'} satisfactoriamente!`)
-        //console.log("IDS ANTES: ", this.IdsSolutionsDisapproved)
         this.IdsSolutionsDisapproved = this.IdsSolutionsDisapproved.filter((id: string  | undefined) => id !== this.currentSolution?.id)
-        //console.log("IDS DESPUES: ", this.IdsSolutionsDisapproved)
         if(this.currentSolution) {
           this.currentSolution = {
             ...this.currentSolution, approved: approved, rejectionReason: form.value.motivoRechazo
@@ -838,9 +832,7 @@ export class CarritoComponent implements OnInit {
     // [ngIf]="tab.name === 'Solutions' || 
       // (currentTab && currentTab.name === 'Solutions' && currentTab.idPedido === pedido.id) " ENTONCES MUESTRO EL TEMPLATE DE SOLUCIONES
       // PROSIGO CON LOS CASOS PARA LOS OTROS TEMPLATES
-    console.log("CURRENT TAB: ", currentTab)
     if(tab.name === 'Solutions') {
-      //console.log("ON CLICK TAB PEDIDO: ", pedido)
       this.currentPedido = pedido
       //this.currentTab = currentTab // HACER ESTO CUANDO HACE CLICK EN 'REVISAR!'
     }

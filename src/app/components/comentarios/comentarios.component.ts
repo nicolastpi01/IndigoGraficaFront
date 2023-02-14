@@ -26,7 +26,6 @@ import { badgeColorStyle, badgeUponImagePositionStyle, toFullDate } from "src/ap
 
     ngOnInit(): void {
         let user = this.tokenService.getUser()
-        console.log("USER df: ", user)
         //throw new Error("Method not implemented.");
     }
 
@@ -44,7 +43,6 @@ import { badgeColorStyle, badgeUponImagePositionStyle, toFullDate } from "src/ap
     };
 
     changeCheck = (event: boolean, comentario: Comentario) => {
-        console.log("markups")
         let commentCp : Comentario = JSON.parse(JSON.stringify(comentario))
         commentCp.terminado = event
         this.markups = [
